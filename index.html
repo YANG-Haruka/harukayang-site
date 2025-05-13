@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>先端AI技術で人命を救い、平等を拡張する</title>
+    <title>Haruka-Yang - Personal Portfolio</title>
     <style>
         * {
             margin: 0;
@@ -23,136 +23,274 @@
             min-height: 100vh;
         }
         
-        /* 视频背景部分 */
+        /* Hero Section */
         .hero {
             position: relative;
             width: 100%;
             height: 100vh;
             overflow: hidden;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
         }
         
-        .hero video {
+        .particles {
             position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            overflow: hidden;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            animation: float 20s infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-100px) translateX(50px); }
+            50% { transform: translateY(-50px) translateX(-30px); }
+            75% { transform: translateY(-150px) translateX(-50px); }
+            100% { transform: translateY(0) translateX(0); }
         }
         
         .hero-content {
             position: absolute;
-            top: 120px;
-            left: 50px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
             z-index: 2;
         }
         
         .hero-content h1 {
-            font-size: 48px;
+            font-size: 64px;
             margin-bottom: 20px;
             line-height: 1.2;
             font-weight: bold;
+            letter-spacing: 2px;
         }
         
         .hero-content p {
-            font-size: 20px;
-            line-height: 1.5;
+            font-size: 24px;
+            margin-bottom: 40px;
+            opacity: 0.9;
         }
         
-        /* 关于我们部分 */
+        .cta-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-button:hover {
+            background: #fff;
+            color: #000;
+            transform: translateY(-2px);
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 50px;
+            z-index: 100;
+            background: rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            transition: opacity 0.3s ease;
+        }
+        
+        .nav a:hover {
+            opacity: 0.7;
+        }
+        
+        /* About Section */
         .about {
             padding: 100px 50px;
-            position: relative;
+            background-color: #0a0a0a;
         }
         
-        .about-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 40px;
-            cursor: pointer;
-        }
-        
-        .about-header h2 {
-            font-size: 32px;
-            margin-left: 20px;
-        }
-        
-        .about-header .plus {
-            font-size: 32px;
-        }
-        
-        .about-subheader {
+        .section-header {
+            text-align: center;
             margin-bottom: 60px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 20px;
+        }
+        
+        .section-header h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+        
+        .section-header p {
+            font-size: 18px;
+            opacity: 0.7;
         }
         
         .about-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-        
-        .about-text {
-            width: 50%;
-            padding-right: 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
         }
         
         .about-text h3 {
-            font-size: 24px;
-            margin-bottom: 30px;
-            line-height: 1.4;
+            font-size: 28px;
+            margin-bottom: 20px;
         }
         
         .about-text p {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             line-height: 1.8;
+            opacity: 0.9;
         }
         
-        .about-images {
-            width: 40%;
+        .about-image {
             position: relative;
-        }
-        
-        .image-top, .image-middle, .image-bottom {
-            position: absolute;
-            border-radius: 10px;
+            height: 400px;
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+            border-radius: 20px;
             overflow: hidden;
-            opacity: 0;
-            transform: translateX(100px);
-            transition: all 0.8s ease-out;
         }
         
-        .image-top {
-            width: 280px;
-            height: 180px;
+        /* Skills Section */
+        .skills {
+            padding: 100px 50px;
+            background-color: #111;
+        }
+        
+        .skills-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .skill-card {
+            background: rgba(255,255,255,0.05);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .skill-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .skill-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            background: #3498db;
+            border-radius: 50%;
+        }
+        
+        .skill-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .skill-card p {
+            opacity: 0.8;
+        }
+        
+        /* Portfolio Section */
+        .portfolio {
+            padding: 100px 50px;
+            background-color: #0a0a0a;
+        }
+        
+        .portfolio-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .portfolio-item {
+            position: relative;
+            height: 300px;
+            background: #333;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .portfolio-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .portfolio-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
             right: 0;
-            top: 0;
-            background-color: #333;
+            padding: 20px;
+            background: rgba(0,0,0,0.8);
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
         }
         
-        .image-middle {
-            width: 350px;
-            height: 250px;
-            right: 0;
-            top: 200px;
-            background-color: #333;
+        .portfolio-item:hover .portfolio-overlay {
+            transform: translateY(0);
         }
         
-        .image-bottom {
-            width: 280px;
-            height: 180px;
-            right: 0;
-            top: 470px;
-            background-color: #333;
+        /* Contact Section */
+        .contact {
+            padding: 100px 50px;
+            background-color: #111;
+            text-align: center;
         }
         
-        .image-top.active, .image-middle.active, .image-bottom.active {
-            opacity: 1;
-            transform: translateX(0);
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
         }
         
-        /* 社交媒体侧边栏 */
+        .contact-link {
+            display: inline-block;
+            padding: 15px 30px;
+            background: transparent;
+            border: 2px solid #3498db;
+            color: #3498db;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-link:hover {
+            background: #3498db;
+            color: #fff;
+        }
+        
+        /* Social Links */
         .social-sidebar {
             position: fixed;
             right: 20px;
@@ -160,116 +298,223 @@
             transform: translateY(-50%);
             display: flex;
             flex-direction: column;
+            gap: 20px;
             z-index: 100;
         }
         
         .social-sidebar a {
-            margin: 10px 0;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: #fff;
             text-decoration: none;
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-            font-size: 14px;
-            letter-spacing: 2px;
+            transition: all 0.3s ease;
         }
         
-        /* 响应式设计 */
+        .social-sidebar a:hover {
+            background: #3498db;
+            transform: scale(1.1);
+        }
+        
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .hero-content {
-                top: 80px;
-                left: 30px;
-            }
-            
             .hero-content h1 {
                 font-size: 36px;
             }
             
             .about-content {
-                flex-direction: column;
+                grid-template-columns: 1fr;
             }
             
-            .about-text, .about-images {
-                width: 100%;
-                padding-right: 0;
+            .nav ul {
+                gap: 15px;
             }
             
-            .about-images {
-                height: 600px;
-                margin-top: 50px;
+            .nav {
+                padding: 15px 20px;
+            }
+            
+            .social-sidebar {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- 顶部视频部分 -->
-        <div class="hero">
-            <video autoplay muted loop>
-                <source src="your-video.mp4" type="video/mp4">
-            </video>
+        <!-- Navigation -->
+        <nav class="nav">
+            <ul>
+                <li><a href="#home">首页</a></li>
+                <li><a href="#about">关于</a></li>
+                <li><a href="#skills">技能</a></li>
+                <li><a href="#portfolio">作品</a></li>
+                <li><a href="#contact">联系</a></li>
+            </ul>
+        </nav>
+        
+        <!-- Hero Section -->
+        <div class="hero" id="home">
+            <div class="particles">
+                <div class="particle" style="width: 5px; height: 5px; left: 10%; top: 20%; animation-delay: 0s;"></div>
+                <div class="particle" style="width: 3px; height: 3px; left: 20%; top: 60%; animation-delay: 1s;"></div>
+                <div class="particle" style="width: 4px; height: 4px; left: 80%; top: 40%; animation-delay: 2s;"></div>
+                <div class="particle" style="width: 6px; height: 6px; left: 60%; top: 30%; animation-delay: 3s;"></div>
+                <div class="particle" style="width: 2px; height: 2px; left: 50%; top: 80%; animation-delay: 4s;"></div>
+            </div>
             <div class="hero-content">
-                <h1>先端AI技術で<br>人命を救い、平等を拡張する</h1>
-                <p>わたしたちは、<br>ミッションクリティカル領域へのAIの実装を目指すAIスタートアップです。</p>
+                <h1>Haruka-Yang</h1>
+                <p>欢迎来到我的世界</p>
+                <a href="#about" class="cta-button">了解更多</a>
             </div>
         </div>
         
-        <!-- 关于我们部分 -->
-        <div class="about">
-            <div class="about-header">
-                <span class="plus">+</span>
-                <h2>ABOUT US</h2>
-            </div>
-            <div class="about-subheader">
-                <p>コーピーについて</p>
+        <!-- About Section -->
+        <div class="about" id="about">
+            <div class="section-header">
+                <h2>关于我</h2>
+                <p>认识一个热爱创新的开发者</p>
             </div>
             <div class="about-content">
                 <div class="about-text">
-                    <h3>わたしたちは、ミッションクリティカル領域へのAIの実装を目指すAIスタートアップです。</h3>
-                    <p>AIがかつてない速度で世界を変えています。しかし、人命や企業の基幹業務に関わる「ミッションクリティカル領域」においては、導入・運用のフェーズにほとんど進めていません。単に高精度な結果を出力するだけでは不十分です。ミッションクリティカル領域へのAI導入では、結果を出力する過程に対する十分な説明、専門的で多角的な品質検証といった高度な技術が要求されます。</p>
-                    <p>私達は、10カ国以上の国々から集まった多様なバックグラウンドを持つエキスパートの力を結集させたスタートアップです。企業様と連携し、現場でのテストを重ねることで信頼性の高いAIソリューションを提供します。</p>
+                    <h3>Hello, I'm Haruka-Yang</h3>
+                    <p>我是一名充满激情的全栈开发者，专注于创建优雅而高效的数字解决方案。我热爱将创意转化为现实，用代码构建美好的用户体验。</p>
+                    <p>我的旅程始于对技术的好奇心，逐渐发展成为对创新和完美的追求。在不断学习和成长的过程中，我探索着技术与艺术的交汇点。</p>
+                    <p>当我不在编码时，你会发现我在探索新技术、阅读、或是在咖啡馆里思考下一个创意项目。</p>
                 </div>
-                <div class="about-images">
-                    <div class="image-top"></div>
-                    <div class="image-middle"></div>
-                    <div class="image-bottom"></div>
+                <div class="about-image">
+                    <!-- Profile image placeholder -->
                 </div>
             </div>
         </div>
         
-        <!-- 社交媒体侧边栏 -->
+        <!-- Skills Section -->
+        <div class="skills" id="skills">
+            <div class="section-header">
+                <h2>技能专长</h2>
+                <p>我的技术栈和专业领域</p>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <div class="skill-icon"></div>
+                    <h3>前端开发</h3>
+                    <p>HTML, CSS, JavaScript, React, Vue.js</p>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon"></div>
+                    <h3>后端开发</h3>
+                    <p>Node.js, Python, Java, Database Design</p>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon"></div>
+                    <h3>UI/UX设计</h3>
+                    <p>Figma, Sketch, Responsive Design</p>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon"></div>
+                    <h3>开发工具</h3>
+                    <p>Git, Docker, CI/CD, Cloud Services</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Portfolio Section -->
+        <div class="portfolio" id="portfolio">
+            <div class="section-header">
+                <h2>我的作品</h2>
+                <p>展示我的创意和技术实力</p>
+            </div>
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <div class="portfolio-overlay">
+                        <h3>项目一</h3>
+                        <p>Web应用开发</p>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-overlay">
+                        <h3>项目二</h3>
+                        <p>移动端应用</p>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-overlay">
+                        <h3>项目三</h3>
+                        <p>创意设计作品</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contact Section -->
+        <div class="contact" id="contact">
+            <div class="section-header">
+                <h2>联系我</h2>
+                <p>让我们一起创造美好的事物</p>
+            </div>
+            <div class="contact-links">
+                <a href="mailto:hello@haruka-yang.com" class="contact-link">Email</a>
+                <a href="https://github.com/haruka-yang" class="contact-link">GitHub</a>
+                <a href="https://linkedin.com/in/haruka-yang" class="contact-link">LinkedIn</a>
+            </div>
+        </div>
+        
+        <!-- Social Links -->
         <div class="social-sidebar">
-            <a href="#">Follow us</a>
-            <a href="#">f</a>
-            <a href="#">t</a>
-            <a href="#">in</a>
+            <a href="#">G</a>
+            <a href="#">L</a>
+            <a href="#">T</a>
         </div>
     </div>
 
     <script>
-        // 滚动时触发图片从右侧滑入的效果
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Add scroll effects
         window.addEventListener('scroll', function() {
-            const scrollPosition = window.scrollY;
-            const aboutSection = document.querySelector('.about');
-            const aboutOffset = aboutSection.offsetTop;
+            const scrolled = window.scrollY;
+            const nav = document.querySelector('.nav');
             
-            const imageTop = document.querySelector('.image-top');
-            const imageMiddle = document.querySelector('.image-middle');
-            const imageBottom = document.querySelector('.image-bottom');
-            
-            // 当滚动到about部分时，依次触发图片滑入
-            if (scrollPosition > aboutOffset - 400) {
-                setTimeout(() => {
-                    imageTop.classList.add('active');
-                }, 100);
-                
-                setTimeout(() => {
-                    imageMiddle.classList.add('active');
-                }, 300);
-                
-                setTimeout(() => {
-                    imageBottom.classList.add('active');
-                }, 500);
+            if (scrolled > 50) {
+                nav.style.background = 'rgba(0,0,0,0.8)';
+            } else {
+                nav.style.background = 'rgba(0,0,0,0.1)';
             }
+        });
+        
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe elements
+        document.querySelectorAll('.skill-card, .portfolio-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
         });
     </script>
 </body>
