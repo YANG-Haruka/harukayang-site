@@ -270,24 +270,51 @@
         .contact-links {
             display: flex;
             justify-content: center;
-            gap: 40px;
+            flex-wrap: wrap;
+            gap: 30px;
             margin-top: 40px;
         }
         
         .contact-link {
-            display: inline-block;
-            padding: 15px 30px;
-            background: transparent;
-            border: 2px solid #3498db;
-            color: #3498db;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-decoration: none;
-            border-radius: 30px;
+            color: #fff;
             transition: all 0.3s ease;
         }
         
-        .contact-link:hover {
-            background: #3498db;
-            color: #fff;
+        .contact-link-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .contact-link-icon img {
+            width: 32px;
+            height: 32px;
+        }
+        
+        .contact-link:hover .contact-link-icon {
+            background: rgba(52, 152, 219, 0.2);
+            transform: translateY(-5px);
+            border-color: #3498db;
+        }
+        
+        .contact-link span {
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-link:hover span {
+            color: #3498db;
         }
         
         /* Social Links */
@@ -318,6 +345,71 @@
         .social-sidebar a:hover {
             background: #3498db;
             transform: scale(1.1);
+        }
+        
+        .social-sidebar img {
+            width: 24px;
+            height: 24px;
+        }
+        
+        /* Popup Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            background: rgba(0,0,0,0.7);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1010;
+            border: 2px solid white;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: -30px;
+            right: 0;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
         }
         
         /* Responsive Design */
@@ -457,17 +549,72 @@
                 <p>让我们一起创造美好的事物</p>
             </div>
             <div class="contact-links">
-                <a href="mailto:hello@haruka-yang.com" class="contact-link">Email</a>
-                <a href="https://github.com/haruka-yang" class="contact-link">GitHub</a>
-                <a href="https://linkedin.com/in/haruka-yang" class="contact-link">LinkedIn</a>
+                <a href="https://github.com/YANG-Haruka" target="_blank" class="contact-link">
+                    <div class="contact-link-icon">
+                        <img src="imgs/github.png" alt="GitHub">
+                    </div>
+                    <span>GitHub</span>
+                </a>
+                <a href="mailto:yjz.haruka@gmail.com" class="contact-link">
+                    <div class="contact-link-icon">
+                        <img src="imgs/gmail.png" alt="Gmail">
+                    </div>
+                    <span>Email</span>
+                </a>
+                <a href="https://www.linkedin.com/in/yang-haruka/" target="_blank" class="contact-link">
+                    <div class="contact-link-icon">
+                        <img src="imgs/linkedin.png" alt="LinkedIn">
+                    </div>
+                    <span>LinkedIn</span>
+                </a>
+                <a href="#" class="contact-link qq-contact">
+                    <div class="contact-link-icon">
+                        <img src="imgs/QQ.png" alt="QQ">
+                    </div>
+                    <span>QQ</span>
+                </a>
+                <a href="#" class="contact-link wechat-contact">
+                    <div class="contact-link-icon">
+                        <img src="imgs/wechat.png" alt="WeChat">
+                    </div>
+                    <span>WeChat</span>
+                </a>
             </div>
         </div>
         
-        <!-- Social Links -->
+        <!-- Social Links Sidebar -->
         <div class="social-sidebar">
-            <a href="#">G</a>
-            <a href="#">L</a>
-            <a href="#">T</a>
+            <a href="https://github.com/YANG-Haruka" target="_blank" class="social-link">
+                <img src="imgs/github.png" alt="GitHub">
+            </a>
+            <a href="mailto:yjz.haruka@gmail.com" class="social-link">
+                <img src="imgs/gmail.png" alt="Gmail">
+            </a>
+            <a href="https://www.linkedin.com/in/yang-haruka/" target="_blank" class="social-link">
+                <img src="imgs/linkedin.png" alt="LinkedIn">
+            </a>
+            <a href="#" class="social-link" id="qq-link">
+                <img src="imgs/QQ.png" alt="QQ">
+            </a>
+            <a href="#" class="social-link" id="wechat-link">
+                <img src="imgs/wechat.png" alt="WeChat">
+            </a>
+        </div>
+        
+        <!-- Modal for QQ -->
+        <div class="modal" id="qq-modal">
+            <div class="modal-content">
+                <span class="close-modal" id="close-qq">&times;</span>
+                <img src="imgs/QQ_ADDME.png" alt="QQ Contact">
+            </div>
+        </div>
+        
+        <!-- Modal for WeChat -->
+        <div class="modal" id="wechat-modal">
+            <div class="modal-content">
+                <span class="close-modal" id="close-wechat">&times;</span>
+                <img src="imgs/WeChat_ADDME.JPG" alt="WeChat Contact">
+            </div>
         </div>
     </div>
 
@@ -491,6 +638,60 @@
                 nav.style.background = 'rgba(0,0,0,0.8)';
             } else {
                 nav.style.background = 'rgba(0,0,0,0.1)';
+            }
+        });
+        
+        // Modal functionality for QQ
+        const qqLink = document.getElementById('qq-link');
+        const qqModal = document.getElementById('qq-modal');
+        const closeQQ = document.getElementById('close-qq');
+        const qqContacts = document.querySelectorAll('.qq-contact');
+        
+        qqLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            qqModal.style.display = 'flex';
+        });
+        
+        qqContacts.forEach(contact => {
+            contact.addEventListener('click', function(e) {
+                e.preventDefault();
+                qqModal.style.display = 'flex';
+            });
+        });
+        
+        closeQQ.addEventListener('click', function() {
+            qqModal.style.display = 'none';
+        });
+        
+        // Modal functionality for WeChat
+        const wechatLink = document.getElementById('wechat-link');
+        const wechatModal = document.getElementById('wechat-modal');
+        const closeWechat = document.getElementById('close-wechat');
+        const wechatContacts = document.querySelectorAll('.wechat-contact');
+        
+        wechatLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            wechatModal.style.display = 'flex';
+        });
+        
+        wechatContacts.forEach(contact => {
+            contact.addEventListener('click', function(e) {
+                e.preventDefault();
+                wechatModal.style.display = 'flex';
+            });
+        });
+        
+        closeWechat.addEventListener('click', function() {
+            wechatModal.style.display = 'none';
+        });
+        
+        // Close modals when clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target === qqModal) {
+                qqModal.style.display = 'none';
+            }
+            if (e.target === wechatModal) {
+                wechatModal.style.display = 'none';
             }
         });
         
