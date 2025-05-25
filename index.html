@@ -19,7 +19,7 @@
             position: relative;
         }
         
-        /* 背景图片层 */
+        /* 背景图片层 - 移动端优化 */
         .background-layer {
             position: fixed;
             top: 0;
@@ -29,8 +29,18 @@
             background-image: url('imgs/background.png');
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
+            background-repeat: no-repeat;
             z-index: 0;
+            /* 移除 background-attachment: fixed，因为在移动端支持不佳 */
+        }
+        
+        /* 移动端背景优化 */
+        @media (max-width: 768px) {
+            .background-layer {
+                background-size: cover;
+                background-position: center center;
+                min-height: 100vh;
+            }
         }
         
         .container {
@@ -40,15 +50,15 @@
             z-index: 2;
         }
         
-        /* Meteor Effect */
+        /* Meteor Effect - 修复位置计算 */
         .meteor {
             position: fixed;
-            width: 500px;
-            height: 500px;
+            width: 300px;
+            height: 300px;
             background-image: url('imgs/meteor.png');
             background-size: 100% 100%;
             background-repeat: no-repeat;
-            background-position: 0 0;
+            background-position: center;
             z-index: 10;
             pointer-events: none;
             opacity: 0.6;
@@ -200,6 +210,7 @@
             height: 400px;
             border-radius: 20px;
             overflow: hidden;
+            background: rgba(255,255,255,0.1);
         }
         
         /* Skills Section */
@@ -232,6 +243,7 @@
             height: 60px;
             margin: 0 auto 20px;
             border-radius: 50%;
+            background: rgba(255,255,255,0.1);
         }
         
         .skill-card h3 {
@@ -321,10 +333,16 @@
             border: 2px solid transparent;
         }
         
-        .contact-link-icon img {
-            width: 32px;
-            height: 32px;
+        .contact-link-icon::before {
+            content: "📧";
+            font-size: 24px;
         }
+        
+        .contact-link:nth-child(1) .contact-link-icon::before { content: "🐙"; }
+        .contact-link:nth-child(2) .contact-link-icon::before { content: "📧"; }
+        .contact-link:nth-child(3) .contact-link-icon::before { content: "💼"; }
+        .contact-link:nth-child(4) .contact-link-icon::before { content: "🐧"; }
+        .contact-link:nth-child(5) .contact-link-icon::before { content: "💬"; }
         
         .contact-link:hover .contact-link-icon {
             transform: translateY(-5px);
@@ -362,16 +380,18 @@
             color: #fff;
             text-decoration: none;
             transition: all 0.3s ease;
+            font-size: 20px;
         }
         
         .social-sidebar a:hover {
             transform: scale(1.1);
         }
         
-        .social-sidebar img {
-            width: 24px;
-            height: 24px;
-        }
+        .social-sidebar a:nth-child(1)::before { content: "🐙"; }
+        .social-sidebar a:nth-child(2)::before { content: "📧"; }
+        .social-sidebar a:nth-child(3)::before { content: "💼"; }
+        .social-sidebar a:nth-child(4)::before { content: "🐧"; }
+        .social-sidebar a:nth-child(5)::before { content: "💬"; }
         
         /* Popup Modal */
         .modal {
@@ -394,15 +414,28 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            background: rgba(255,255,255,0.1);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
         }
         
-        .modal-content img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            display: block;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        .modal-content p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .modal-content .qr-placeholder {
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 14px;
+            margin: 20px auto;
         }
         
         .close-modal {
@@ -424,23 +457,23 @@
             border: 2px solid white;
         }
         
-        .close-modal {
-            position: absolute;
-            top: -30px;
-            right: 0;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-        }
-        
-        /* Responsive Design */
+        /* 移动端优化 */
         @media (max-width: 768px) {
             .hero-content h1 {
                 font-size: 36px;
             }
             
+            .hero-content p {
+                font-size: 18px;
+            }
+            
             .about-content {
                 grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .about-image {
+                height: 250px;
             }
             
             .nav ul {
@@ -451,13 +484,85 @@
                 padding: 15px 20px;
             }
             
+            .nav a {
+                font-size: 14px;
+            }
+            
             .social-sidebar {
                 display: none;
             }
             
             .meteor {
-                width: 120px;
-                height: 120px;
+                width: 150px;
+                height: 150px;
+            }
+            
+            .section-header h2 {
+                font-size: 32px;
+            }
+            
+            .about, .skills, .portfolio, .contact {
+                padding: 60px 20px;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .contact-links {
+                gap: 20px;
+            }
+            
+            .contact-link-icon {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .cta-button {
+                padding: 12px 30px;
+                font-size: 16px;
+            }
+        }
+        
+        /* 超小屏幕优化 */
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 28px;
+            }
+            
+            .hero-content p {
+                font-size: 16px;
+            }
+            
+            .nav ul {
+                gap: 10px;
+            }
+            
+            .nav a {
+                font-size: 12px;
+            }
+            
+            .meteor {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .section-header h2 {
+                font-size: 24px;
+            }
+            
+            .about-text h3 {
+                font-size: 22px;
+            }
+            
+            .skill-card {
+                padding: 30px 20px;
             }
         }
     </style>
@@ -504,7 +609,7 @@
                     <p>当我不在编码时，你会发现我在探索新技术、阅读、或是在咖啡馆里思考下一个创意项目。</p>
                 </div>
                 <div class="about-image">
-                    <img src="imgs/my_pic.jpg" alt="Haruka-Yang" style="width: 100%; height: 100%; object-fit: cover;">
+                    <!-- 头像图片位置 -->
                 </div>
             </div>
         </div>
@@ -570,33 +675,23 @@
             </div>
             <div class="contact-links">
                 <a href="https://github.com/YANG-Haruka" target="_blank" class="contact-link">
-                    <div class="contact-link-icon">
-                        <img src="imgs/github.png" alt="GitHub">
-                    </div>
+                    <div class="contact-link-icon"></div>
                     <span>GitHub</span>
                 </a>
                 <a href="mailto:yjz.haruka@gmail.com" class="contact-link">
-                    <div class="contact-link-icon">
-                        <img src="imgs/gmail.png" alt="Gmail">
-                    </div>
+                    <div class="contact-link-icon"></div>
                     <span>Email</span>
                 </a>
                 <a href="https://www.linkedin.com/in/yang-haruka/" target="_blank" class="contact-link">
-                    <div class="contact-link-icon">
-                        <img src="imgs/linkedin.png" alt="LinkedIn">
-                    </div>
+                    <div class="contact-link-icon"></div>
                     <span>LinkedIn</span>
                 </a>
                 <a href="#" class="contact-link qq-contact">
-                    <div class="contact-link-icon">
-                        <img src="imgs/QQ.png" alt="QQ">
-                    </div>
+                    <div class="contact-link-icon"></div>
                     <span>QQ</span>
                 </a>
                 <a href="#" class="contact-link wechat-contact">
-                    <div class="contact-link-icon">
-                        <img src="imgs/wechat.png" alt="WeChat">
-                    </div>
+                    <div class="contact-link-icon"></div>
                     <span>WeChat</span>
                 </a>
             </div>
@@ -604,28 +699,21 @@
         
         <!-- Social Links Sidebar -->
         <div class="social-sidebar">
-            <a href="https://github.com/YANG-Haruka" target="_blank" class="social-link">
-                <img src="imgs/github.png" alt="GitHub">
-            </a>
-            <a href="mailto:yjz.haruka@gmail.com" class="social-link">
-                <img src="imgs/gmail.png" alt="Gmail">
-            </a>
-            <a href="https://www.linkedin.com/in/yang-haruka/" target="_blank" class="social-link">
-                <img src="imgs/linkedin.png" alt="LinkedIn">
-            </a>
-            <a href="#" class="social-link" id="qq-link">
-                <img src="imgs/QQ.png" alt="QQ">
-            </a>
-            <a href="#" class="social-link" id="wechat-link">
-                <img src="imgs/wechat.png" alt="WeChat">
-            </a>
+            <a href="https://github.com/YANG-Haruka" target="_blank" class="social-link"></a>
+            <a href="mailto:yjz.haruka@gmail.com" class="social-link"></a>
+            <a href="https://www.linkedin.com/in/yang-haruka/" target="_blank" class="social-link"></a>
+            <a href="#" class="social-link" id="qq-link"></a>
+            <a href="#" class="social-link" id="wechat-link"></a>
         </div>
         
         <!-- Modal for QQ -->
         <div class="modal" id="qq-modal">
             <div class="modal-content">
                 <span class="close-modal" id="close-qq">&times;</span>
-                <img src="imgs/QQ_ADDME.png" alt="QQ Contact">
+                <div>
+                    <p>QQ联系方式</p>
+                    <div class="qr-placeholder">QR码占位符</div>
+                </div>
             </div>
         </div>
         
@@ -633,47 +721,65 @@
         <div class="modal" id="wechat-modal">
             <div class="modal-content">
                 <span class="close-modal" id="close-wechat">&times;</span>
-                <img src="imgs/WeChat_ADDME.JPG" alt="WeChat Contact">
+                <div>
+                    <p>微信联系方式</p>
+                    <div class="qr-placeholder">QR码占位符</div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Meteor Scroll Effect
+        // 修复彗星滚动效果 - 精确按照要求计算轨迹
         function updateMeteorPosition() {
             const meteor = document.getElementById('meteor');
             const scrollProgress = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
             
-            // 计算流星的位置
-            // 滚轮在最上方：彗星图像右上角和网页右上角重合
-            // 滚轮在最下方：彗星图像左下角和网页左下角重合
-            const meteorSize = 500;
+            // 获取当前屏幕尺寸
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
             
-            // 开始位置：彗星图像右上角在屏幕右上角
-            // 彗星图像右上角 = 彗星左上角 + meteorSize，所以彗星左上角 = 屏幕右上角 - meteorSize
-            const startX = window.innerWidth - meteorSize; // 彗星左上角位置，使右上角对齐屏幕右边
-            const startY = 0; // 彗星左上角位置，使右上角对齐屏幕顶部
+            // 根据屏幕大小调整彗星尺寸
+            const meteorSize = screenWidth <= 480 ? 100 : (screenWidth <= 768 ? 150 : 300);
             
-            // 结束位置：彗星图像左下角在屏幕左下角  
-            // 彗星图像左下角 = 彗星左上角 + (0, meteorSize)，所以彗星左上角 = 屏幕左下角 - (0, meteorSize)
-            const endX = 0; // 彗星左上角位置，使左下角对齐屏幕左边
-            const endY = window.innerHeight - meteorSize; // 彗星左上角位置，使左下角对齐屏幕底部
+            // 动态调整彗星大小
+            meteor.style.width = meteorSize + 'px';
+            meteor.style.height = meteorSize + 'px';
             
-            // 根据滚动进度计算当前位置
-            const currentX = startX - (startX - endX) * scrollProgress;
+            // 按照要求计算轨迹：
+            // 开始：彗星图像右上角 = 网页右上角
+            // 结束：彗星图像左下角 = 网页左下角
+            
+            // 开始位置：彗星图像右上角与屏幕右上角重合
+            // 彗星图像右上角坐标 = 彗星左上角坐标 + (meteorSize, 0)
+            // 所以彗星左上角坐标 = 屏幕右上角 - (meteorSize, 0)
+            const startX = screenWidth - meteorSize;  // 彗星左上角X坐标
+            const startY = 0;                         // 彗星左上角Y坐标
+            
+            // 结束位置：彗星图像左下角与屏幕左下角重合
+            // 彗星图像左下角坐标 = 彗星左上角坐标 + (0, meteorSize) 
+            // 所以彗星左上角坐标 = 屏幕左下角 - (0, meteorSize)
+            const endX = 0;                           // 彗星左上角X坐标
+            const endY = screenHeight - meteorSize;   // 彗星左上角Y坐标
+            
+            // 根据滚动进度线性插值计算当前位置
+            const currentX = startX + (endX - startX) * scrollProgress;
             const currentY = startY + (endY - startY) * scrollProgress;
             
-            // 应用位置（这是彗星图像的左上角位置）
+            // 应用位置（CSS的left和top就是左上角坐标）
             meteor.style.left = currentX + 'px';
             meteor.style.top = currentY + 'px';
             
-            // 根据滚动进度调整透明度，保持较高的可见度
-            const opacity = 0.5 + (0.2 * Math.sin(scrollProgress * Math.PI));
+            // 根据滚动进度调整透明度
+            const opacity = 0.4 + (0.3 * Math.sin(scrollProgress * Math.PI));
             meteor.style.opacity = opacity;
         }
         
         // 监听滚动事件
         window.addEventListener('scroll', updateMeteorPosition);
+        
+        // 监听窗口大小变化
+        window.addEventListener('resize', updateMeteorPosition);
         
         // 初始化流星位置
         updateMeteorPosition();
@@ -682,9 +788,12 @@
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
             });
         });
         
@@ -706,10 +815,12 @@
         const closeQQ = document.getElementById('close-qq');
         const qqContacts = document.querySelectorAll('.qq-contact');
         
-        qqLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            qqModal.style.display = 'flex';
-        });
+        if (qqLink) {
+            qqLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                qqModal.style.display = 'flex';
+            });
+        }
         
         qqContacts.forEach(contact => {
             contact.addEventListener('click', function(e) {
@@ -718,9 +829,11 @@
             });
         });
         
-        closeQQ.addEventListener('click', function() {
-            qqModal.style.display = 'none';
-        });
+        if (closeQQ) {
+            closeQQ.addEventListener('click', function() {
+                qqModal.style.display = 'none';
+            });
+        }
         
         // Modal functionality for WeChat
         const wechatLink = document.getElementById('wechat-link');
@@ -728,10 +841,12 @@
         const closeWechat = document.getElementById('close-wechat');
         const wechatContacts = document.querySelectorAll('.wechat-contact');
         
-        wechatLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            wechatModal.style.display = 'flex';
-        });
+        if (wechatLink) {
+            wechatLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                wechatModal.style.display = 'flex';
+            });
+        }
         
         wechatContacts.forEach(contact => {
             contact.addEventListener('click', function(e) {
@@ -740,9 +855,11 @@
             });
         });
         
-        closeWechat.addEventListener('click', function() {
-            wechatModal.style.display = 'none';
-        });
+        if (closeWechat) {
+            closeWechat.addEventListener('click', function() {
+                wechatModal.style.display = 'none';
+            });
+        }
         
         // Close modals when clicking outside
         window.addEventListener('click', function(e) {
@@ -776,6 +893,22 @@
             el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             observer.observe(el);
         });
+        
+        // 移动端触摸优化
+        let touchStartY = 0;
+        
+        document.addEventListener('touchstart', function(e) {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+        
+        document.addEventListener('touchmove', function(e) {
+            // 防止过度滚动时的弹跳效果
+            const touchY = e.touches[0].clientY;
+            const touchDiff = touchStartY - touchY;
+            
+            // 更新彗星位置（在触摸滚动时也要更新）
+            requestAnimationFrame(updateMeteorPosition);
+        }, { passive: true });
     </script>
 </body>
 </html>
