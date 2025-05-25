@@ -333,16 +333,10 @@
             border: 2px solid transparent;
         }
         
-        .contact-link-icon::before {
-            content: "📧";
-            font-size: 24px;
+        .contact-link-icon img {
+            width: 32px;
+            height: 32px;
         }
-        
-        .contact-link:nth-child(1) .contact-link-icon::before { content: "🐙"; }
-        .contact-link:nth-child(2) .contact-link-icon::before { content: "📧"; }
-        .contact-link:nth-child(3) .contact-link-icon::before { content: "💼"; }
-        .contact-link:nth-child(4) .contact-link-icon::before { content: "🐧"; }
-        .contact-link:nth-child(5) .contact-link-icon::before { content: "💬"; }
         
         .contact-link:hover .contact-link-icon {
             transform: translateY(-5px);
@@ -380,18 +374,16 @@
             color: #fff;
             text-decoration: none;
             transition: all 0.3s ease;
-            font-size: 20px;
         }
         
         .social-sidebar a:hover {
             transform: scale(1.1);
         }
         
-        .social-sidebar a:nth-child(1)::before { content: "🐙"; }
-        .social-sidebar a:nth-child(2)::before { content: "📧"; }
-        .social-sidebar a:nth-child(3)::before { content: "💼"; }
-        .social-sidebar a:nth-child(4)::before { content: "🐧"; }
-        .social-sidebar a:nth-child(5)::before { content: "💬"; }
+        .social-sidebar img {
+            width: 24px;
+            height: 24px;
+        }
         
         /* Popup Modal */
         .modal {
@@ -675,23 +667,33 @@
             </div>
             <div class="contact-links">
                 <a href="https://github.com/YANG-Haruka" target="_blank" class="contact-link">
-                    <div class="contact-link-icon"></div>
+                    <div class="contact-link-icon">
+                        <img src="imgs/github.png" alt="GitHub">
+                    </div>
                     <span>GitHub</span>
                 </a>
                 <a href="mailto:yjz.haruka@gmail.com" class="contact-link">
-                    <div class="contact-link-icon"></div>
+                    <div class="contact-link-icon">
+                        <img src="imgs/gmail.png" alt="Gmail">
+                    </div>
                     <span>Email</span>
                 </a>
                 <a href="https://www.linkedin.com/in/yang-haruka/" target="_blank" class="contact-link">
-                    <div class="contact-link-icon"></div>
+                    <div class="contact-link-icon">
+                        <img src="imgs/linkedin.png" alt="LinkedIn">
+                    </div>
                     <span>LinkedIn</span>
                 </a>
                 <a href="#" class="contact-link qq-contact">
-                    <div class="contact-link-icon"></div>
+                    <div class="contact-link-icon">
+                        <img src="imgs/QQ.png" alt="QQ">
+                    </div>
                     <span>QQ</span>
                 </a>
                 <a href="#" class="contact-link wechat-contact">
-                    <div class="contact-link-icon"></div>
+                    <div class="contact-link-icon">
+                        <img src="imgs/wechat.png" alt="WeChat">
+                    </div>
                     <span>WeChat</span>
                 </a>
             </div>
@@ -699,11 +701,21 @@
         
         <!-- Social Links Sidebar -->
         <div class="social-sidebar">
-            <a href="https://github.com/YANG-Haruka" target="_blank" class="social-link"></a>
-            <a href="mailto:yjz.haruka@gmail.com" class="social-link"></a>
-            <a href="https://www.linkedin.com/in/yang-haruka/" target="_blank" class="social-link"></a>
-            <a href="#" class="social-link" id="qq-link"></a>
-            <a href="#" class="social-link" id="wechat-link"></a>
+            <a href="https://github.com/YANG-Haruka" target="_blank" class="social-link">
+                <img src="imgs/github.png" alt="GitHub">
+            </a>
+            <a href="mailto:yjz.haruka@gmail.com" class="social-link">
+                <img src="imgs/gmail.png" alt="Gmail">
+            </a>
+            <a href="https://www.linkedin.com/in/yang-haruka/" target="_blank" class="social-link">
+                <img src="imgs/linkedin.png" alt="LinkedIn">
+            </a>
+            <a href="#" class="social-link" id="qq-link">
+                <img src="imgs/QQ.png" alt="QQ">
+            </a>
+            <a href="#" class="social-link" id="wechat-link">
+                <img src="imgs/wechat.png" alt="WeChat">
+            </a>
         </div>
         
         <!-- Modal for QQ -->
