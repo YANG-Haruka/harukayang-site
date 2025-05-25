@@ -16,11 +16,63 @@
             background-color: #000;
             color: #fff;
             overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* 背景图片层 */
+        .background-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('imgs/background.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            z-index: 0;
         }
         
         .container {
             width: 100%;
             min-height: 100vh;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Meteor Effect */
+        .meteor {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background-image: url('imgs/meteor.png');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-position: 0 0;
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0.6;
+            transition: all 0.1s ease-out;
+            animation: meteorTwinkle 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes meteorTwinkle {
+            0%, 100% { 
+                opacity: 0.6; 
+                filter: brightness(1);
+            }
+            25% { 
+                opacity: 0.7; 
+                filter: brightness(1.2);
+            }
+            50% { 
+                opacity: 0.8; 
+                filter: brightness(1.5);
+            }
+            75% { 
+                opacity: 0.65; 
+                filter: brightness(1.1);
+            }
         }
         
         /* Hero Section */
@@ -29,29 +81,6 @@
             width: 100%;
             height: 100vh;
             overflow: hidden;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        }
-        
-        .particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-        
-        .particle {
-            position: absolute;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            animation: float 20s infinite;
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(0) translateX(0); }
-            25% { transform: translateY(-100px) translateX(50px); }
-            50% { transform: translateY(-50px) translateX(-30px); }
-            75% { transform: translateY(-150px) translateX(-50px); }
-            100% { transform: translateY(0) translateX(0); }
         }
         
         .hero-content {
@@ -128,7 +157,7 @@
         /* About Section */
         .about {
             padding: 100px 50px;
-            background-color: #0a0a0a;
+            background: rgba(255,255,255,0.05);
         }
         
         .section-header {
@@ -169,7 +198,6 @@
         .about-image {
             position: relative;
             height: 400px;
-            background: linear-gradient(45deg, #2c3e50, #3498db);
             border-radius: 20px;
             overflow: hidden;
         }
@@ -177,7 +205,6 @@
         /* Skills Section */
         .skills {
             padding: 100px 50px;
-            background-color: #111;
         }
         
         .skills-grid {
@@ -204,7 +231,6 @@
             width: 60px;
             height: 60px;
             margin: 0 auto 20px;
-            background: #3498db;
             border-radius: 50%;
         }
         
@@ -220,7 +246,6 @@
         /* Portfolio Section */
         .portfolio {
             padding: 100px 50px;
-            background-color: #0a0a0a;
         }
         
         .portfolio-grid {
@@ -234,7 +259,7 @@
         .portfolio-item {
             position: relative;
             height: 300px;
-            background: #333;
+            background: rgba(255,255,255,0.05);
             border-radius: 15px;
             overflow: hidden;
             cursor: pointer;
@@ -263,7 +288,6 @@
         /* Contact Section */
         .contact {
             padding: 100px 50px;
-            background-color: #111;
             text-align: center;
         }
         
@@ -303,9 +327,7 @@
         }
         
         .contact-link:hover .contact-link-icon {
-            background: rgba(52, 152, 219, 0.2);
             transform: translateY(-5px);
-            border-color: #3498db;
         }
         
         .contact-link span {
@@ -314,7 +336,7 @@
         }
         
         .contact-link:hover span {
-            color: #3498db;
+            opacity: 0.8;
         }
         
         /* Social Links */
@@ -343,7 +365,6 @@
         }
         
         .social-sidebar a:hover {
-            background: #3498db;
             transform: scale(1.1);
         }
         
@@ -433,11 +454,22 @@
             .social-sidebar {
                 display: none;
             }
+            
+            .meteor {
+                width: 120px;
+                height: 120px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- 背景图片层 -->
+    <div class="background-layer"></div>
+    
     <div class="container">
+        <!-- Meteor Element -->
+        <div class="meteor" id="meteor"></div>
+        
         <!-- Navigation -->
         <nav class="nav">
             <ul>
@@ -451,13 +483,6 @@
         
         <!-- Hero Section -->
         <div class="hero" id="home">
-            <div class="particles">
-                <div class="particle" style="width: 5px; height: 5px; left: 10%; top: 20%; animation-delay: 0s;"></div>
-                <div class="particle" style="width: 3px; height: 3px; left: 20%; top: 60%; animation-delay: 1s;"></div>
-                <div class="particle" style="width: 4px; height: 4px; left: 80%; top: 40%; animation-delay: 2s;"></div>
-                <div class="particle" style="width: 6px; height: 6px; left: 60%; top: 30%; animation-delay: 3s;"></div>
-                <div class="particle" style="width: 2px; height: 2px; left: 50%; top: 80%; animation-delay: 4s;"></div>
-            </div>
             <div class="hero-content">
                 <h1>Haruka-Yang</h1>
                 <p>欢迎来到我的世界</p>
@@ -479,7 +504,7 @@
                     <p>当我不在编码时，你会发现我在探索新技术、阅读、或是在咖啡馆里思考下一个创意项目。</p>
                 </div>
                 <div class="about-image">
-                    <!-- Profile image placeholder -->
+                    <img src="imgs/my_pic.jpg" alt="Haruka-Yang" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
             </div>
         </div>
@@ -505,11 +530,6 @@
                     <div class="skill-icon"></div>
                     <h3>UI/UX设计</h3>
                     <p>Figma, Sketch, Responsive Design</p>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-icon"></div>
-                    <h3>开发工具</h3>
-                    <p>Git, Docker, CI/CD, Cloud Services</p>
                 </div>
             </div>
         </div>
@@ -619,6 +639,45 @@
     </div>
 
     <script>
+        // Meteor Scroll Effect
+        function updateMeteorPosition() {
+            const meteor = document.getElementById('meteor');
+            const scrollProgress = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+            
+            // 计算流星的位置
+            // 滚轮在最上方：彗星图像右上角和网页右上角重合
+            // 滚轮在最下方：彗星图像左下角和网页左下角重合
+            const meteorSize = 500;
+            
+            // 开始位置：彗星图像右上角在屏幕右上角
+            // 彗星图像右上角 = 彗星左上角 + meteorSize，所以彗星左上角 = 屏幕右上角 - meteorSize
+            const startX = window.innerWidth - meteorSize; // 彗星左上角位置，使右上角对齐屏幕右边
+            const startY = 0; // 彗星左上角位置，使右上角对齐屏幕顶部
+            
+            // 结束位置：彗星图像左下角在屏幕左下角  
+            // 彗星图像左下角 = 彗星左上角 + (0, meteorSize)，所以彗星左上角 = 屏幕左下角 - (0, meteorSize)
+            const endX = 0; // 彗星左上角位置，使左下角对齐屏幕左边
+            const endY = window.innerHeight - meteorSize; // 彗星左上角位置，使左下角对齐屏幕底部
+            
+            // 根据滚动进度计算当前位置
+            const currentX = startX - (startX - endX) * scrollProgress;
+            const currentY = startY + (endY - startY) * scrollProgress;
+            
+            // 应用位置（这是彗星图像的左上角位置）
+            meteor.style.left = currentX + 'px';
+            meteor.style.top = currentY + 'px';
+            
+            // 根据滚动进度调整透明度，保持较高的可见度
+            const opacity = 0.5 + (0.2 * Math.sin(scrollProgress * Math.PI));
+            meteor.style.opacity = opacity;
+        }
+        
+        // 监听滚动事件
+        window.addEventListener('scroll', updateMeteorPosition);
+        
+        // 初始化流星位置
+        updateMeteorPosition();
+        
         // Smooth Scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
