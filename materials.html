@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>相关资料 - Haruka-Yang</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .background-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('imgs/background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
+        }
+        
+        .container {
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+            padding: 100px 50px;
+            background: rgba(0,0,0,0.8);
+        }
+        
+        .back-button {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            padding: 10px 20px;
+            background: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            z-index: 101;
+            font-size: 14px;
+        }
+        
+        .back-button:hover {
+            background: #fff;
+            color: #000;
+        }
+        
+        .detail-header {
+            text-align: center;
+            margin-bottom: 60px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .detail-header h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .detail-header p {
+            font-size: 20px;
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+        
+        .detail-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            gap: 40px;
+        }
+        
+        .material-section {
+            background: rgba(255,255,255,0.05);
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .material-section:hover {
+            transform: translateY(-5px);
+        }
+        
+        .material-section h3 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .material-section p {
+            line-height: 1.8;
+            opacity: 0.9;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .tech-tag {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .tech-tag:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+        
+        .resource-list {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 20px;
+        }
+        
+        .resource-item {
+            padding: 15px 0;
+            padding-left: 30px;
+            position: relative;
+            opacity: 0.9;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .resource-item:hover {
+            opacity: 1;
+            padding-left: 35px;
+        }
+        
+        .resource-item:before {
+            content: "📚";
+            position: absolute;
+            left: 0;
+            font-size: 16px;
+        }
+        
+        .resource-item.tool:before {
+            content: "🔧";
+        }
+        
+        .resource-item.course:before {
+            content: "🎓";
+        }
+        
+        .resource-item.blog:before {
+            content: "✍️";
+        }
+        
+        .resource-item.github:before {
+            content: "⭐";
+        }
+        
+        .resource-item h4 {
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+        
+        .resource-item p {
+            font-size: 14px;
+            opacity: 0.7;
+            margin: 0;
+        }
+        
+        .resource-link {
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .resource-link:hover {
+            color: #ccc;
+        }
+        
+        .download-section {
+            background: rgba(255,255,255,0.03);
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .download-item {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .download-item:hover {
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.08);
+        }
+        
+        .download-item h4 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        
+        .download-item p {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-bottom: 15px;
+        }
+        
+        .download-btn {
+            padding: 8px 20px;
+            background: transparent;
+            border: 1px solid #fff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 15px;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            background: #fff;
+            color: #000;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 80px 20px;
+            }
+            
+            .back-button {
+                top: 20px;
+                left: 20px;
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+            
+            .detail-header h1 {
+                font-size: 32px;
+            }
+            
+            .detail-header p {
+                font-size: 16px;
+            }
+            
+            .material-section {
+                padding: 30px 20px;
+            }
+            
+            .material-section h3 {
+                font-size: 24px;
+            }
+            
+            .download-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .detail-header h1 {
+                font-size: 28px;
+            }
+            
+            .material-section h3 {
+                font-size: 20px;
+            }
+            
+            .tech-tag {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-layer"></div>
+    
+    <div class="container">
+        <a href="index.html" class="back-button">← 返回首页</a>
+        
+        <div class="detail-header">
+            <h1>相关资料</h1>
+            <p>技术文档、学习资源、开发工具和实用资料的集合</p>
+        </div>
+        
+        <div class="detail-content">
+            <div class="material-section">
+                <h3>技术文档</h3>
+                <p>这里包含了我在开发过程中整理的技术文档、学习笔记和最佳实践。涵盖前端开发、后端架构、数据库设计等多个领域的深度技术内容。</p>
+                <p>所有文档都经过实际项目验证，包含详细的代码示例和实现步骤，可以作为技术参考和学习资料使用。</p>
+                
+                <div class="resource-list">
+                    <div class="resource-item blog">
+                        <a href="#" class="resource-link">
+                            <h4>React 最佳实践指南</h4>
+                            <p>详细介绍React开发中的最佳实践，包括组件设计、状态管理、性能优化等内容</p>
+                        </a>
+                    </div>
+                    <div class="resource-item blog">
+                        <a href="#" class="resource-link">
+                            <h4>Node.js 后端架构设计</h4>
+                            <p>企业级Node.js后端架构设计模式，包括微服务、数据库设计、API设计等</p>
+                        </a>
+                    </div>
+                    <div class="resource-item blog">
+                        <a href="#" class="resource-link">
+                            <h4>TypeScript 进阶指南</h4>
+                            <p>TypeScript高级特性和实用技巧，提升代码质量和开发效率</p>
+                        </a>
+                    </div>
+                    <div class="resource-item blog">
+                        <a href="#" class="resource-link">
+                            <h4>Web性能优化实战</h4>
+                            <p>前端性能优化的实用技巧和工具，包括打包优化、缓存策略等</p>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="tech-stack">
+                    <span class="tech-tag">技术博客</span>
+                    <span class="tech-tag">代码规范</span>
+                    <span class="tech-tag">架构设计</span>
+                    <span class="tech-tag">最佳实践</span>
+                </div>
+            </div>
+            
+            <div class="material-section">
+                <h3>学习资源</h3>
+                <p>精心收集和整理的优质学习资源，包括在线课程推荐、技术书籍清单、开源项目分析等，帮助提升技术水平和扩展知识面。</p>
+                <p>所有资源都经过筛选和验证，确保内容质量和实用性，适合不同水平的开发者学习参考。</p>
+                
+                <div class="resource-list">
+                    <div class="resource-item course">
+                        <a href="#" class="resource-link">
+                            <h4>前端开发进阶课程</h4>
+                            <p>推荐的前端开发在线课程，涵盖React、Vue、Angular等主流框架</p>
+                        </a>
+                    </div>
+                    <div class="resource-item course">
+                        <a href="#" class="resource-link">
+                            <h4>算法与数据结构</h4>
+                            <p>经典算法和数据结构学习资源，包括LeetCode题解和思路分析</p>
+                        </a>
+                    </div>
+                    <div class="resource-item">
+                        <a href="#" class="resource-link">
+                            <h4>技术书籍推荐</h4>
+                            <p>精选的技术书籍清单，涵盖编程语言、架构设计、软件工程等领域</p>
+                        </a>
+                    </div>
+                    <div class="resource-item github">
+                        <a href="#" class="resource-link">
+                            <h4>优秀开源项目</h4>
+                            <p>GitHub上值得学习的开源项目，包括源码分析和学习笔记</p>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="tech-stack">
+                    <span class="tech-tag">在线课程</span>
+                    <span class="tech-tag">技术书籍</span>
+                    <span class="tech-tag">开源项目</span>
+                    <span class="tech-tag">算法题解</span>
+                </div>
+            </div>
+            
+            <div class="material-section">
+                <h3>开发工具</h3>
+                <p>开发过程中使用的工具、库和框架的使用心得，以及一些实用的开发资源和工具推荐。包括IDE配置、调试工具、部署工具等。</p>
+                <p>这些工具能够显著提高开发效率，改善开发体验，是现代开发者不可或缺的利器。</p>
+                
+                <div class="resource-list">
+                    <div class="resource-item tool">
+                        <a href="#" class="resource-link">
+                            <h4>VS Code 配置与插件</h4>
+                            <p>优化的VS Code配置文件和必备插件推荐，提升编码效率</p>
+                        </a>
+                    </div>
+                    <div class="resource-item tool">
+                        <a href="#" class="resource-link">
+                            <h4>Git 工作流程</h4>
+                            <p>Git最佳实践和工作流程，包括分支管理、代码review等</p>
+                        </a>
+                    </div>
+                    <div class="resource-item tool">
+                        <a href="#" class="resource-link">
+                            <h4>Docker 开发环境</h4>
+                            <p>使用Docker搭建开发环境的完整指南和配置文件</p>
+                        </a>
+                    </div>
+                    <div class="resource-item tool">
+                        <a href="#" class="resource-link">
+                            <h4>CI/CD 部署脚本</h4>
+                            <p>自动化部署脚本和配置，包括GitHub Actions、Jenkins等</p>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="tech-stack">
+                    <span class="tech-tag">开发工具</span>
+                    <span class="tech-tag">设计资源</span>
+                    <span class="tech-tag">效率工具</span>
+                    <span class="tech-tag">部署工具</span>
+                </div>
+            </div>
+            
+            <div class="material-section">
+                <h3>资源下载</h3>
+                <p>提供一些实用的开发资源下载，包括代码模板、配置文件、工具包等。所有资源都经过测试和验证，可以直接使用。</p>
+                
+                <div class="download-section">
+                    <h4>可下载资源</h4>
+                    <div class="download-grid">
+                        <div class="download-item">
+                            <h4>React 项目模板</h4>
+                            <p>包含基础配置的React项目启动模板</p>
+                            <a href="#" class="download-btn">下载</a>
+                        </div>
+                        <div class="download-item">
+                            <h4>Node.js API 模板</h4>
+                            <p>RESTful API开发的Node.js项目模板</p>
+                            <a href="#" class="download-btn">下载</a>
+                        </div>
+                        <div class="download-item">
+                            <h4>VS Code 配置</h4>
+                            <p>优化的VS Code设置和插件配置</p>
+                            <a href="#" class="download-btn">下载</a>
+                        </div>
+                        <div class="download-item">
+                            <h4>Docker 配置文件</h4>
+                            <p>常用的Docker和docker-compose配置</p>
+                            <a href="#" class="download-btn">下载</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tech-stack">
+                    <span class="tech-tag">项目模板</span>
+                    <span class="tech-tag">配置文件</span>
+                    <span class="tech-tag">工具包</span>
+                    <span class="tech-tag">代码片段</span>
+                </div>
+            </div>
+            
+            <div class="material-section">
+                <h3>统计信息</h3>
+                <p>一些关于技术学习和项目开发的统计数据，展示学习进展和项目成果。</p>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">技术文档</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">100+</div>
+                        <div class="stat-label">学习资源</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">30+</div>
+                        <div class="stat-label">开发工具</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">20+</div>
+                        <div class="stat-label">项目模板</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>list {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 20px;
+        }
+        
+        .resource-

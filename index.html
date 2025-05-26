@@ -19,9 +19,8 @@
             position: relative;
         }
         
-        /* 背景图片层 - 移动端优化 */
         .background-layer {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -30,15 +29,15 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            background-attachment: scroll;
             z-index: 0;
-            /* 移除 background-attachment: fixed，因为在移动端支持不佳 */
         }
         
-        /* 移动端背景优化 */
         @media (max-width: 768px) {
             .background-layer {
                 background-size: cover;
                 background-position: center center;
+                background-attachment: scroll;
                 min-height: 100vh;
             }
         }
@@ -48,13 +47,17 @@
             min-height: 100vh;
             position: relative;
             z-index: 2;
+            background-image: url('imgs/background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: scroll;
         }
         
-        /* Meteor Effect - 修复位置计算 */
         .meteor {
             position: fixed;
-            width: 300px;
-            height: 300px;
+            width: 400px;
+            height: 400px;
             background-image: url('imgs/meteor.png');
             background-size: 100% 100%;
             background-repeat: no-repeat;
@@ -85,7 +88,6 @@
             }
         }
         
-        /* Hero Section */
         .hero {
             position: relative;
             width: 100%;
@@ -135,7 +137,6 @@
             transform: translateY(-2px);
         }
         
-        /* Navigation */
         .nav {
             position: fixed;
             top: 0;
@@ -164,7 +165,6 @@
             opacity: 0.7;
         }
         
-        /* About Section */
         .about {
             padding: 100px 50px;
             background: rgba(255,255,255,0.05);
@@ -213,49 +213,6 @@
             background: rgba(255,255,255,0.1);
         }
         
-        /* Skills Section */
-        .skills {
-            padding: 100px 50px;
-        }
-        
-        .skills-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-        }
-        
-        .skill-card {
-            background: rgba(255,255,255,0.05);
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-        
-        .skill-card:hover {
-            transform: translateY(-10px);
-        }
-        
-        .skill-icon {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 20px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-        }
-        
-        .skill-card h3 {
-            font-size: 24px;
-            margin-bottom: 15px;
-        }
-        
-        .skill-card p {
-            opacity: 0.8;
-        }
-        
-        /* Portfolio Section */
         .portfolio {
             padding: 100px 50px;
         }
@@ -264,13 +221,13 @@
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 30px;
         }
         
         .portfolio-item {
             position: relative;
-            height: 300px;
+            height: 400px;
             background: rgba(255,255,255,0.05);
             border-radius: 15px;
             overflow: hidden;
@@ -297,7 +254,25 @@
             transform: translateY(0);
         }
         
-        /* Contact Section */
+        .more-info-button {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 8px 20px;
+            background: transparent;
+            border: 1px solid #fff;
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .more-info-button:hover {
+            background: #fff;
+            color: #000;
+            transform: translateY(-2px);
+        }
+        
         .contact {
             padding: 100px 50px;
             text-align: center;
@@ -351,7 +326,6 @@
             opacity: 0.8;
         }
         
-        /* Social Links */
         .social-sidebar {
             position: fixed;
             right: 20px;
@@ -385,7 +359,6 @@
             height: 24px;
         }
         
-        /* Popup Modal */
         .modal {
             display: none;
             position: fixed;
@@ -401,55 +374,45 @@
         
         .modal-content {
             position: relative;
-            max-width: 90%;
-            max-height: 90vh;
+            width: 50vw;
+            max-width: 400px;
+            min-width: 280px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.1);
-            padding: 40px;
             border-radius: 15px;
-            text-align: center;
+            padding: 20px;
+            margin: 20px;
         }
         
-        .modal-content p {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-        
-        .modal-content .qr-placeholder {
-            width: 200px;
-            height: 200px;
-            background: rgba(255,255,255,0.9);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #000;
-            font-size: 14px;
-            margin: 20px auto;
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            border-radius: 15px;
+            max-width: 100%;
         }
         
         .close-modal {
             position: absolute;
-            top: -15px;
-            right: -15px;
+            top: -10px;
+            right: -10px;
             color: white;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             cursor: pointer;
-            background: rgba(0,0,0,0.7);
-            width: 30px;
-            height: 30px;
+            background: rgba(0,0,0,0.9);
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 1010;
             border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
         }
         
-        /* 移动端优化 */
         @media (max-width: 768px) {
             .hero-content h1 {
                 font-size: 36px;
@@ -504,13 +467,8 @@
                 font-size: 32px;
             }
             
-            .about, .skills, .portfolio, .contact {
+            .about, .portfolio, .contact {
                 padding: 60px 20px;
-            }
-            
-            .skills-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
             }
             
             .portfolio-grid {
@@ -531,9 +489,22 @@
                 padding: 12px 30px;
                 font-size: 16px;
             }
+            
+            .modal-content {
+                width: 80vw;
+                max-width: 300px;
+                margin: 15px;
+            }
+            
+            .close-modal {
+                width: 28px;
+                height: 28px;
+                font-size: 18px;
+                top: -8px;
+                right: -8px;
+            }
         }
         
-        /* 超小屏幕优化 */
         @media (max-width: 480px) {
             .hero-content h1 {
                 font-size: 28px;
@@ -564,32 +535,38 @@
                 font-size: 22px;
             }
             
-            .skill-card {
-                padding: 30px 20px;
+            .modal-content {
+                width: 90vw;
+                max-width: 280px;
+                margin: 10px;
+            }
+            
+            .close-modal {
+                width: 26px;
+                height: 26px;
+                font-size: 16px;
+                top: -6px;
+                right: -6px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- 背景图片层 -->
     <div class="background-layer"></div>
     
     <div class="container">
-        <!-- Meteor Element -->
         <div class="meteor" id="meteor"></div>
         
-        <!-- Navigation -->
         <nav class="nav">
             <ul>
                 <li><a href="#home">首页</a></li>
                 <li><a href="#about">关于</a></li>
-                <li><a href="#skills">技能</a></li>
                 <li><a href="#portfolio">作品</a></li>
                 <li><a href="#contact">联系</a></li>
+                <li><a href="materials.html">相关资料</a></li>
             </ul>
         </nav>
         
-        <!-- Hero Section -->
         <div class="hero" id="home">
             <div class="hero-content">
                 <h1>Haruka-Yang</h1>
@@ -598,7 +575,6 @@
             </div>
         </div>
         
-        <!-- About Section -->
         <div class="about" id="about">
             <div class="section-header">
                 <h2>关于我</h2>
@@ -617,60 +593,29 @@
             </div>
         </div>
         
-        <!-- Skills Section -->
-        <div class="skills" id="skills">
-            <div class="section-header">
-                <h2>技能专长</h2>
-                <p>我的技术栈和专业领域</p>
-            </div>
-            <div class="skills-grid">
-                <div class="skill-card">
-                    <div class="skill-icon"></div>
-                    <h3>前端开发</h3>
-                    <p>HTML, CSS, JavaScript, React, Vue.js</p>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-icon"></div>
-                    <h3>后端开发</h3>
-                    <p>Node.js, Python, Java, Database Design</p>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-icon"></div>
-                    <h3>UI/UX设计</h3>
-                    <p>Figma, Sketch, Responsive Design</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Portfolio Section -->
         <div class="portfolio" id="portfolio">
             <div class="section-header">
                 <h2>我的作品</h2>
-                <p>展示我的创意和技术实力</p>
+                <p>了解更多</p>
             </div>
             <div class="portfolio-grid">
-                <div class="portfolio-item">
+                <div class="portfolio-item" onclick="location.href='project1.html'">
                     <div class="portfolio-overlay">
-                        <h3>项目一</h3>
-                        <p>Web应用开发</p>
+                        <h3>Web应用开发项目</h3>
+                        <p>现代化响应式Web应用</p>
+                        <a href="project1.html" class="more-info-button" onclick="event.stopPropagation()">了解更多</a>
                     </div>
                 </div>
-                <div class="portfolio-item">
+                <div class="portfolio-item" onclick="location.href='project2.html'">
                     <div class="portfolio-overlay">
-                        <h3>项目二</h3>
-                        <p>移动端应用</p>
-                    </div>
-                </div>
-                <div class="portfolio-item">
-                    <div class="portfolio-overlay">
-                        <h3>项目三</h3>
-                        <p>创意设计作品</p>
+                        <h3>移动端应用项目</h3>
+                        <p>跨平台移动应用开发</p>
+                        <a href="project2.html" class="more-info-button" onclick="event.stopPropagation()">了解更多</a>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Contact Section -->
         <div class="contact" id="contact">
             <div class="section-header">
                 <h2>联系我</h2>
@@ -710,7 +655,6 @@
             </div>
         </div>
         
-        <!-- Social Links Sidebar -->
         <div class="social-sidebar">
             <a href="https://github.com/YANG-Haruka" target="_blank" class="social-link">
                 <img src="imgs/github.png" alt="GitHub">
@@ -729,85 +673,54 @@
             </a>
         </div>
         
-        <!-- Modal for QQ -->
         <div class="modal" id="qq-modal">
             <div class="modal-content">
                 <span class="close-modal" id="close-qq">&times;</span>
-                <div>
-                    <p>QQ联系方式</p>
-                    <div class="qr-placeholder">QR码占位符</div>
-                </div>
+                <img src="imgs/QQ_ADDME.png" alt="QQ联系方式">
             </div>
         </div>
         
-        <!-- Modal for WeChat -->
         <div class="modal" id="wechat-modal">
             <div class="modal-content">
                 <span class="close-modal" id="close-wechat">&times;</span>
-                <div>
-                    <p>微信联系方式</p>
-                    <div class="qr-placeholder">QR码占位符</div>
-                </div>
+                <img src="imgs/WeChat_ADDME.JPG" alt="微信联系方式">
             </div>
         </div>
     </div>
 
     <script>
-        // 修复彗星滚动效果 - 精确按照要求计算轨迹
         function updateMeteorPosition() {
             const meteor = document.getElementById('meteor');
             const scrollProgress = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
             
-            // 获取当前屏幕尺寸
             const screenWidth = window.innerWidth;
             const screenHeight = window.innerHeight;
             
-            // 根据屏幕大小调整彗星尺寸
-            const meteorSize = screenWidth <= 480 ? 100 : (screenWidth <= 768 ? 150 : 300);
+            const meteorSize = screenWidth <= 480 ? 100 : (screenWidth <= 768 ? 150 : 400);
             
-            // 动态调整彗星大小
             meteor.style.width = meteorSize + 'px';
             meteor.style.height = meteorSize + 'px';
             
-            // 按照要求计算轨迹：
-            // 开始：彗星图像右上角 = 网页右上角
-            // 结束：彗星图像左下角 = 网页左下角
+            const startX = screenWidth - meteorSize;
+            const startY = 0;
             
-            // 开始位置：彗星图像右上角与屏幕右上角重合
-            // 彗星图像右上角坐标 = 彗星左上角坐标 + (meteorSize, 0)
-            // 所以彗星左上角坐标 = 屏幕右上角 - (meteorSize, 0)
-            const startX = screenWidth - meteorSize;  // 彗星左上角X坐标
-            const startY = 0;                         // 彗星左上角Y坐标
+            const endX = 0;
+            const endY = screenHeight - meteorSize;
             
-            // 结束位置：彗星图像左下角与屏幕左下角重合
-            // 彗星图像左下角坐标 = 彗星左上角坐标 + (0, meteorSize) 
-            // 所以彗星左上角坐标 = 屏幕左下角 - (0, meteorSize)
-            const endX = 0;                           // 彗星左上角X坐标
-            const endY = screenHeight - meteorSize;   // 彗星左上角Y坐标
-            
-            // 根据滚动进度线性插值计算当前位置
             const currentX = startX + (endX - startX) * scrollProgress;
             const currentY = startY + (endY - startY) * scrollProgress;
             
-            // 应用位置（CSS的left和top就是左上角坐标）
             meteor.style.left = currentX + 'px';
             meteor.style.top = currentY + 'px';
             
-            // 根据滚动进度调整透明度
             const opacity = 0.4 + (0.3 * Math.sin(scrollProgress * Math.PI));
             meteor.style.opacity = opacity;
         }
         
-        // 监听滚动事件
         window.addEventListener('scroll', updateMeteorPosition);
-        
-        // 监听窗口大小变化
         window.addEventListener('resize', updateMeteorPosition);
-        
-        // 初始化流星位置
         updateMeteorPosition();
         
-        // Smooth Scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -820,7 +733,6 @@
             });
         });
         
-        // Add scroll effects
         window.addEventListener('scroll', function() {
             const scrolled = window.scrollY;
             const nav = document.querySelector('.nav');
@@ -832,7 +744,6 @@
             }
         });
         
-        // Modal functionality for QQ
         const qqLink = document.getElementById('qq-link');
         const qqModal = document.getElementById('qq-modal');
         const closeQQ = document.getElementById('close-qq');
@@ -858,7 +769,6 @@
             });
         }
         
-        // Modal functionality for WeChat
         const wechatLink = document.getElementById('wechat-link');
         const wechatModal = document.getElementById('wechat-modal');
         const closeWechat = document.getElementById('close-wechat');
@@ -884,7 +794,6 @@
             });
         }
         
-        // Close modals when clicking outside
         window.addEventListener('click', function(e) {
             if (e.target === qqModal) {
                 qqModal.style.display = 'none';
@@ -894,7 +803,6 @@
             }
         });
         
-        // Intersection Observer for animations
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -100px 0px'
@@ -909,15 +817,13 @@
             });
         }, observerOptions);
         
-        // Observe elements
-        document.querySelectorAll('.skill-card, .portfolio-item').forEach(el => {
+        document.querySelectorAll('.portfolio-item').forEach(el => {
             el.style.opacity = '0';
             el.style.transform = 'translateY(30px)';
             el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             observer.observe(el);
         });
         
-        // 移动端触摸优化
         let touchStartY = 0;
         
         document.addEventListener('touchstart', function(e) {
@@ -925,11 +831,9 @@
         }, { passive: true });
         
         document.addEventListener('touchmove', function(e) {
-            // 防止过度滚动时的弹跳效果
             const touchY = e.touches[0].clientY;
             const touchDiff = touchStartY - touchY;
             
-            // 更新彗星位置（在触摸滚动时也要更新）
             requestAnimationFrame(updateMeteorPosition);
         }, { passive: true });
     </script>

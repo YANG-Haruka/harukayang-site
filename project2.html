@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>移动端应用项目 - Haruka-Yang</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .background-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('imgs/background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
+        }
+        
+        .container {
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+            padding: 100px 50px;
+            background: rgba(0,0,0,0.8);
+        }
+        
+        .back-button {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            padding: 10px 20px;
+            background: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            z-index: 101;
+            font-size: 14px;
+        }
+        
+        .back-button:hover {
+            background: #fff;
+            color: #000;
+        }
+        
+        .detail-header {
+            text-align: center;
+            margin-bottom: 60px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .detail-header h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .detail-header p {
+            font-size: 20px;
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+        
+        .detail-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            gap: 40px;
+        }
+        
+        .project-detail {
+            background: rgba(255,255,255,0.05);
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .project-detail h3 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .project-detail p {
+            line-height: 1.8;
+            opacity: 0.9;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .tech-tag {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .tech-tag:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+        
+        .project-image {
+            width: 100%;
+            height: 300px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            opacity: 0.7;
+            border: 2px dashed rgba(255,255,255,0.3);
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .feature-list li {
+            padding: 10px 0;
+            padding-left: 25px;
+            position: relative;
+            opacity: 0.9;
+        }
+        
+        .feature-list li:before {
+            content: "✦";
+            position: absolute;
+            left: 0;
+            color: #fff;
+            font-size: 16px;
+        }
+        
+        .demo-links {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .demo-btn {
+            padding: 12px 30px;
+            background: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+        
+        .demo-btn:hover {
+            background: #fff;
+            color: #000;
+            transform: translateY(-2px);
+        }
+        
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .platform-card {
+            background: rgba(255,255,255,0.03);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .platform-card h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        
+        .platform-card p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 80px 20px;
+            }
+            
+            .back-button {
+                top: 20px;
+                left: 20px;
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+            
+            .detail-header h1 {
+                font-size: 32px;
+            }
+            
+            .detail-header p {
+                font-size: 16px;
+            }
+            
+            .project-detail {
+                padding: 30px 20px;
+            }
+            
+            .project-detail h3 {
+                font-size: 24px;
+            }
+            
+            .demo-links {
+                flex-direction: column;
+            }
+            
+            .demo-btn {
+                text-align: center;
+            }
+            
+            .platform-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .detail-header h1 {
+                font-size: 28px;
+            }
+            
+            .project-detail h3 {
+                font-size: 20px;
+            }
+            
+            .tech-tag {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-layer"></div>
+    
+    <div class="container">
+        <a href="index.html" class="back-button">← 返回首页</a>
+        
+        <div class="detail-header">
+            <h1>移动端应用项目</h1>
+            <p>跨平台移动应用开发，使用React Native技术栈，同时支持iOS和Android平台</p>
+        </div>
+        
+        <div class="detail-content">
+            <div class="project-detail">
+                <h3>项目概述</h3>
+                <p>跨平台移动应用开发项目，使用React Native技术栈，同时支持iOS和Android平台。应用具有原生级别的性能和用户体验，通过统一的代码库实现双平台开发，大大提高了开发效率。</p>
+                <p>该项目从移动端UI设计到原生功能集成，展现了现代移动应用开发的完整流程。通过组件化的架构设计和模块化的开发方式，确保了代码的复用性和维护性。</p>
+                <div class="project-image">
+                    移动应用界面展示区域
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-tag">React Native</span>
+                    <span class="tech-tag">Redux</span>
+                    <span class="tech-tag">Firebase</span>
+                    <span class="tech-tag">React Navigation</span>
+                    <span class="tech-tag">Expo</span>
+                </div>
+            </div>
+            
+            <div class="project-detail">
+                <h3>平台支持</h3>
+                <p>应用同时支持iOS和Android两大主流移动平台，通过React Native的跨平台特性，实现了一套代码双平台运行。</p>
+                <div class="platform-grid">
+                    <div class="platform-card">
+                        <h4>iOS 平台</h4>
+                        <p>支持iOS 12.0及以上版本，完美适配iPhone和iPad设备，遵循Apple Human Interface Guidelines设计规范。</p>
+                    </div>
+                    <div class="platform-card">
+                        <h4>Android 平台</h4>
+                        <p>支持Android 6.0及以上版本，适配各种屏幕尺寸，遵循Material Design设计语言。</p>
+                    </div>
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-tag">iOS 12.0+</span>
+                    <span class="tech-tag">Android 6.0+</span>
+                    <span class="tech-tag">响应式设计</span>
+                    <span class="tech-tag">原生性能</span>
+                </div>
+            </div>
+            
+            <div class="project-detail">
+                <h3>核心功能</h3>
+                <ul class="feature-list">
+                    <li>用户注册与身份验证系统</li>
+                    <li>推送通知与消息提醒</li>
+                    <li>离线数据缓存与同步</li>
+                    <li>地理定位与地图集成</li>
+                    <li>相机拍照与图片处理</li>
+                    <li>文件上传与云存储</li>
+                    <li>社交分享功能</li>
+                    <li>多语言本地化支持</li>
+                    <li>生物识别认证（指纹/面容）</li>
+                    <li>深色模式主题切换</li>
+                </ul>
+                <div class="tech-stack">
+                    <span class="tech-tag">推送通知</span>
+                    <span class="tech-tag">离线缓存</span>
+                    <span class="tech-tag">地理定位</span>
+                    <span class="tech-tag">相机集成</span>
+                    <span class="tech-tag">生物识别</span>
+                </div>
+            </div>
+            
+            <div class="project-detail">
+                <h3>技术架构</h3>
+                <p>采用现代化的移动应用架构设计，使用Redux进行全局状态管理，React Navigation实现页面导航。集成Firebase提供后端服务支持，包括用户认证、实时数据库和云存储。</p>
+                <p>使用TypeScript增强代码类型安全，集成ESLint和Prettier确保代码质量。通过模块化的组件设计和自定义Hook，提高了代码的复用性和维护性。</p>
+                <div class="tech-stack">
+                    <span class="tech-tag">TypeScript</span>
+                    <span class="tech-tag">Redux Toolkit</span>
+                    <span class="tech-tag">React Query</span>
+                    <span class="tech-tag">Styled Components</span>
+                    <span class="tech-tag">AsyncStorage</span>
+                </div>
+            </div>
+            
+            <div class="project-detail">
+                <h3>性能优化</h3>
+                <p>通过代码分割、懒加载、图片压缩等技术手段优化应用性能。实现了数据预加载和智能缓存策略，应用启动时间缩短至2秒以内，大幅提升了用户体验。</p>
+                <p>使用React.memo和useMemo优化组件渲染性能，实现虚拟列表减少内存占用。通过Bundle Analyzer分析打包体积，移除冗余代码，最终应用体积控制在合理范围内。</p>
+                <div class="tech-stack">
+                    <span class="tech-tag">代码分割</span>
+                    <span class="tech-tag">懒加载</span>
+                    <span class="tech-tag">图片优化</span>
+                    <span class="tech-tag">内存管理</span>
+                    <span class="tech-tag">启动优化</span>
+                </div>
+            </div>
+            
+            <div class="project-detail">
+                <h3>测试与部署</h3>
+                <p>建立了完善的测试体系，包括单元测试、集成测试和端到端测试。使用Jest进行单元测试，Detox进行端到端测试，确保应用质量和稳定性。</p>
+                <p>配置了CI/CD自动化部署流程，通过GitHub Actions实现自动化测试和构建。支持TestFlight和Google Play内测版本分发，便于团队协作和用户反馈收集。</p>
+                <div class="tech-stack">
+                    <span class="tech-tag">Jest</span>
+                    <span class="tech-tag">Detox</span>
+                    <span class="tech-tag">GitHub Actions</span>
+                    <span class="tech-tag">TestFlight</span>
+                    <span class="tech-tag">Google Play</span>
+                </div>
+            </div>
+            
+            <div class="project-detail">
+                <h3>项目成果</h3>
+                <p>应用成功发布到App Store和Google Play商店，获得了用户的积极反馈。平均评分达到4.5星以上，下载量持续增长。通过用户行为分析和反馈收集，不断优化产品体验。</p>
+                <div class="demo-links">
+                    <a href="#" class="demo-btn">App Store</a>
+                    <a href="#" class="demo-btn">Google Play</a>
+                    <a href="https://github.com/YANG-Haruka" class="demo-btn" target="_blank">查看源码</a>
+                    <a href="#" class="demo-btn">开发文档</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
