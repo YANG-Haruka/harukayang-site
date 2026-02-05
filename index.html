@@ -85,6 +85,7 @@
             border-radius: 50%;
             transform: translate(-50%, -50%);
             box-shadow: 0 0 8px rgba(79, 195, 247, 0.5);
+            animation: cursorTwinkle 2s ease-in-out infinite;
         }
 
         .custom-cursor::after {
@@ -98,6 +99,29 @@
             border-radius: 50%;
             transform: translate(-50%, -50%);
             transition: width 0.15s ease, height 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+            animation: cursorPulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes cursorTwinkle {
+            0%, 100% {
+                opacity: 1;
+                box-shadow: 0 0 8px rgba(79, 195, 247, 0.5);
+            }
+            50% {
+                opacity: 0.6;
+                box-shadow: 0 0 15px rgba(79, 195, 247, 0.8);
+            }
+        }
+
+        @keyframes cursorPulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 0.8;
+            }
         }
 
         .custom-cursor.clicking::after {
@@ -105,10 +129,12 @@
             height: 18px;
             border-color: rgba(79, 195, 247, 0.9);
             background: rgba(79, 195, 247, 0.1);
+            animation: none;
         }
 
         .custom-cursor.clicking::before {
             box-shadow: 0 0 12px rgba(79, 195, 247, 0.9);
+            animation: none;
         }
 
         /* Cursor hover state for interactive elements */
@@ -117,6 +143,16 @@
             height: 36px;
             border-color: rgba(79, 195, 247, 0.6);
             background: rgba(79, 195, 247, 0.05);
+        }
+
+        /* Hide custom cursor on touch devices */
+        @media (hover: none) and (pointer: coarse) {
+            *, *::before, *::after {
+                cursor: auto !important;
+            }
+            .custom-cursor {
+                display: none !important;
+            }
         }
 
         /* Gradient Overlay for depth */
