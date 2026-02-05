@@ -27,9 +27,8 @@
     "haruwine": {
       "desc": "AI 鸡尾酒推荐助手"
     },
-    "mobile": {
-      "title": "移动应用",
-      "desc": "跨平台移动端开发"
+    "linguaharu": {
+      "desc": "AI 文档翻译工具"
     }
   },
   "contact": {

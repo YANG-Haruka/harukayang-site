@@ -27,9 +27,8 @@
     "haruwine": {
       "desc": "AI カクテルソムリエ"
     },
-    "mobile": {
-      "title": "モバイルアプリ",
-      "desc": "クロスプラットフォーム開発"
+    "linguaharu": {
+      "desc": "AI ドキュメント翻訳ツール"
     }
   },
   "contact": {
