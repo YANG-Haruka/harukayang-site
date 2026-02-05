@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(git -C \"F:\\\\workspace\\\\harukayang-site\" log --oneline -10)",
+      "Bash(dir:*)",
+      "Bash(gh repo list:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit:*)",
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(nslookup:*)",
+      "Bash(ping:*)"
+    ]
+  }
+}
