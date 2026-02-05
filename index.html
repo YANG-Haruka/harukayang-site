@@ -1311,9 +1311,9 @@
                 depthWrite: false
             });
 
-            const sky = new THREE.Mesh(skyGeometry, skyMaterial);
-            sky.position.z = -50;
-            scene.add(sky);
+            skyMesh = new THREE.Mesh(skyGeometry, skyMaterial);
+            skyMesh.position.z = -50;
+            scene.add(skyMesh);
         }
 
         // Create twinkling four-pointed star field
@@ -1693,17 +1693,33 @@
             return false;
         }
 
+        let skyMesh = null;
+
         function onResize() {
             width = window.innerWidth;
             height = window.innerHeight;
 
+            // Update camera
             camera.left = -width / 2;
             camera.right = width / 2;
             camera.top = height / 2;
             camera.bottom = -height / 2;
             camera.updateProjectionMatrix();
 
+            // Update renderer
             renderer.setSize(width, height);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Update star field uniforms
+            if (starField && starField.material.uniforms.pixelRatio) {
+                starField.material.uniforms.pixelRatio.value = renderer.getPixelRatio();
+            }
+
+            // Update sky background size
+            if (skyMesh) {
+                skyMesh.geometry.dispose();
+                skyMesh.geometry = new THREE.PlaneGeometry(width * 1.5, height * 1.5);
+            }
         }
 
         function animate() {
