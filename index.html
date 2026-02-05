@@ -9,6 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
     <!-- Three.js for GPU-accelerated rendering -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- i18next for internationalization -->
+    <script src="https://unpkg.com/i18next@23.11.5/i18next.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -633,6 +635,80 @@
             color: var(--text-primary);
         }
 
+        /* Language Switcher */
+        .lang-switcher {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            z-index: 101;
+        }
+
+        .lang-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            padding: 10px 16px;
+            font-size: 13px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .lang-btn:hover {
+            border-color: var(--meteor-blue);
+            color: var(--text-primary);
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: rgba(10, 22, 40, 0.95);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .lang-switcher:hover .lang-dropdown,
+        .lang-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .lang-option {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .lang-option:hover {
+            background: rgba(79, 195, 247, 0.1);
+            color: var(--text-primary);
+        }
+
+        .lang-option.active {
+            color: var(--meteor-blue);
+        }
+
+        .lang-flag {
+            font-size: 16px;
+        }
+
         /* Social Sidebar */
         .social-sidebar {
             position: fixed;
@@ -734,6 +810,16 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            .lang-switcher {
+                top: 20px;
+                right: 20px;
+            }
+
+            .lang-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
             .nav {
                 padding: 20px 25px;
             }
@@ -852,40 +938,63 @@
     <div class="gradient-overlay"></div>
     <div class="horizon-glow"></div>
 
+    <!-- Language Switcher -->
+    <div class="lang-switcher">
+        <button class="lang-btn" id="langBtn">
+            <span class="lang-flag" id="currentFlag">🌐</span>
+            <span id="currentLang">EN</span>
+            <span>▼</span>
+        </button>
+        <div class="lang-dropdown" id="langDropdown">
+            <div class="lang-option" data-lang="en-US">
+                <span class="lang-flag">🇺🇸</span>
+                <span>English</span>
+            </div>
+            <div class="lang-option" data-lang="zh-CN">
+                <span class="lang-flag">🇨🇳</span>
+                <span>中文</span>
+            </div>
+            <div class="lang-option" data-lang="ja-JP">
+                <span class="lang-flag">🇯🇵</span>
+                <span>日本語</span>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <nav class="nav">
             <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#portfolio">Works</a></li>
-                <li><a href="#contact">Contact</a></li>
-                <li><a href="materials.html">Materials</a></li>
+                <li><a href="#home" data-i18n="nav.home">Home</a></li>
+                <li><a href="#about" data-i18n="nav.about">About</a></li>
+                <li><a href="#portfolio" data-i18n="nav.works">Works</a></li>
+                <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
+                <li><a href="materials.html" data-i18n="nav.materials">Materials</a></li>
             </ul>
         </nav>
 
         <section class="hero" id="home">
             <div class="hero-content">
                 <h1>Haruka Yang</h1>
-                <p>Welcome to My Universe</p>
-                <a href="#about" class="cta-button">Explore</a>
+                <p data-i18n="hero.subtitle">Welcome to My Universe</p>
+                <a href="#about" class="cta-button" data-i18n="hero.cta">Explore</a>
             </div>
             <div class="scroll-indicator">
-                <span>Scroll</span>
+                <span data-i18n="hero.scroll">Scroll</span>
                 <div class="scroll-line"></div>
             </div>
         </section>
 
         <section class="section about" id="about">
             <div class="section-header">
-                <h2>About Me</h2>
-                <p>A Developer with Passion for Innovation</p>
+                <h2 data-i18n="about.title">About Me</h2>
+                <p data-i18n="about.subtitle">A Developer with Passion for Innovation</p>
             </div>
             <div class="about-content">
                 <div class="about-text">
-                    <h3>Hello, I'm Haruka Yang</h3>
-                    <p>I am a full-stack developer with a deep passion for crafting elegant and efficient digital experiences. I love transforming creative visions into reality through code.</p>
-                    <p>My journey began with a curiosity for technology, evolving into a relentless pursuit of innovation and excellence. I explore the intersection where technology meets artistry.</p>
-                    <p>When I'm not coding, you'll find me exploring emerging technologies, reading, or contemplating my next creative project over a cup of coffee.</p>
+                    <h3 data-i18n="about.greeting">Hello, I'm Haruka Yang</h3>
+                    <p data-i18n="about.p1">I am a full-stack developer with a deep passion for crafting elegant and efficient digital experiences. I love transforming creative visions into reality through code.</p>
+                    <p data-i18n="about.p2">My journey began with a curiosity for technology, evolving into a relentless pursuit of innovation and excellence. I explore the intersection where technology meets artistry.</p>
+                    <p data-i18n="about.p3">When I'm not coding, you'll find me exploring emerging technologies, reading, or contemplating my next creative project over a cup of coffee.</p>
                 </div>
                 <div class="about-image">
                     <img src="imgs/my_pic.jpg" alt="Haruka Yang">
@@ -895,22 +1004,22 @@
 
         <section class="section portfolio" id="portfolio">
             <div class="section-header">
-                <h2>My Works</h2>
-                <p>Selected Projects</p>
+                <h2 data-i18n="portfolio.title">My Works</h2>
+                <p data-i18n="portfolio.subtitle">Selected Projects</p>
             </div>
             <div class="portfolio-grid">
                 <div class="portfolio-item" onclick="window.open('https://haruwine.harukayang.xyz', '_blank')">
                     <div class="portfolio-overlay">
                         <h3>HaruWine</h3>
-                        <p>AI Cocktail Sommelier</p>
-                        <a href="https://haruwine.harukayang.xyz" class="more-info-button" target="_blank" onclick="event.stopPropagation()">Visit Site</a>
+                        <p data-i18n="portfolio.haruwine.desc">AI Cocktail Sommelier</p>
+                        <a href="https://haruwine.harukayang.xyz" class="more-info-button" target="_blank" onclick="event.stopPropagation()" data-i18n="portfolio.visitSite">Visit Site</a>
                     </div>
                 </div>
                 <div class="portfolio-item" onclick="location.href='project2.html'">
                     <div class="portfolio-overlay">
-                        <h3>Mobile Application</h3>
-                        <p>Cross-Platform Mobile Development</p>
-                        <a href="project2.html" class="more-info-button" onclick="event.stopPropagation()">View Project</a>
+                        <h3 data-i18n="portfolio.mobile.title">Mobile Application</h3>
+                        <p data-i18n="portfolio.mobile.desc">Cross-Platform Mobile Development</p>
+                        <a href="project2.html" class="more-info-button" onclick="event.stopPropagation()" data-i18n="portfolio.viewProject">View Project</a>
                     </div>
                 </div>
             </div>
@@ -918,8 +1027,8 @@
 
         <section class="section contact" id="contact">
             <div class="section-header">
-                <h2>Contact</h2>
-                <p>Let's Create Something Beautiful</p>
+                <h2 data-i18n="contact.title">Contact</h2>
+                <p data-i18n="contact.subtitle">Let's Create Something Beautiful</p>
             </div>
             <div class="contact-links">
                 <a href="https://github.com/YANG-Haruka" target="_blank" class="contact-link">
@@ -1771,6 +1880,16 @@
             el.style.transform = 'translateY(40px)';
             el.style.transition = 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
             observer.observe(el);
+        });
+    </script>
+
+    <!-- i18n Configuration -->
+    <script src="js/i18n.js"></script>
+    <script>
+        // Initialize i18n when DOM is ready
+        document.addEventListener('DOMContentLoaded', async () => {
+            await window.i18nConfig.init();
+            window.i18nConfig.initSwitcher();
         });
     </script>
 </body>

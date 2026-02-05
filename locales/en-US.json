@@ -1,0 +1,39 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "works": "Works",
+    "contact": "Contact",
+    "materials": "Materials"
+  },
+  "hero": {
+    "subtitle": "Welcome to My Universe",
+    "cta": "Explore",
+    "scroll": "Scroll"
+  },
+  "about": {
+    "title": "About Me",
+    "subtitle": "A Developer with Passion for Innovation",
+    "greeting": "Hello, I'm Haruka Yang",
+    "p1": "I am a full-stack developer with a deep passion for crafting elegant and efficient digital experiences. I love transforming creative visions into reality through code.",
+    "p2": "My journey began with a curiosity for technology, evolving into a relentless pursuit of innovation and excellence. I explore the intersection where technology meets artistry.",
+    "p3": "When I'm not coding, you'll find me exploring emerging technologies, reading, or contemplating my next creative project over a cup of coffee."
+  },
+  "portfolio": {
+    "title": "My Works",
+    "subtitle": "Selected Projects",
+    "visitSite": "Visit Site",
+    "viewProject": "View Project",
+    "haruwine": {
+      "desc": "AI Cocktail Sommelier"
+    },
+    "mobile": {
+      "title": "Mobile Application",
+      "desc": "Cross-Platform Mobile Development"
+    }
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Let's Create Something Beautiful"
+  }
+}
