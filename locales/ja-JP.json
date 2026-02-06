@@ -24,11 +24,12 @@
     "subtitle": "厳選プロジェクト",
     "visitSite": "サイトを見る",
     "viewProject": "プロジェクトを見る",
+    "liveDemo": "ライブデモ",
     "haruwine": {
       "desc": "AI カクテルソムリエ"
     },
     "linguaharu": {
-      "desc": "AI ドキュメント翻訳ツール"
+      "desc": "オープンソースAI文書翻訳ツール"
     }
   },
   "contact": {

@@ -24,11 +24,12 @@
     "subtitle": "精选项目",
     "visitSite": "访问网站",
     "viewProject": "查看项目",
+    "liveDemo": "在线体验",
     "haruwine": {
       "desc": "AI 鸡尾酒推荐助手"
     },
     "linguaharu": {
-      "desc": "AI 文档翻译工具"
+      "desc": "开源AI文档翻译工具"
     }
   },
   "contact": {

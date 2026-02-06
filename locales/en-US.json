@@ -24,11 +24,12 @@
     "subtitle": "Selected Projects",
     "visitSite": "Visit Site",
     "viewProject": "View Project",
+    "liveDemo": "Live Demo",
     "haruwine": {
       "desc": "AI Cocktail Sommelier"
     },
     "linguaharu": {
-      "desc": "AI Document Translator"
+      "desc": "Open-source AI Document Translator"
     }
   },
   "contact": {

@@ -32,8 +32,9 @@ const TRANSLATIONS = {
                 subtitle: "Selected Projects",
                 visitSite: "Visit Site",
                 viewProject: "View Project",
+                liveDemo: "Live Demo",
                 haruwine: { desc: "AI Cocktail Sommelier" },
-                linguaharu: { desc: "AI Document Translator" }
+                linguaharu: { desc: "Open-source AI Document Translator" }
             },
             contact: { title: "Contact", subtitle: "Let's Create Something Beautiful" }
         }
@@ -55,8 +56,9 @@ const TRANSLATIONS = {
                 subtitle: "精选项目",
                 visitSite: "访问网站",
                 viewProject: "查看项目",
+                liveDemo: "在线体验",
                 haruwine: { desc: "AI 鸡尾酒推荐助手" },
-                linguaharu: { desc: "AI 文档翻译工具" }
+                linguaharu: { desc: "开源AI文档翻译工具" }
             },
             contact: { title: "联系我", subtitle: "一起创造美好的事物" }
         }
@@ -78,8 +80,9 @@ const TRANSLATIONS = {
                 subtitle: "厳選プロジェクト",
                 visitSite: "サイトを見る",
                 viewProject: "プロジェクトを見る",
+                liveDemo: "ライブデモ",
                 haruwine: { desc: "AI カクテルソムリエ" },
-                linguaharu: { desc: "AI ドキュメント翻訳ツール" }
+                linguaharu: { desc: "オープンソースAI文書翻訳ツール" }
             },
             contact: { title: "お問い合わせ", subtitle: "一緒に素敵なものを創りましょう" }
         }
