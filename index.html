@@ -209,6 +209,9 @@
             z-index: 100;
             background: transparent;
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .nav.scrolled {
@@ -673,9 +676,10 @@
 
         /* Language Switcher */
         .lang-switcher {
-            position: fixed;
-            top: 30px;
-            right: 30px;
+            position: absolute;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
             z-index: 101;
         }
 
@@ -683,7 +687,7 @@
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             color: var(--text-secondary);
-            padding: 10px 16px;
+            padding: 8px 14px;
             font-size: 13px;
             letter-spacing: 1px;
             cursor: pointer;
@@ -847,12 +851,11 @@
         /* Responsive */
         @media (max-width: 768px) {
             .lang-switcher {
-                top: 20px;
-                right: 20px;
+                right: 25px;
             }
 
             .lang-btn {
-                padding: 8px 12px;
+                padding: 6px 10px;
                 font-size: 12px;
             }
 
@@ -974,29 +977,6 @@
     <div class="gradient-overlay"></div>
     <div class="horizon-glow"></div>
 
-    <!-- Language Switcher -->
-    <div class="lang-switcher">
-        <button class="lang-btn" id="langBtn">
-            <span class="lang-flag" id="currentFlag">🌐</span>
-            <span id="currentLang">EN</span>
-            <span>▼</span>
-        </button>
-        <div class="lang-dropdown" id="langDropdown">
-            <div class="lang-option" data-lang="en-US">
-                <span class="lang-flag">🇺🇸</span>
-                <span>English</span>
-            </div>
-            <div class="lang-option" data-lang="zh-CN">
-                <span class="lang-flag">🇨🇳</span>
-                <span>中文</span>
-            </div>
-            <div class="lang-option" data-lang="ja-JP">
-                <span class="lang-flag">🇯🇵</span>
-                <span>日本語</span>
-            </div>
-        </div>
-    </div>
-
     <div class="container">
         <nav class="nav">
             <ul>
@@ -1006,6 +986,28 @@
                 <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
                 <li><a href="materials.html" data-i18n="nav.materials">Materials</a></li>
             </ul>
+            <!-- Language Switcher -->
+            <div class="lang-switcher">
+                <button class="lang-btn" id="langBtn">
+                    <span class="lang-flag" id="currentFlag">🌐</span>
+                    <span id="currentLang">EN</span>
+                    <span>▼</span>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <div class="lang-option" data-lang="en-US">
+                        <span class="lang-flag">🇺🇸</span>
+                        <span>English</span>
+                    </div>
+                    <div class="lang-option" data-lang="zh-CN">
+                        <span class="lang-flag">🇨🇳</span>
+                        <span>中文</span>
+                    </div>
+                    <div class="lang-option" data-lang="ja-JP">
+                        <span class="lang-flag">🇯🇵</span>
+                        <span>日本語</span>
+                    </div>
+                </div>
+            </div>
         </nav>
 
         <section class="hero" id="home">
@@ -1140,8 +1142,15 @@
         let starField, meteors = [];
         let starGlowTexture, meteorGlowTexture;
         let width, height;
-        const MAX_METEORS = 10;
+        const isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                         (window.innerWidth <= 768 && ('ontouchstart' in window));
+        const mobileMaxSprites = 30;
+        const MAX_METEORS = isMobile ? 4 : 10;
         const clock = new THREE.Clock();
+        let isPageVisible = true;
+        let meteorTimer = 0;
+        let nextMeteorDelay = 4000 + Math.random() * 4000;
+        let lastFrameTime = 0;
 
         // Initialize Three.js
         function init() {
@@ -1157,13 +1166,14 @@
             );
             camera.position.z = 100;
 
+            const maxPixelRatio = isMobile ? 1.5 : 2;
             renderer = new THREE.WebGLRenderer({
-                antialias: true,
+                antialias: !isMobile,
                 alpha: false,
                 powerPreference: 'high-performance'
             });
             renderer.setSize(width, height);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
 
             document.getElementById('sky-container').appendChild(renderer.domElement);
 
@@ -1354,7 +1364,9 @@
 
         // Create twinkling four-pointed star field
         function createStarField() {
-            const starCount = Math.min(200, Math.floor((width * height) / 5500));
+            const maxStars = isMobile ? 100 : 200;
+            const starDensity = isMobile ? 8000 : 5500;
+            const starCount = Math.min(maxStars, Math.floor((width * height) / starDensity));
 
             const geometry = new THREE.BufferGeometry();
             const positions = new Float32Array(starCount * 3);
@@ -1373,18 +1385,19 @@
                 positions[i * 3 + 1] = y;
                 positions[i * 3 + 2] = z;
 
-                // Varied sizes for four-pointed stars
+                // Varied sizes for four-pointed stars (smaller on mobile)
                 const sizeFactor = Math.random();
+                const sizeScale = isMobile ? 0.7 : 1.0;
                 if (sizeFactor < 0.65) {
-                    sizes[i] = 8 + Math.random() * 10;   // Small stars
+                    sizes[i] = (8 + Math.random() * 10) * sizeScale;   // Small stars
                 } else if (sizeFactor < 0.88) {
-                    sizes[i] = 18 + Math.random() * 14;  // Medium stars
+                    sizes[i] = (18 + Math.random() * 14) * sizeScale;  // Medium stars
                 } else {
-                    sizes[i] = 32 + Math.random() * 20;  // Large bright stars
+                    sizes[i] = (32 + Math.random() * 20) * sizeScale;  // Large bright stars
                 }
 
                 phases[i] = Math.random() * Math.PI * 2;
-                speeds[i] = 0.5 + Math.random() * 1.0;  // Faster twinkle
+                speeds[i] = 1.2 + Math.random() * 2.0;  // Faster twinkle
                 rotations[i] = Math.random() * Math.PI * 0.25;  // Slight rotation variation
 
                 // Fade near horizon
@@ -1418,18 +1431,18 @@
                     varying float vRotation;
 
                     void main() {
-                        // Twinkling effect - pulsing brightness
-                        float twinkle = sin(time * speed + phase) * 0.4 +
-                                       sin(time * speed * 2.1 + phase * 1.7) * 0.25 +
-                                       sin(time * speed * 0.7 + phase * 3.1) * 0.15;
+                        // Twinkling effect - faster, sharper pulsing
+                        float twinkle = sin(time * speed * 1.5 + phase) * 0.4 +
+                                       sin(time * speed * 3.2 + phase * 1.7) * 0.3 +
+                                       sin(time * speed * 1.1 + phase * 3.1) * 0.2;
 
-                        // Alpha pulses strongly for "blinking" effect
-                        vAlpha = baseAlpha * (0.3 + max(0.0, twinkle + 0.7));
+                        // Alpha pulses strongly for crisp "blinking" effect
+                        vAlpha = baseAlpha * (0.2 + max(0.0, twinkle + 0.8));
 
                         // Size pulses with twinkle
-                        float sizeVar = size * (0.7 + twinkle * 0.4 + 0.3);
+                        float sizeVar = size * (0.65 + twinkle * 0.5 + 0.35);
 
-                        vRotation = rotation + time * 0.1;
+                        vRotation = rotation + time * 0.15;
 
                         vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
                         gl_PointSize = sizeVar * pixelRatio;
@@ -1468,7 +1481,7 @@
                 this.group = new THREE.Group();
                 this.sprites = [];
                 this.coreSprites = [];
-                this.maxSprites = 60;
+                this.maxSprites = isMobile ? mobileMaxSprites : 60;
                 this.reset();
             }
 
@@ -1569,11 +1582,13 @@
 
                 // Fade out
                 if (this.fadeOut) {
+                    this.fadeOutTimer = (this.fadeOutTimer || 0) + 1;
                     this.opacity = Math.max(0, this.opacity - 0.015);
-                    if (this.trail.length > 0 && this.time % 2 === 0) {
+                    if (this.trail.length > 0 && this.fadeOutTimer % 2 === 0) {
                         this.trail.pop();
                     }
-                    if (this.opacity <= 0 && this.trail.length === 0) {
+                    // Dispose when fully faded and trail empty, or safety timeout
+                    if ((this.opacity <= 0 && this.trail.length === 0) || this.fadeOutTimer > 180) {
                         this.dispose();
                         return;
                     }
@@ -1649,7 +1664,8 @@
                         }
 
                         // Outer glow - larger, offset to one side
-                        const baseSize = 40 * point.scale * sizeMult;
+                        const meteorSizeScale = isMobile ? 0.65 : 1.0;
+                        const baseSize = 40 * point.scale * sizeMult * meteorSizeScale;
                         const alpha = alphaCurve * this.opacity * point.scale * 0.7;
 
                         const offsetX = this.perpX * offset * point.scale;
@@ -1688,16 +1704,17 @@
 
                 // Softer head
                 if (len > 0 && !this.fadeOut) {
+                    const headScale = isMobile ? 0.65 : 1.0;
                     const headSprite = this.sprites[0];
                     headSprite.material.opacity = this.opacity * 0.7;
                     headSprite.material.color.setHSL(0.57, 0.25, 0.8);
-                    headSprite.scale.set(18 * this.currentScale, 18 * this.currentScale, 1);
+                    headSprite.scale.set(18 * this.currentScale * headScale, 18 * this.currentScale * headScale, 1);
                     headSprite.position.set(this.trail[0].x, this.trail[0].y, 0.6);
 
                     const headCore = this.coreSprites[0];
                     headCore.material.opacity = this.opacity * 0.9;
                     headCore.material.color.setHSL(0.58, 0.1, 0.95);
-                    headCore.scale.set(6 * this.currentScale, 6 * this.currentScale, 1);
+                    headCore.scale.set(6 * this.currentScale * headScale, 6 * this.currentScale * headScale, 1);
                     headCore.position.set(this.trail[0].x, this.trail[0].y, 0.7);
                 }
             }
@@ -1758,13 +1775,34 @@
             }
         }
 
-        function animate() {
+        function animate(timestamp) {
             requestAnimationFrame(animate);
+
+            // Skip rendering when page is hidden
+            if (!isPageVisible) {
+                lastFrameTime = timestamp;
+                return;
+            }
+
+            // Calculate real delta time, capped to prevent large jumps
+            if (lastFrameTime === 0) lastFrameTime = timestamp;
+            const rawDelta = timestamp - lastFrameTime;
+            // Cap delta at 100ms to prevent burst after tab switch
+            const delta = Math.min(rawDelta, 100);
+            lastFrameTime = timestamp;
 
             const time = clock.getElapsedTime();
 
             if (starField) {
                 starField.material.uniforms.time.value = time;
+            }
+
+            // Auto-spawn meteors using frame-based timing
+            meteorTimer += delta;
+            if (meteorTimer >= nextMeteorDelay) {
+                meteorTimer = 0;
+                nextMeteorDelay = 4000 + Math.random() * 4000;
+                spawnMeteor();
             }
 
             // Update meteors
@@ -1780,28 +1818,33 @@
             renderer.render(scene, camera);
         }
 
+        // Handle page visibility changes to prevent meteor bursts
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                isPageVisible = false;
+                clock.stop();
+            } else {
+                isPageVisible = true;
+                clock.start();
+                // Reset meteor timer to prevent burst spawning
+                meteorTimer = 0;
+                nextMeteorDelay = 2000 + Math.random() * 3000;
+                lastFrameTime = 0;
+            }
+        });
+
         // Initialize
         init();
-        animate();
+        animate(0);
 
-        // Spawn initial meteor
-        setTimeout(spawnMeteor, 500);
-
-        // Auto spawn meteors at regular intervals
-        function scheduleNextMeteor() {
-            const delay = 4000 + Math.random() * 4000;
-            setTimeout(() => {
-                spawnMeteor();
-                scheduleNextMeteor();
-            }, delay);
-        }
-        scheduleNextMeteor();
+        // Spawn initial meteor after a short delay via timer
+        meteorTimer = nextMeteorDelay - 500;
 
         // Click to spawn - use mousedown for more reliable detection
         document.addEventListener('mousedown', function(e) {
             // Check if click is on interactive element
             const target = e.target;
-            const interactiveSelectors = 'a, button, input, textarea, select, .contact-link, .portfolio-item, .nav, .modal, .social-sidebar, .cta-button, .more-info-button, .close-modal';
+            const interactiveSelectors = 'a, button, input, textarea, select, .contact-link, .portfolio-item, .nav, .modal, .social-sidebar, .cta-button, .more-info-button, .close-modal, .lang-switcher';
 
             if (!target.closest(interactiveSelectors)) {
                 e.preventDefault();
@@ -1812,7 +1855,7 @@
         // Also support touch
         document.addEventListener('touchstart', function(e) {
             const target = e.target;
-            const interactiveSelectors = 'a, button, input, textarea, select, .contact-link, .portfolio-item, .nav, .modal, .social-sidebar, .cta-button, .more-info-button, .close-modal';
+            const interactiveSelectors = 'a, button, input, textarea, select, .contact-link, .portfolio-item, .nav, .modal, .social-sidebar, .cta-button, .more-info-button, .close-modal, .lang-switcher';
 
             if (!target.closest(interactiveSelectors)) {
                 spawnMeteor();
@@ -1857,8 +1900,8 @@
 
         // ========== UI INTERACTIONS ==========
 
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        // Smooth scroll (skip bare "#" links to avoid querySelector error)
+        document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
@@ -1940,7 +1983,12 @@
     <script>
         // Initialize i18n when DOM is ready
         document.addEventListener('DOMContentLoaded', async () => {
-            await window.i18nConfig.init();
+            try {
+                await window.i18nConfig.init();
+            } catch (e) {
+                console.warn('i18n initialization failed:', e);
+            }
+            // Always init switcher even if i18n fails
             window.i18nConfig.initSwitcher();
         });
     </script>

@@ -1,6 +1,7 @@
 /**
  * i18n Configuration - Internationalization for Haruka Yang Portfolio
  * Supports: English (en-US), Chinese (zh-CN), Japanese (ja-JP)
+ * Translations are inlined to avoid fetch dependency issues
  */
 
 const SUPPORTED_LANGS = ['en-US', 'zh-CN', 'ja-JP'];
@@ -10,6 +11,79 @@ const LANG_CONFIG = {
     'en-US': { flag: '🇺🇸', name: 'EN', fullName: 'English' },
     'zh-CN': { flag: '🇨🇳', name: '中文', fullName: '中文' },
     'ja-JP': { flag: '🇯🇵', name: '日本語', fullName: '日本語' }
+};
+
+// Inlined translations - no fetch required
+const TRANSLATIONS = {
+    'en-US': {
+        translation: {
+            nav: { home: "Home", about: "About", works: "Works", contact: "Contact", materials: "Materials" },
+            hero: { subtitle: "Welcome to My Universe", cta: "Explore", scroll: "Scroll" },
+            about: {
+                title: "About Me",
+                subtitle: "A Developer with Passion for Innovation",
+                greeting: "Hello, I'm Haruka Yang",
+                p1: "I am a full-stack developer with a deep passion for crafting elegant and efficient digital experiences. I love transforming creative visions into reality through code.",
+                p2: "My journey began with a curiosity for technology, evolving into a relentless pursuit of innovation and excellence. I explore the intersection where technology meets artistry.",
+                p3: "When I'm not coding, you'll find me exploring emerging technologies, reading, or contemplating my next creative project over a cup of coffee."
+            },
+            portfolio: {
+                title: "My Works",
+                subtitle: "Selected Projects",
+                visitSite: "Visit Site",
+                viewProject: "View Project",
+                haruwine: { desc: "AI Cocktail Sommelier" },
+                linguaharu: { desc: "AI Document Translator" }
+            },
+            contact: { title: "Contact", subtitle: "Let's Create Something Beautiful" }
+        }
+    },
+    'zh-CN': {
+        translation: {
+            nav: { home: "首页", about: "关于", works: "作品", contact: "联系", materials: "素材" },
+            hero: { subtitle: "欢迎来到我的世界", cta: "探索", scroll: "向下滚动" },
+            about: {
+                title: "关于我",
+                subtitle: "热爱创新的开发者",
+                greeting: "你好，我是 Haruka Yang",
+                p1: "我是一名全栈开发者，热衷于打造优雅高效的数字体验。我喜欢用代码将创意转化为现实。",
+                p2: "我的旅程始于对技术的好奇，逐渐演变为对创新与卓越的不懈追求。我探索技术与艺术的交汇点。",
+                p3: "在不写代码的时候，你会发现我在探索新兴技术、阅读，或者一边喝咖啡一边思考下一个创意项目。"
+            },
+            portfolio: {
+                title: "我的作品",
+                subtitle: "精选项目",
+                visitSite: "访问网站",
+                viewProject: "查看项目",
+                haruwine: { desc: "AI 鸡尾酒推荐助手" },
+                linguaharu: { desc: "AI 文档翻译工具" }
+            },
+            contact: { title: "联系我", subtitle: "一起创造美好的事物" }
+        }
+    },
+    'ja-JP': {
+        translation: {
+            nav: { home: "ホーム", about: "私について", works: "作品", contact: "お問い合わせ", materials: "素材" },
+            hero: { subtitle: "私の世界へようこそ", cta: "探索する", scroll: "スクロール" },
+            about: {
+                title: "私について",
+                subtitle: "イノベーションに情熱を注ぐ開発者",
+                greeting: "こんにちは、Haruka Yang です",
+                p1: "私はフルスタック開発者として、エレガントで効率的なデジタル体験の創造に情熱を注いでいます。コードを通じてクリエイティブなビジョンを現実に変えることが大好きです。",
+                p2: "テクノロジーへの好奇心から始まった私の旅は、イノベーションと卓越性への絶え間ない追求へと発展しました。テクノロジーとアートが交差する場所を探求しています。",
+                p3: "コーディングをしていない時は、新しいテクノロジーを探求したり、読書をしたり、コーヒーを飲みながら次のクリエイティブプロジェクトを考えたりしています。"
+            },
+            portfolio: {
+                title: "作品集",
+                subtitle: "厳選プロジェクト",
+                visitSite: "サイトを見る",
+                viewProject: "プロジェクトを見る",
+                haruwine: { desc: "AI カクテルソムリエ" },
+                linguaharu: { desc: "AI ドキュメント翻訳ツール" }
+            },
+            contact: { title: "お問い合わせ", subtitle: "一緒に素敵なものを創りましょう" }
+        }
+    }
 };
 
 // Detect browser language
@@ -37,22 +111,12 @@ function detectLanguage() {
 async function initI18n() {
     const detectedLang = detectLanguage();
 
-    // Load all translation files
-    const resources = {};
-    for (const lang of SUPPORTED_LANGS) {
-        try {
-            const response = await fetch(`locales/${lang}.json`);
-            const translations = await response.json();
-            resources[lang] = { translation: translations };
-        } catch (error) {
-            console.warn(`Failed to load translations for ${lang}:`, error);
-        }
-    }
-
     await i18next.init({
         lng: detectedLang,
         fallbackLng: DEFAULT_LANG,
-        resources: resources,
+        supportedLngs: SUPPORTED_LANGS,
+        load: 'currentOnly',
+        resources: TRANSLATIONS,
         interpolation: {
             escapeValue: false
         }
