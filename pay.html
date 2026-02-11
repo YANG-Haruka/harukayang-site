@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/i18next@23.11.5/i18next.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -477,6 +478,25 @@
             }
         }
 
+        // ========== Decode QR from image ==========
+        function decodeQR(imgSrc) {
+            return new Promise(function(resolve) {
+                var img = new Image();
+                img.onload = function() {
+                    var canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    var code = jsQR(imageData.data, canvas.width, canvas.height);
+                    resolve(code ? code.data : null);
+                };
+                img.onerror = function() { resolve(null); };
+                img.src = imgSrc;
+            });
+        }
+
         // ========== Init ==========
         async function init() {
             await i18next.init({
@@ -489,13 +509,19 @@
             generateShareQR();
 
             var isAlipay = /AlipayClient/i.test(navigator.userAgent);
+            var alipayPayUrl = null;
+
+            // In Alipay webview, decode QR to get the actual payment URL
+            if (isAlipay) {
+                alipayPayUrl = await decodeQR('imgs/Alipay.JPG');
+            }
 
             document.getElementById('cardWechat').addEventListener('click', function() {
                 openModal('modalWechat');
             });
             document.getElementById('cardAlipay').addEventListener('click', function() {
-                if (isAlipay) {
-                    window.location.href = 'imgs/Alipay.JPG';
+                if (isAlipay && alipayPayUrl) {
+                    window.location.href = alipayPayUrl;
                 } else {
                     openModal('modalAlipay');
                 }
