@@ -12,7 +12,6 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
     :root {
       --bg-card: rgba(255, 255, 255, 0.03);
@@ -380,7 +379,7 @@
     <!-- Header -->
     <header class="header anim-in">
       <h1>HaruQR</h1>
-      <p>聚合收款码生成器 · 离线安全 <span style="font-size:11px;color:var(--text-tertiary);">v1.1</span></p>
+      <p>聚合收款码生成器 · 离线安全 <span style="font-size:11px;color:var(--text-tertiary);">v1.0</span></p>
     </header>
 
     <!-- Info -->
@@ -663,6 +662,172 @@
       reader.readAsDataURL(file);
     }
 
+    // --- Canvas card rendering (replaces html2canvas) ---
+    function loadImg(src) {
+      return new Promise(function(resolve) {
+        if (!src) { resolve(null); return; }
+        var img = new Image();
+        img.onload = function() { resolve(img); };
+        img.onerror = function() { resolve(null); };
+        img.src = src;
+      });
+    }
+
+    function rrect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+
+    async function renderCardCanvas() {
+      var s = 2;
+      var W = 310 * s, px = 22 * s;
+      var ptop = 30 * s, pbottom = 22 * s;
+      var avD = 68 * s, avB = 3 * s;
+      var qrPad = 12 * s;
+      var qrSize = W - px * 2 - qrPad * 2;
+      var H = ptop + avD + 12*s + 18*s + 16*s + (qrSize + qrPad*2) + 14*s + 20*s + 10*s + 12*s + pbottom;
+
+      var c = document.createElement('canvas');
+      c.width = W; c.height = H;
+      var ctx = c.getContext('2d');
+
+      // --- Background ---
+      var grad = ctx.createLinearGradient(0, 0, W * 0.6, H);
+      grad.addColorStop(0, '#07C160');
+      grad.addColorStop(0.32, '#06A050');
+      grad.addColorStop(0.68, '#1677FF');
+      grad.addColorStop(1, '#0958D9');
+      rrect(ctx, 0, 0, W, H, 20 * s);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      var y = ptop;
+
+      // --- Avatar ---
+      var cx = W / 2, cy = y + avD / 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, avD / 2, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,255,255,0.18)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+      ctx.lineWidth = avB;
+      ctx.stroke();
+
+      if (avatarUrl) {
+        var avImg = await loadImg(avatarUrl);
+        if (avImg) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(cx, cy, avD / 2 - avB, 0, Math.PI * 2);
+          ctx.clip();
+          ctx.drawImage(avImg, cx - avD/2 + avB, cy - avD/2 + avB, avD - avB*2, avD - avB*2);
+          ctx.restore();
+        }
+      } else {
+        ctx.fillStyle = 'rgba(255,255,255,0.55)';
+        ctx.beginPath();
+        ctx.arc(cx, cy - 6*s, 8*s, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(cx - 16*s, cy + 20*s);
+        ctx.quadraticCurveTo(cx, cy + 4*s, cx + 16*s, cy + 20*s);
+        ctx.fill();
+      }
+      y += avD + 12 * s;
+
+      // --- Title ---
+      var title = cardTitleInput.value || '扫码向我付款';
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold ' + (15*s) + 'px "Quicksand", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.shadowColor = 'rgba(0,0,0,0.12)';
+      ctx.shadowBlur = 4 * s;
+      ctx.fillText(title, W / 2, y);
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+      y += 18 * s + 16 * s;
+
+      // --- QR white area ---
+      var qrAX = px, qrAY = y, qrAW = W - px * 2, qrAH = qrSize + qrPad * 2;
+      rrect(ctx, qrAX, qrAY, qrAW, qrAH, 14 * s);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.shadowColor = 'rgba(0,0,0,0.08)';
+      ctx.shadowBlur = 10 * s;
+      ctx.fill();
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+
+      // WeChat QR (full)
+      var wImg = await loadImg($('wechatQr').src);
+      if (wImg) ctx.drawImage(wImg, qrAX + qrPad, qrAY + qrPad, qrSize, qrSize);
+
+      // Alipay QR (bottom-right, rotated 180°)
+      var aImg = await loadImg($('alipayQr').src);
+      if (aImg) {
+        var aS = qrSize / 2;
+        var ax = qrAX + qrPad + qrSize - aS / 2;
+        var ay = qrAY + qrPad + qrSize - aS / 2;
+        ctx.save();
+        ctx.translate(ax, ay);
+        ctx.rotate(Math.PI);
+        ctx.drawImage(aImg, -aS / 2, -aS / 2, aS, aS);
+        ctx.restore();
+      }
+      y += qrAH + 14 * s;
+
+      // --- Payment methods ---
+      var wIcon = await loadImg('imgs/wechat.png');
+      var aIcon = await loadImg('imgs/alipay-pay.png');
+      var icoS = 18 * s, gap = 5 * s;
+      ctx.font = '500 ' + (12*s) + 'px "Quicksand", sans-serif';
+      ctx.textBaseline = 'middle';
+      var midY = y + 10 * s;
+      var wTxt = '微信', aTxt = '支付宝';
+      var wW = ctx.measureText(wTxt).width, aW = ctx.measureText(aTxt).width;
+      var dotR = 1.5 * s, dotGap = 16 * s;
+      var totalW = icoS + gap + wW + dotGap + dotR*2 + dotGap + icoS + gap + aW;
+      var mx = (W - totalW) / 2;
+
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      if (wIcon) ctx.drawImage(wIcon, mx, midY - icoS/2, icoS, icoS);
+      mx += icoS + gap;
+      ctx.textAlign = 'left';
+      ctx.fillText(wTxt, mx, midY);
+      mx += wW + dotGap;
+
+      ctx.beginPath();
+      ctx.arc(mx + dotR, midY, dotR, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,255,255,0.28)';
+      ctx.fill();
+      mx += dotR * 2 + dotGap;
+
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      if (aIcon) ctx.drawImage(aIcon, mx, midY - icoS/2, icoS, icoS);
+      mx += icoS + gap;
+      ctx.fillText(aTxt, mx, midY);
+      y += 20 * s + 10 * s;
+
+      // --- Footer ---
+      ctx.font = (10*s) + 'px "Quicksand", sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.30)';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText('Powered by HaruQR', W / 2, y);
+
+      return c.toDataURL('image/png');
+    }
+
     // --- Download ---
     const cardWrap = document.querySelector('.payment-card-wrap');
     let cardOriginalHTML = null;
@@ -678,20 +843,12 @@
     }
 
     async function handleDownload() {
-      const card = $('paymentCard');
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       downloadBtn.disabled = true;
       downloadBtn.innerHTML = '生成中...';
 
-      let dataUrl = null;
+      var dataUrl;
       try {
-        const canvas = await html2canvas(card, {
-          useCORS: true,
-          scale: isMobile ? 2 : 3,
-          backgroundColor: null,
-          logging: false
-        });
-        dataUrl = canvas.toDataURL('image/png');
+        dataUrl = await renderCardCanvas();
       } catch (err) {
         showToast('生成失败，请重试');
         downloadBtn.disabled = false;
@@ -709,7 +866,7 @@
       downloadBtn.disabled = false;
       downloadBtn.innerHTML = downloadBtnHTML;
 
-      const editBtn = document.createElement('button');
+      var editBtn = document.createElement('button');
       editBtn.id = 'editCardBtn';
       editBtn.className = 'download-btn';
       editBtn.style.background = 'rgba(255,255,255,0.08)';
@@ -718,9 +875,9 @@
       editBtn.addEventListener('click', restoreCard);
       downloadBtn.parentNode.insertBefore(editBtn, downloadBtn);
 
-      // Try auto download (may silently fail in WeChat etc, that's OK)
+      // Try auto download (may silently fail in WeChat, that's OK)
       try {
-        const link = document.createElement('a');
+        var link = document.createElement('a');
         link.download = 'HaruQR-收款码.png';
         link.href = dataUrl;
         link.click();
