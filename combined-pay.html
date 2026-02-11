@@ -318,12 +318,6 @@
     .download-btn:active { transform: translateY(0); }
     .download-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
     .download-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
-    .download-hint {
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-tertiary);
-      margin-top: 10px;
-    }
 
 
     /* Toast */
@@ -480,13 +474,10 @@
       </div>
       <button class="download-btn" id="downloadBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <polyline points="7 10 12 15 17 10"/>
-          <line x1="12" y1="15" x2="12" y2="3"/>
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
         </svg>
-        下载收款码
+        生成收款码
       </button>
-      <div class="download-hint">下载失败请长按或右键保存图片</div>
     </section>
 
     <footer class="footer"></footer>
@@ -837,7 +828,6 @@
       cardWrap.innerHTML = cardOriginalHTML;
       cardOriginalHTML = null;
       downloadBtn.style.display = '';
-      document.querySelector('.download-hint').style.display = '';
       const editBtn = $('editCardBtn');
       if (editBtn) editBtn.remove();
     }
@@ -860,9 +850,8 @@
       cardOriginalHTML = cardWrap.innerHTML;
       cardWrap.innerHTML = '<img src="' + dataUrl + '" style="width:310px;max-width:100%;border-radius:20px;display:block;margin:0 auto;">';
 
-      // Hide download button, show re-edit button
+      // Hide generate button, show hint + re-edit button
       downloadBtn.style.display = 'none';
-      document.querySelector('.download-hint').style.display = 'none';
       downloadBtn.disabled = false;
       downloadBtn.innerHTML = downloadBtnHTML;
 
@@ -874,14 +863,6 @@
       editBtn.innerHTML = '长按上方图片保存完整名片 · 点此重新编辑';
       editBtn.addEventListener('click', restoreCard);
       downloadBtn.parentNode.insertBefore(editBtn, downloadBtn);
-
-      // Try auto download (may silently fail in WeChat, that's OK)
-      try {
-        var link = document.createElement('a');
-        link.download = 'HaruQR-收款码.png';
-        link.href = dataUrl;
-        link.click();
-      } catch (e) {}
     }
 
     // --- Custom title text ---
