@@ -17,7 +17,7 @@ const LANG_CONFIG = {
 const TRANSLATIONS = {
     'en-US': {
         translation: {
-            nav: { home: "Home", about: "About", works: "Works", contact: "Contact", materials: "Materials" },
+            nav: { home: "Home", about: "About", works: "Works", contact: "Contact", tipme: "Tip Me" },
             hero: { subtitle: "Welcome to My Universe", cta: "Explore", scroll: "Scroll" },
             about: {
                 title: "About Me",
@@ -41,7 +41,7 @@ const TRANSLATIONS = {
     },
     'zh-CN': {
         translation: {
-            nav: { home: "首页", about: "关于", works: "作品", contact: "联系", materials: "素材" },
+            nav: { home: "\u9996\u9875", about: "\u5173\u4E8E", works: "\u4F5C\u54C1", contact: "\u8054\u7CFB", tipme: "\u6253\u8D4F\u6211" },
             hero: { subtitle: "欢迎来到我的世界", cta: "探索", scroll: "向下滚动" },
             about: {
                 title: "关于我",
@@ -65,7 +65,7 @@ const TRANSLATIONS = {
     },
     'ja-JP': {
         translation: {
-            nav: { home: "ホーム", about: "私について", works: "作品", contact: "お問い合わせ", materials: "素材" },
+            nav: { home: "\u30DB\u30FC\u30E0", about: "\u79C1\u306B\u3064\u3044\u3066", works: "\u4F5C\u54C1", contact: "\u304A\u554F\u3044\u5408\u308F\u305B", tipme: "\u6295\u3052\u92AD" },
             hero: { subtitle: "私の世界へようこそ", cta: "探索する", scroll: "スクロール" },
             about: {
                 title: "私について",
