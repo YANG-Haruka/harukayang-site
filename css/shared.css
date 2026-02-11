@@ -1,0 +1,212 @@
+/* ========== Reset ========== */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ========== CSS Variables ========== */
+:root {
+    --sky-deep: #0a1628;
+    --sky-mid: #1a2a4a;
+    --sky-purple: #3d2a5c;
+    --sky-warm: #5c3d5c;
+    --horizon-pink: #8b5a6b;
+    --horizon-orange: #c4785a;
+    --horizon-gold: #d4a574;
+    --text-primary: rgba(255, 255, 255, 0.95);
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --meteor-blue: #4fc3f7;
+    --meteor-core: #e0f7fa;
+    --accent-blue: #4fc3f7;
+}
+
+/* ========== Body ========== */
+body {
+    font-family: 'Quicksand', sans-serif;
+    color: var(--text-primary);
+    overflow-x: hidden;
+    position: relative;
+    background: var(--sky-deep);
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* ========== Custom Cursor ========== */
+*, *::before, *::after {
+    cursor: none !important;
+}
+
+.custom-cursor {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%);
+}
+
+.custom-cursor::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(79,195,247,0.7) 60%, transparent 100%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px rgba(79, 195, 247, 0.5);
+    animation: cursorTwinkle 2s ease-in-out infinite;
+}
+
+.custom-cursor::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    border: 1px solid rgba(79, 195, 247, 0.5);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.15s ease, height 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    animation: cursorPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes cursorTwinkle {
+    0%, 100% {
+        opacity: 1;
+        box-shadow: 0 0 8px rgba(79, 195, 247, 0.5);
+    }
+    50% {
+        opacity: 0.6;
+        box-shadow: 0 0 15px rgba(79, 195, 247, 0.8);
+    }
+}
+
+@keyframes cursorPulse {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+.custom-cursor.clicking::after {
+    width: 18px;
+    height: 18px;
+    border-color: rgba(79, 195, 247, 0.9);
+    background: rgba(79, 195, 247, 0.1);
+    animation: none;
+}
+
+.custom-cursor.clicking::before {
+    box-shadow: 0 0 12px rgba(79, 195, 247, 0.9);
+    animation: none;
+}
+
+.custom-cursor.hovering::after {
+    width: 36px;
+    height: 36px;
+    border-color: rgba(79, 195, 247, 0.6);
+    background: rgba(79, 195, 247, 0.05);
+}
+
+@media (hover: none) and (pointer: coarse) {
+    *, *::before, *::after {
+        cursor: auto !important;
+    }
+    .custom-cursor {
+        display: none !important;
+    }
+}
+
+/* ========== WebGL Background ========== */
+#sky-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+#sky-container canvas {
+    display: block;
+}
+
+/* ========== Gradient Overlays ========== */
+.gradient-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        transparent 40%,
+        rgba(93, 63, 106, 0.1) 60%,
+        rgba(139, 90, 107, 0.15) 75%,
+        rgba(196, 120, 90, 0.1) 90%,
+        rgba(212, 165, 116, 0.08) 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+}
+
+.horizon-glow {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    background: radial-gradient(
+        ellipse 150% 60% at 50% 100%,
+        rgba(212, 165, 116, 0.12) 0%,
+        rgba(196, 120, 90, 0.08) 30%,
+        rgba(139, 90, 107, 0.05) 60%,
+        transparent 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* ========== Back Button ========== */
+.back-button {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    padding: 12px 24px;
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    z-index: 101;
+}
+
+.back-button:hover {
+    border-color: var(--accent-blue);
+    color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+    .back-button {
+        top: 20px;
+        left: 20px;
+        padding: 10px 18px;
+        font-size: 12px;
+    }
+}

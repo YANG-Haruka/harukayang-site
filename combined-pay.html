@@ -5,129 +5,77 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>HaruQR - 聚合收款码生成器</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💠</text></svg>">
+  <link rel="preconnect" href="https://fonts.loli.net">
+  <link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+  <link href="https://fonts.loli.net/css2?family=Cormorant+Garamond:wght@300;400;500&family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
     :root {
-      --bg: #F6F3EE;
-      --surface: rgba(255,255,255,0.72);
-      --surface-solid: #fff;
-      --surface-hover: rgba(255,255,255,0.92);
-      --text-1: #1A1A2E;
-      --text-2: #5C5E6A;
-      --text-3: #9B9DA8;
-      --border: rgba(0,0,0,0.07);
-      --border-strong: rgba(0,0,0,0.13);
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 20px rgba(0,0,0,0.07);
-      --shadow-lg: 0 12px 40px rgba(0,0,0,0.10);
+      --bg-card: rgba(255, 255, 255, 0.03);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.12);
+      --text-tertiary: rgba(255, 255, 255, 0.35);
       --wechat: #07C160;
-      --wechat-light: rgba(7,193,96,0.08);
-      --wechat-mid: rgba(7,193,96,0.15);
       --alipay: #1677FF;
-      --alipay-light: rgba(22,119,255,0.08);
-      --alipay-mid: rgba(22,119,255,0.15);
       --danger: #EF4444;
       --success: #10B981;
-      --radius: 16px;
-      --radius-sm: 10px;
-      --font-display: 'Outfit', sans-serif;
-      --font-body: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', sans-serif;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #0C0C12;
-        --surface: rgba(28,28,40,0.80);
-        --surface-solid: #1C1C28;
-        --surface-hover: rgba(36,36,52,0.92);
-        --text-1: #E8E6E3;
-        --text-2: #9B9DA8;
-        --text-3: #5C5E6A;
-        --border: rgba(255,255,255,0.07);
-        --border-strong: rgba(255,255,255,0.13);
-        --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-        --shadow-md: 0 4px 20px rgba(0,0,0,0.35);
-        --shadow-lg: 0 12px 40px rgba(0,0,0,0.45);
-      }
     }
 
     html { font-size: 16px; -webkit-font-smoothing: antialiased; }
 
     body {
-      font-family: var(--font-body);
-      background: var(--bg);
-      color: var(--text-1);
-      min-height: 100vh;
-      overflow-x: hidden;
       line-height: 1.6;
+      min-height: 100vh;
     }
 
-    /* Background blobs */
-    body::before, body::after {
-      content: '';
-      position: fixed;
-      border-radius: 50%;
-      pointer-events: none;
-      filter: blur(90px);
-      z-index: 0;
-    }
-    body::before {
-      top: -12%; left: -6%;
-      width: 42%; height: 42%;
-      background: radial-gradient(circle, rgba(7,193,96,0.10) 0%, transparent 70%);
-    }
-    body::after {
-      bottom: -12%; right: -6%;
-      width: 42%; height: 42%;
-      background: radial-gradient(circle, rgba(22,119,255,0.10) 0%, transparent 70%);
-    }
-
+    /* Layout */
     .container {
-      position: relative;
-      z-index: 1;
+      position: relative; z-index: 2;
       max-width: 640px;
       margin: 0 auto;
-      padding: 0 20px;
+      padding: 100px 20px 60px;
     }
 
-    /* ---- Header ---- */
+    /* Header */
     .header {
-      padding: 44px 0 28px;
       text-align: center;
+      margin-bottom: 40px;
     }
     .header h1 {
-      font-family: var(--font-display);
-      font-size: 26px; font-weight: 700;
-      letter-spacing: -0.02em;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(28px, 6vw, 42px);
+      font-weight: 300;
+      letter-spacing: 0.05em;
       background: linear-gradient(135deg, var(--wechat), var(--alipay));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       background-clip: text;
+      margin-bottom: 6px;
     }
-    .header p { color: var(--text-2); font-size: 14px; margin-top: 2px; }
+    .header p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      letter-spacing: 0.05em;
+    }
 
-    /* ---- Info banner ---- */
+    /* Info Banner */
     .info-banner {
-      background: var(--surface);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
       padding: 14px 18px;
       margin-bottom: 24px;
       font-size: 13px;
-      color: var(--text-2);
+      color: var(--text-secondary);
       line-height: 1.7;
-      box-shadow: var(--shadow-sm);
     }
     .secure-badge {
       display: inline-flex; align-items: center; gap: 5px;
-      background: rgba(16,185,129,0.10);
+      background: rgba(16,185,129,0.12);
       color: var(--success);
       padding: 3px 10px;
       border-radius: 20px;
@@ -135,7 +83,7 @@
       margin-bottom: 6px;
     }
 
-    /* ---- Upload Section ---- */
+    /* Upload Section */
     .upload-section {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -144,22 +92,29 @@
     }
     .upload-card {
       position: relative;
-      background: var(--surface);
-      backdrop-filter: blur(16px);
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
       border: 2px dashed var(--border-strong);
-      border-radius: var(--radius);
       padding: 26px 14px;
       text-align: center;
       cursor: pointer;
-      transition: all 0.25s ease;
-      box-shadow: var(--shadow-sm);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       overflow: hidden;
     }
-    .upload-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .upload-card:hover { transform: translateY(-4px); }
     .upload-card.avatar-card { grid-column: 1 / -1; padding: 18px 14px; }
-    .upload-card.wechat:hover, .upload-card.wechat.dragover { border-color: var(--wechat); background: var(--wechat-light); }
-    .upload-card.alipay:hover, .upload-card.alipay.dragover { border-color: var(--alipay); background: var(--alipay-light); }
-    .upload-card.avatar:hover, .upload-card.avatar.dragover { border-color: var(--text-3); background: var(--surface-hover); }
+    .upload-card.wechat:hover, .upload-card.wechat.dragover {
+      border-color: var(--wechat);
+      background: rgba(7, 193, 96, 0.06);
+    }
+    .upload-card.alipay:hover, .upload-card.alipay.dragover {
+      border-color: var(--alipay);
+      background: rgba(22, 119, 255, 0.06);
+    }
+    .upload-card.avatar:hover, .upload-card.avatar.dragover {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.04);
+    }
     .upload-card.dragover { transform: translateY(-2px) scale(1.01); }
 
     .icon-wrap {
@@ -170,14 +125,14 @@
       transition: transform 0.25s ease;
     }
     .upload-card:hover .icon-wrap { transform: scale(1.06); }
-    .upload-card.wechat .icon-wrap { background: var(--wechat-mid); }
-    .upload-card.alipay .icon-wrap { background: var(--alipay-mid); }
-    .upload-card.avatar .icon-wrap { background: rgba(156,163,175,0.13); }
+    .upload-card.wechat .icon-wrap { background: rgba(7, 193, 96, 0.12); }
+    .upload-card.alipay .icon-wrap { background: rgba(22, 119, 255, 0.12); }
+    .upload-card.avatar .icon-wrap { background: rgba(255, 255, 255, 0.06); }
     .icon-wrap svg { width: 26px; height: 26px; }
     .icon-wrap img { width: 28px; height: 28px; object-fit: contain; }
 
-    .upload-card .label { font-size: 14px; font-weight: 600; color: var(--text-1); margin-bottom: 3px; }
-    .upload-card .hint { font-size: 12px; color: var(--text-3); }
+    .upload-card .label { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 3px; }
+    .upload-card .hint { font-size: 12px; color: var(--text-tertiary); }
     .upload-card input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
 
     /* Upload preview */
@@ -192,7 +147,7 @@
     .preview-img {
       width: 100%; max-height: 150px;
       object-fit: contain;
-      border-radius: var(--radius-sm);
+      border-radius: 8px;
     }
     .upload-card.avatar .preview-img {
       width: 72px; height: 72px;
@@ -208,12 +163,12 @@
     }
     .preview-badge svg { width: 13px; height: 13px; fill: #fff; }
     .preview-name {
-      font-size: 11px; color: var(--text-3); margin-top: 6px;
+      font-size: 11px; color: var(--text-tertiary); margin-top: 6px;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .re-upload { display: inline-block; font-size: 12px; color: var(--alipay); margin-top: 3px; font-weight: 500; }
+    .re-upload { display: inline-block; font-size: 12px; color: var(--accent-blue); margin-top: 3px; font-weight: 500; }
 
-    /* ---- Result Section ---- */
+    /* Result Section */
     .result-section {
       opacity: 0;
       transform: translateY(20px);
@@ -229,13 +184,12 @@
       max-height: 900px;
       margin-bottom: 36px;
     }
-
     .payment-card-wrap {
       display: flex; justify-content: center;
       margin-bottom: 18px;
     }
 
-    /* ---- Payment Card ---- */
+    /* Payment Card */
     .payment-card {
       width: 310px;
       background:
@@ -244,11 +198,10 @@
       border-radius: 20px;
       padding: 30px 22px 22px;
       text-align: center;
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
       position: relative;
       overflow: hidden;
     }
-    /* Shimmer effect */
     .payment-card::after {
       content: '';
       position: absolute;
@@ -310,52 +263,44 @@
       display: flex; align-items: center; gap: 5px;
       font-size: 12px; color: rgba(255,255,255,0.85); font-weight: 500;
     }
-    .pay-method img {
-      width: 18px; height: 18px; object-fit: contain;
-    }
+    .pay-method img { width: 18px; height: 18px; object-fit: contain; }
     .divider-dot {
       width: 3px; height: 3px; border-radius: 50%;
       background: rgba(255,255,255,0.28);
     }
-
-    /* Custom text input */
-    .custom-text-section {
-      margin-bottom: 24px;
-    }
-    .custom-text-input {
-      width: 100%;
-      padding: 12px 16px;
-      background: var(--surface);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius-sm);
-      font-size: 14px;
-      font-family: var(--font-body);
-      color: var(--text-1);
-      outline: none;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-      box-shadow: var(--shadow-sm);
-    }
-    .custom-text-input::placeholder { color: var(--text-3); }
-    .custom-text-input:focus {
-      border-color: var(--alipay);
-      box-shadow: 0 0 0 3px rgba(22,119,255,0.1);
-    }
-    .input-label {
-      display: block;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-2);
-      margin-bottom: 6px;
-    }
     .card-footer {
       margin-top: 10px;
-      font-family: var(--font-display);
       font-size: 10px; color: rgba(255,255,255,0.30);
       letter-spacing: 0.06em;
     }
 
-    /* Download button */
+    /* Custom Text Input */
+    .custom-text-section { margin-bottom: 24px; }
+    .custom-text-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-strong);
+      font-size: 14px;
+      font-family: 'Quicksand', sans-serif;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .custom-text-input::placeholder { color: var(--text-tertiary); }
+    .custom-text-input:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.1);
+    }
+    .input-label {
+      display: block;
+      font-size: 13px; font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    /* Download Button */
     .download-btn {
       display: flex; align-items: center; justify-content: center;
       gap: 8px;
@@ -363,10 +308,10 @@
       margin: 0 auto;
       padding: 13px 24px;
       background: linear-gradient(135deg, var(--wechat), var(--alipay));
-      color: #fff; border: none; border-radius: 14px;
+      color: #fff; border: none;
       font-size: 15px; font-weight: 600;
       cursor: pointer;
-      font-family: var(--font-body);
+      font-family: 'Quicksand', sans-serif;
       box-shadow: 0 4px 16px rgba(7,193,96,0.22);
       transition: all 0.25s ease;
     }
@@ -375,25 +320,24 @@
     .download-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
     .download-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
 
-    /* ---- Toast ---- */
+    /* Toast */
     .toast {
       position: fixed; top: 20px; left: 50%;
       transform: translateX(-50%) translateY(-110px);
-      padding: 11px 22px; border-radius: 12px;
+      padding: 11px 22px;
       font-size: 14px; font-weight: 500;
-      font-family: var(--font-body);
+      font-family: 'Quicksand', sans-serif;
       z-index: 9999;
       transition: transform 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);
       white-space: nowrap;
       max-width: calc(100vw - 40px);
+      border-radius: 8px;
     }
     .toast.error { background: var(--danger); color: #fff; box-shadow: 0 8px 28px rgba(239,68,68,0.28); }
     .toast.success { background: var(--success); color: #fff; box-shadow: 0 8px 28px rgba(16,185,129,0.28); }
     .toast.show { transform: translateX(-50%) translateY(0); }
 
-    .footer { padding: 20px 0; }
-
-    /* ---- Animations ---- */
+    /* Animations */
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(14px); }
       to { opacity: 1; transform: translateY(0); }
@@ -403,10 +347,12 @@
     .anim-d2 { animation-delay: .16s; }
     .anim-d3 { animation-delay: .24s; }
 
-    /* ---- Responsive ---- */
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container { padding: 80px 20px 40px; }
+    }
     @media (max-width: 480px) {
-      .header { padding: 32px 0 20px; }
-      .header h1 { font-size: 22px; }
+      .header h1 { font-size: 24px; }
       .upload-section { gap: 10px; }
       .upload-card { padding: 20px 10px; }
       .payment-card { width: 272px; padding: 24px 16px 18px; }
@@ -414,9 +360,16 @@
   </style>
 </head>
 <body>
+  <div class="custom-cursor" id="custom-cursor"></div>
+  <div id="sky-container"></div>
+  <div class="gradient-overlay"></div>
+  <div class="horizon-glow"></div>
+
   <div id="toast" class="toast"></div>
 
   <div class="container">
+    <a href="pay.html" class="back-button">&larr; Back</a>
+
     <!-- Header -->
     <header class="header anim-in">
       <h1>HaruQR</h1>
@@ -475,8 +428,8 @@
         <div class="upload-content">
           <div class="icon-wrap">
             <svg viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="8" r="4" stroke="#9CA3AF" stroke-width="2"/>
-              <path d="M4 21c0-3.87 3.58-7 8-7s8 3.13 8 7" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="12" cy="8" r="4" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+              <path d="M4 21c0-3.87 3.58-7 8-7s8 3.13 8 7" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round"/>
             </svg>
           </div>
           <div class="label">个人头像（可选）</div>
@@ -532,6 +485,7 @@
     <footer class="footer"></footer>
   </div>
 
+  <!-- Functional JS -->
   <script>
   (() => {
     // --- State ---
@@ -737,6 +691,13 @@
     setupCard(avatarCard, avatarInput, handleAvatar);
     downloadBtn.addEventListener('click', handleDownload);
   })();
+  </script>
+
+  <script src="js/sky-background.js"></script>
+  <script src="js/custom-cursor.js"></script>
+  <script>
+    SkyBackground.init('a, button, input, textarea, select, .upload-card, .download-btn');
+    CustomCursor.init('a, button, .upload-card, .download-btn, .back-button');
   </script>
 </body>
 </html>
