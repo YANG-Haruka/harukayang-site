@@ -319,6 +319,55 @@
     .download-btn:active { transform: translateY(0); }
     .download-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
     .download-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .download-hint {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 10px;
+    }
+
+    /* Preview Modal */
+    .preview-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(10, 22, 40, 0.92);
+      backdrop-filter: blur(20px);
+      z-index: 9998;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .preview-overlay.active { display: flex; }
+    .preview-overlay img {
+      max-width: 340px;
+      width: 85%;
+      border-radius: 20px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+    }
+    .preview-hint {
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      letter-spacing: 0.5px;
+    }
+    .preview-close {
+      position: absolute;
+      top: 20px; right: 20px;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .preview-close:hover {
+      background: rgba(0, 0, 0, 0.65);
+      color: #fff;
+    }
 
     /* Toast */
     .toast {
@@ -480,9 +529,17 @@
         </svg>
         下载收款码
       </button>
+      <div class="download-hint">下载失败请长按或右键保存图片</div>
     </section>
 
     <footer class="footer"></footer>
+  </div>
+
+  <!-- Preview Modal -->
+  <div class="preview-overlay" id="previewOverlay">
+    <span class="preview-close" id="previewClose">&times;</span>
+    <img id="previewImg" src="" alt="收款码">
+    <div class="preview-hint">长按保存完整收款码到相册</div>
   </div>
 
   <!-- Functional JS -->
@@ -654,6 +711,12 @@
       reader.readAsDataURL(file);
     }
 
+    // --- Preview Modal ---
+    const previewOverlay = $('previewOverlay');
+    const previewImg = $('previewImg');
+    $('previewClose').addEventListener('click', () => previewOverlay.classList.remove('active'));
+    previewOverlay.addEventListener('click', e => { if (e.target === previewOverlay) previewOverlay.classList.remove('active'); });
+
     // --- Download ---
     async function handleDownload() {
       const card = $('paymentCard');
@@ -666,10 +729,17 @@
           backgroundColor: null,
           logging: false
         });
+        const dataUrl = canvas.toDataURL('image/png');
+
+        // Try auto download
         const link = document.createElement('a');
         link.download = 'HaruQR-收款码.png';
-        link.href = canvas.toDataURL('image/png');
+        link.href = dataUrl;
         link.click();
+
+        // Also show preview modal for long-press save
+        previewImg.src = dataUrl;
+        previewOverlay.classList.add('active');
       } catch (err) {
         showToast('下载失败，请重试');
       } finally {
