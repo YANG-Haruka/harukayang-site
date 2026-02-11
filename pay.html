@@ -215,6 +215,92 @@
             color: var(--text-primary);
         }
 
+        /* Currency Converter */
+        .converter-section {
+            max-width: 480px;
+            margin: 40px auto 0;
+        }
+
+        .converter-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            text-align: center;
+        }
+
+        .converter-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .converter-input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 8px;
+        }
+
+        .converter-input-group input {
+            width: 80px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-family: 'Quicksand', sans-serif;
+            text-align: right;
+            outline: none;
+            -moz-appearance: textfield;
+        }
+
+        .converter-input-group input::-webkit-outer-spin-button,
+        .converter-input-group input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .converter-currency {
+            font-size: 13px;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            min-width: 32px;
+        }
+
+        .converter-swap {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .converter-swap:hover {
+            border-color: var(--accent-blue);
+            color: var(--text-primary);
+            transform: rotate(180deg);
+        }
+
+        .converter-source {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 14px;
+            letter-spacing: 0.5px;
+            opacity: 0.6;
+        }
+
         .modal-hint {
             margin-top: 16px;
             font-size: 13px;
@@ -327,6 +413,14 @@
                 padding: 30px 20px;
             }
 
+            .converter-input-group input {
+                width: 60px;
+                font-size: 14px;
+            }
+
+            .converter-card {
+                padding: 18px 14px;
+            }
         }
     </style>
 </head>
@@ -358,7 +452,25 @@
                 </div>
             </div>
 
-            <!-- Share QR -->
+            <!-- Currency Converter -->
+            <div class="converter-section">
+                <div class="converter-card">
+                    <div class="converter-row">
+                        <div class="converter-input-group">
+                            <input type="number" id="converterFrom" value="100">
+                            <span class="converter-currency" id="fromLabel">JPY</span>
+                        </div>
+                        <button class="converter-swap" id="swapBtn" title="Swap">&#8644;</button>
+                        <div class="converter-input-group">
+                            <input type="number" id="converterTo" readonly>
+                            <span class="converter-currency" id="toLabel">CNY</span>
+                        </div>
+                    </div>
+                    <div class="converter-source" data-i18n="tip.rateSource">数据来源：中国人民银行当日汇率</div>
+                </div>
+            </div>
+
+            <!-- Save QR -->
             <div class="share-section">
                 <a class="save-page-btn" id="savePageBtn" data-i18n="tip.savePage">点击保存本网页二维码</a>
             </div>
@@ -387,6 +499,17 @@
         </div>
     </div>
 
+    <!-- Share QR Card Modal -->
+    <div class="modal-overlay" id="modalQrCard">
+        <div class="modal-box">
+            <div class="modal-img-wrap">
+                <span class="modal-close" id="closeQrCard">&times;</span>
+                <img id="qrCardImg" src="" alt="QR Code">
+            </div>
+            <p class="modal-hint" data-i18n="tip.longPressSave">长按保存到本地</p>
+        </div>
+    </div>
+
     <script>
         // ========== Config ==========
         var PAGE_URL = 'https://www.harukayang.xyz/pay.html';
@@ -402,13 +525,15 @@
                     tip: {
                         back: '\u2190 Back',
                         title: 'Tip Me',
-                        desc: 'Thank you for your support!',
+                        desc: 'Thanks for keeping me alive\uD83D\uDE06',
                         wechat: 'WeChat Pay',
                         alipay: 'Alipay',
                         paypay: 'PayPay',
                         cuteMsg: 'Thanks for keeping me alive\uD83D\uDE06',
                         savePage: 'Save page QR code',
-                        wechatSaveHint: 'Long press to save, then scan from album in WeChat'
+                        longPressSave: 'Long press to save',
+                        wechatSaveHint: 'Long press to save, then scan from album in WeChat',
+                        rateSource: 'Source: People\'s Bank of China daily rate'
                     }
                 }
             },
@@ -417,13 +542,15 @@
                     tip: {
                         back: '\u2190 \u8FD4\u56DE',
                         title: '\u6253\u8D4F\u6211',
-                        desc: '\u611F\u8C22\u60A8\u7684\u652F\u6301\uFF01',
+                        desc: '\u611F\u8C22\u91D1\u4E3B\u7238\u7238\u6295\u5582\uD83D\uDE06',
                         wechat: '\u5FAE\u4FE1\u652F\u4ED8',
                         alipay: '\u652F\u4ED8\u5B9D',
                         paypay: 'PayPay',
                         cuteMsg: '\u611F\u8C22\u91D1\u4E3B\u7238\u7238\u6295\u5582\uD83D\uDE06',
                         savePage: '\u70B9\u51FB\u4FDD\u5B58\u672C\u7F51\u9875\u4E8C\u7EF4\u7801',
-                        wechatSaveHint: '\u957F\u6309\u4FDD\u5B58\u56FE\u7247\uFF0C\u6253\u5F00\u5FAE\u4FE1\u626B\u4E00\u626B\u4ECE\u76F8\u518C\u8BC6\u522B'
+                        longPressSave: '\u957F\u6309\u4FDD\u5B58\u5230\u672C\u5730',
+                        wechatSaveHint: '\u957F\u6309\u4FDD\u5B58\u56FE\u7247\uFF0C\u6253\u5F00\u5FAE\u4FE1\u626B\u4E00\u626B\u4ECE\u76F8\u518C\u8BC6\u522B',
+                        rateSource: '\u6570\u636E\u6765\u6E90\uFF1A\u4E2D\u56FD\u4EBA\u6C11\u94F6\u884C\u5F53\u65E5\u6C47\u7387'
                     }
                 }
             },
@@ -432,13 +559,15 @@
                     tip: {
                         back: '\u2190 \u623B\u308B',
                         title: '\u6295\u3052\u92AD',
-                        desc: '\u3054\u652F\u63F4\u3042\u308A\u304C\u3068\u3046\u3054\u3056\u3044\u307E\u3059\uFF01',
+                        desc: '\u4ECA\u65E5\u3082\u990A\u3063\u3066\u304F\u308C\u3066\u3042\u308A\u304C\u3068\u3046\uFF08\u7B11\uFF09',
                         wechat: 'WeChat Pay',
                         alipay: 'Alipay',
                         paypay: 'PayPay',
                         cuteMsg: '\u4ECA\u65E5\u3082\u990A\u3063\u3066\u304F\u308C\u3066\u3042\u308A\u304C\u3068\u3046\uFF08\u7B11\uFF09',
-                        savePage: '\u30AF\u30EA\u30C3\u30AF\u3057\u3066QR\u30B3\u30FC\u30C9\u3092\u4FDD\u5B58',
-                        wechatSaveHint: '\u9577\u62BC\u3057\u3067\u4FDD\u5B58\u3001WeChat\u3067\u30A2\u30EB\u30D0\u30E0\u304B\u3089\u30B9\u30AD\u30E3\u30F3'
+                        savePage: 'QR\u30B3\u30FC\u30C9\u3092\u4FDD\u5B58',
+                        longPressSave: '\u9577\u62BC\u3057\u3067\u4FDD\u5B58',
+                        wechatSaveHint: '\u9577\u62BC\u3057\u3067\u4FDD\u5B58\u3001WeChat\u3067\u30A2\u30EB\u30D0\u30E0\u304B\u3089\u30B9\u30AD\u30E3\u30F3',
+                        rateSource: '\u30C7\u30FC\u30BF\u30BD\u30FC\u30B9\uFF1A\u4E2D\u56FD\u4EBA\u6C11\u9280\u884C\u5F53\u65E5\u30EC\u30FC\u30C8'
                     }
                 }
             }
@@ -498,8 +627,8 @@
             ctx.closePath();
         }
 
-        // ========== Generate & Download Share Card ==========
-        async function generateAndDownload() {
+        // ========== Generate & Show Share Card ==========
+        async function showQrCard() {
             var canvas = document.createElement('canvas');
             var ctx = canvas.getContext('2d');
             var w = 400, h = 420;
@@ -579,25 +708,24 @@
                 }
             }
 
-            // Center avatar on QR
+            // Center avatar — square with rounded corners (WeChat style)
             var avatar = await loadImage('imgs/haruka.jpg');
             if (avatar) {
                 var aSize = 56;
-                var aCx = qrAreaX + qrAreaW / 2;
-                var aCy = qrAreaY + qrAreaH / 2;
+                var aRadius = 6;
+                var aX = qrAreaX + (qrAreaW - aSize) / 2;
+                var aY = qrAreaY + (qrAreaH - aSize) / 2;
 
-                // White circle background
+                // White square background
                 ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                ctx.arc(aCx, aCy, aSize / 2 + 4, 0, Math.PI * 2);
+                drawRoundRect(ctx, aX - 4, aY - 4, aSize + 8, aSize + 8, aRadius + 2);
                 ctx.fill();
 
-                // Circular clipped avatar
+                // Rounded square clipped avatar
                 ctx.save();
-                ctx.beginPath();
-                ctx.arc(aCx, aCy, aSize / 2, 0, Math.PI * 2);
+                drawRoundRect(ctx, aX, aY, aSize, aSize, aRadius);
                 ctx.clip();
-                ctx.drawImage(avatar, aCx - aSize / 2, aCy - aSize / 2, aSize, aSize);
+                ctx.drawImage(avatar, aX, aY, aSize, aSize);
                 ctx.restore();
             }
 
@@ -606,13 +734,38 @@
             ctx.fillStyle = lineGrad;
             ctx.fill();
 
-            // Trigger download
-            var a = document.createElement('a');
-            a.href = canvas.toDataURL('image/png');
-            a.download = 'tip-harukayang.png';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            // Show in modal
+            document.getElementById('qrCardImg').src = canvas.toDataURL('image/png');
+            openModal('modalQrCard');
+        }
+
+        // ========== Currency Converter ==========
+        var exchangeRate = null; // 1 JPY = ? CNY
+        var isJpyToCny = true;
+
+        async function fetchRate() {
+            try {
+                var resp = await fetch('https://open.er-api.com/v6/latest/JPY');
+                var data = await resp.json();
+                if (data && data.rates && data.rates.CNY) {
+                    exchangeRate = data.rates.CNY;
+                    convertAmount();
+                }
+            } catch (e) {}
+        }
+
+        function convertAmount() {
+            if (!exchangeRate) return;
+            var val = parseFloat(document.getElementById('converterFrom').value) || 0;
+            var result = isJpyToCny ? val * exchangeRate : val / exchangeRate;
+            document.getElementById('converterTo').value = result.toFixed(2);
+        }
+
+        function swapCurrency() {
+            isJpyToCny = !isJpyToCny;
+            document.getElementById('fromLabel').textContent = isJpyToCny ? 'JPY' : 'CNY';
+            document.getElementById('toLabel').textContent = isJpyToCny ? 'CNY' : 'JPY';
+            convertAmount();
         }
 
         // ========== Decode QR from image ==========
@@ -681,11 +834,25 @@
                 if (e.target === this) closeModal('modalAlipay');
             });
 
-            // Save page QR button
+            // Save page QR button → show modal
             document.getElementById('savePageBtn').addEventListener('click', function(e) {
                 e.preventDefault();
-                generateAndDownload();
+                showQrCard();
             });
+
+            // QR card modal close
+            document.getElementById('closeQrCard').addEventListener('click', function(e) {
+                e.stopPropagation();
+                closeModal('modalQrCard');
+            });
+            document.getElementById('modalQrCard').addEventListener('click', function(e) {
+                if (e.target === this) closeModal('modalQrCard');
+            });
+
+            // Currency converter
+            fetchRate();
+            document.getElementById('converterFrom').addEventListener('input', convertAmount);
+            document.getElementById('swapBtn').addEventListener('click', swapCurrency);
         }
 
         init();
