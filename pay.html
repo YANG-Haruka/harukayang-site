@@ -300,67 +300,6 @@
             -webkit-touch-callout: default;
         }
 
-        /* Direct QR view — for in-app auto-route */
-        .direct-view {
-            display: none;
-            text-align: center;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .direct-view.active {
-            display: block;
-        }
-
-        .direct-hint {
-            font-size: 15px;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-            line-height: 1.8;
-            letter-spacing: 0.5px;
-        }
-
-        .direct-hint strong {
-            color: var(--text-primary);
-            font-weight: 500;
-        }
-
-        .direct-qr-wrap {
-            display: inline-block;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-        }
-
-        .direct-qr-wrap img {
-            display: block;
-            width: 280px;
-            height: auto;
-            -webkit-user-select: auto;
-            user-select: auto;
-            -webkit-touch-callout: default;
-        }
-
-        .direct-back-btn {
-            display: inline-block;
-            margin-top: 28px;
-            padding: 12px 30px;
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            font-size: 13px;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Quicksand', sans-serif;
-            text-decoration: none;
-        }
-
-        .direct-back-btn:hover {
-            border-color: var(--accent-blue);
-            color: var(--text-primary);
-        }
-
         @media (max-width: 768px) {
             .container {
                 padding: 80px 20px 40px;
@@ -423,15 +362,6 @@
             </div>
         </div>
 
-        <!-- Direct mode: auto-routed by UA, skip selection -->
-        <div class="direct-view" id="directView">
-            <p class="direct-hint" id="directHint"></p>
-            <div class="direct-qr-wrap">
-                <img id="directImg" src="" alt="">
-            </div>
-            <br>
-            <a class="direct-back-btn" id="directBackBtn" data-i18n="tip.otherMethods">Use other payment methods</a>
-        </div>
     </div>
 
     <!-- WeChat QR Modal -->
@@ -473,10 +403,7 @@
                         wechat: 'WeChat Pay',
                         alipay: 'Alipay',
                         paypay: 'PayPay',
-                        shareQr: 'Share this page',
-                        otherMethods: 'Use other payment methods',
-                        wechatHint: 'Long press the image below to recognize the QR code and pay',
-                        alipayHint: 'Long press the image below to recognize the QR code and pay'
+                        shareQr: 'Share this page'
                     }
                 }
             },
@@ -489,10 +416,7 @@
                         wechat: '\u5FAE\u4FE1\u652F\u4ED8',
                         alipay: '\u652F\u4ED8\u5B9D',
                         paypay: 'PayPay',
-                        shareQr: '\u626B\u7801\u5206\u4EAB\u672C\u9875',
-                        otherMethods: '\u4F7F\u7528\u5176\u4ED6\u652F\u4ED8\u65B9\u5F0F',
-                        wechatHint: '\u957F\u6309\u4E0B\u65B9\u56FE\u7247\uFF0C\u8BC6\u522B\u4E8C\u7EF4\u7801\u5373\u53EF\u652F\u4ED8',
-                        alipayHint: '\u957F\u6309\u4E0B\u65B9\u56FE\u7247\uFF0C\u8BC6\u522B\u4E8C\u7EF4\u7801\u5373\u53EF\u652F\u4ED8'
+                        shareQr: '\u626B\u7801\u5206\u4EAB\u672C\u9875'
                     }
                 }
             },
@@ -505,10 +429,7 @@
                         wechat: 'WeChat Pay',
                         alipay: 'Alipay',
                         paypay: 'PayPay',
-                        shareQr: '\u3053\u306E\u30DA\u30FC\u30B8\u3092\u5171\u6709',
-                        otherMethods: '\u4ED6\u306E\u652F\u6255\u3044\u65B9\u6CD5\u3092\u4F7F\u3046',
-                        wechatHint: '\u4E0B\u306E\u753B\u50CF\u3092\u9577\u62BC\u3057\u3057\u3066QR\u30B3\u30FC\u30C9\u3092\u8AAD\u307F\u53D6\u308A\u3001\u304A\u652F\u6255\u3044\u304F\u3060\u3055\u3044',
-                        alipayHint: '\u4E0B\u306E\u753B\u50CF\u3092\u9577\u62BC\u3057\u3057\u3066QR\u30B3\u30FC\u30C9\u3092\u8AAD\u307F\u53D6\u308A\u3001\u304A\u652F\u6255\u3044\u304F\u3060\u3055\u3044'
+                        shareQr: '\u3053\u306E\u30DA\u30FC\u30B8\u3092\u5171\u6709'
                     }
                 }
             }
@@ -544,22 +465,6 @@
             document.getElementById(id).classList.remove('active');
         }
 
-        // ========== Direct view (in-app auto-route) ==========
-        function showDirectView(imgSrc, hintKey) {
-            document.getElementById('normalView').style.display = 'none';
-            var view = document.getElementById('directView');
-            view.classList.add('active');
-            document.getElementById('directImg').src = imgSrc;
-            document.getElementById('directHint').textContent = i18next.t(hintKey);
-
-            // "Use other methods" → switch back to normal view
-            document.getElementById('directBackBtn').addEventListener('click', function(e) {
-                e.preventDefault();
-                view.classList.remove('active');
-                document.getElementById('normalView').style.display = '';
-            });
-        }
-
         // ========== Share QR ==========
         function generateShareQR() {
             try {
@@ -581,29 +486,19 @@
                 interpolation: { escapeValue: false }
             });
             updateContent();
-
-            var ua = navigator.userAgent;
-            var isWechat = /MicroMessenger/i.test(ua);
-            var isAlipay = /AlipayClient/i.test(ua);
-
-            // Auto-route: in-app → skip selection, show QR directly
-            if (isWechat) {
-                showDirectView('imgs/WechatPay.JPG', 'tip.wechatHint');
-                return;
-            }
-            if (isAlipay) {
-                showDirectView('imgs/Alipay.JPG', 'tip.alipayHint');
-                return;
-            }
-
-            // Normal mode: show selection grid + share QR
             generateShareQR();
+
+            var isAlipay = /AlipayClient/i.test(navigator.userAgent);
 
             document.getElementById('cardWechat').addEventListener('click', function() {
                 openModal('modalWechat');
             });
             document.getElementById('cardAlipay').addEventListener('click', function() {
-                openModal('modalAlipay');
+                if (isAlipay) {
+                    window.location.href = 'imgs/Alipay.JPG';
+                } else {
+                    openModal('modalAlipay');
+                }
             });
             document.getElementById('cardPaypay').addEventListener('click', function() {
                 window.location.href = PAYPAY_URL;
