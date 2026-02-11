@@ -9,7 +9,7 @@
     <link href="https://fonts.loli.net/css2?family=Cormorant+Garamond:wght@300;400;500&family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/i18next@23.11.5/i18next.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <style>
         * {
@@ -938,26 +938,15 @@
             ctx.fill();
 
             // QR code (H level for center image tolerance)
-            var qr = qrcode(0, 'H');
-            qr.addData(PAGE_URL);
-            qr.make();
-            var mc = qr.getModuleCount();
             var pad = 16;
             var qrDrawSize = qrAreaW - pad * 2;
-            var modSize = qrDrawSize / mc;
-            ctx.fillStyle = '#1a1a2e';
-            for (var r = 0; r < mc; r++) {
-                for (var c = 0; c < mc; c++) {
-                    if (qr.isDark(r, c)) {
-                        ctx.fillRect(
-                            qrAreaX + pad + c * modSize,
-                            qrAreaY + pad + r * modSize,
-                            modSize + 0.5,
-                            modSize + 0.5
-                        );
-                    }
-                }
-            }
+            var qrCanvas = document.createElement('canvas');
+            await QRCode.toCanvas(qrCanvas, PAGE_URL, {
+                errorCorrectionLevel: 'H',
+                width: qrDrawSize, margin: 0,
+                color: { dark: '#1a1a2e', light: '#ffffff' }
+            });
+            ctx.drawImage(qrCanvas, qrAreaX + pad, qrAreaY + pad, qrDrawSize, qrDrawSize);
 
             // Center avatar — square with rounded corners (WeChat style)
             var avatar = await loadImage('imgs/haruka.jpg');
@@ -1039,27 +1028,15 @@
         }
 
         // ========== Generate QR Data URL ==========
-        function generateQRDataUrl(data, size, clearBR) {
-            var qr = qrcode(0, 'H');
-            qr.addData(data);
-            qr.make();
-            var mc = qr.getModuleCount();
+        async function generateQRDataUrl(data, size, clearBR) {
             var canvas = document.createElement('canvas');
-            canvas.width = size;
-            canvas.height = size;
-            var ctx = canvas.getContext('2d');
-            var modSize = size / mc;
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, size, size);
-            ctx.fillStyle = '#000000';
-            for (var r = 0; r < mc; r++) {
-                for (var c = 0; c < mc; c++) {
-                    if (qr.isDark(r, c)) {
-                        ctx.fillRect(c * modSize, r * modSize, modSize + 0.5, modSize + 0.5);
-                    }
-                }
-            }
+            await QRCode.toCanvas(canvas, data, {
+                errorCorrectionLevel: 'H',
+                width: size, margin: 0,
+                color: { dark: '#000000', light: '#ffffff' }
+            });
             if (clearBR) {
+                var ctx = canvas.getContext('2d');
                 var clearW = (size / 2) * 0.5;
                 ctx.clearRect(size / 2, size - clearW, size / 2, clearW);
             }
@@ -1081,8 +1058,8 @@
             var alipayPayData = await decodeQR('imgs/Alipay.JPG');
             if (wechatPayData && alipayPayData) {
                 var qrSize = 500;
-                document.getElementById('combinedWechatQr').src = generateQRDataUrl(wechatPayData, qrSize, false);
-                document.getElementById('combinedAlipayQr').src = generateQRDataUrl(alipayPayData, qrSize, true);
+                document.getElementById('combinedWechatQr').src = await generateQRDataUrl(wechatPayData, qrSize, false);
+                document.getElementById('combinedAlipayQr').src = await generateQRDataUrl(alipayPayData, qrSize, true);
             }
 
             document.getElementById('cardCombined').addEventListener('click', function() {
