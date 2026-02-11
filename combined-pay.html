@@ -326,48 +326,6 @@
       margin-top: 10px;
     }
 
-    /* Preview Modal */
-    .preview-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(10, 22, 40, 0.92);
-      backdrop-filter: blur(20px);
-      z-index: 9998;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
-    .preview-overlay.active { display: flex; }
-    .preview-overlay img {
-      max-width: 340px;
-      width: 85%;
-      border-radius: 20px;
-      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
-    }
-    .preview-hint {
-      margin-top: 16px;
-      font-size: 13px;
-      color: var(--text-secondary);
-      letter-spacing: 0.5px;
-    }
-    .preview-close {
-      position: absolute;
-      top: 20px; right: 20px;
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      background: rgba(0, 0, 0, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: rgba(255, 255, 255, 0.85);
-      font-size: 18px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      transition: all 0.25s ease;
-    }
-    .preview-close:hover {
-      background: rgba(0, 0, 0, 0.65);
-      color: #fff;
-    }
 
     /* Toast */
     .toast {
@@ -535,12 +493,6 @@
     <footer class="footer"></footer>
   </div>
 
-  <!-- Preview Modal -->
-  <div class="preview-overlay" id="previewOverlay">
-    <span class="preview-close" id="previewClose">&times;</span>
-    <img id="previewImg" src="" alt="收款码">
-    <div class="preview-hint">长按保存完整收款码到相册</div>
-  </div>
 
   <!-- Functional JS -->
   <script>
@@ -711,13 +663,20 @@
       reader.readAsDataURL(file);
     }
 
-    // --- Preview Modal ---
-    const previewOverlay = $('previewOverlay');
-    const previewImg = $('previewImg');
-    $('previewClose').addEventListener('click', () => previewOverlay.classList.remove('active'));
-    previewOverlay.addEventListener('click', e => { if (e.target === previewOverlay) previewOverlay.classList.remove('active'); });
-
     // --- Download ---
+    const cardWrap = document.querySelector('.payment-card-wrap');
+    let cardOriginalHTML = null;
+
+    function restoreCard() {
+      if (!cardOriginalHTML) return;
+      cardWrap.innerHTML = cardOriginalHTML;
+      cardOriginalHTML = null;
+      downloadBtn.style.display = '';
+      document.querySelector('.download-hint').style.display = '';
+      const editBtn = $('editCardBtn');
+      if (editBtn) editBtn.remove();
+    }
+
     async function handleDownload() {
       const card = $('paymentCard');
       try {
@@ -737,9 +696,22 @@
         link.href = dataUrl;
         link.click();
 
-        // Also show preview modal for long-press save
-        previewImg.src = dataUrl;
-        previewOverlay.classList.add('active');
+        // Replace HTML card with single image for long-press save
+        cardOriginalHTML = cardWrap.innerHTML;
+        cardWrap.innerHTML = '<img src="' + dataUrl + '" style="width:310px;max-width:100%;border-radius:20px;display:block;margin:0 auto;">';
+
+        // Hide download button, show hint and re-edit button
+        downloadBtn.style.display = 'none';
+        document.querySelector('.download-hint').style.display = 'none';
+
+        const editBtn = document.createElement('button');
+        editBtn.id = 'editCardBtn';
+        editBtn.className = 'download-btn';
+        editBtn.style.background = 'rgba(255,255,255,0.08)';
+        editBtn.style.boxShadow = 'none';
+        editBtn.innerHTML = '长按上方图片保存完整名片 · 点此重新编辑';
+        editBtn.addEventListener('click', restoreCard);
+        downloadBtn.parentNode.insertBefore(editBtn, downloadBtn);
       } catch (err) {
         showToast('下载失败，请重试');
       } finally {
