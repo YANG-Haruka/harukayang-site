@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>HaruQR - 聚合收款码生成器</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💠</text></svg>">
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #F6F3EE;
+      --surface: rgba(255,255,255,0.72);
+      --surface-solid: #fff;
+      --surface-hover: rgba(255,255,255,0.92);
+      --text-1: #1A1A2E;
+      --text-2: #5C5E6A;
+      --text-3: #9B9DA8;
+      --border: rgba(0,0,0,0.07);
+      --border-strong: rgba(0,0,0,0.13);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 20px rgba(0,0,0,0.07);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.10);
+      --wechat: #07C160;
+      --wechat-light: rgba(7,193,96,0.08);
+      --wechat-mid: rgba(7,193,96,0.15);
+      --alipay: #1677FF;
+      --alipay-light: rgba(22,119,255,0.08);
+      --alipay-mid: rgba(22,119,255,0.15);
+      --danger: #EF4444;
+      --success: #10B981;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --font-display: 'Outfit', sans-serif;
+      --font-body: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', sans-serif;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0C0C12;
+        --surface: rgba(28,28,40,0.80);
+        --surface-solid: #1C1C28;
+        --surface-hover: rgba(36,36,52,0.92);
+        --text-1: #E8E6E3;
+        --text-2: #9B9DA8;
+        --text-3: #5C5E6A;
+        --border: rgba(255,255,255,0.07);
+        --border-strong: rgba(255,255,255,0.13);
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+        --shadow-md: 0 4px 20px rgba(0,0,0,0.35);
+        --shadow-lg: 0 12px 40px rgba(0,0,0,0.45);
+      }
+    }
+
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text-1);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Background blobs */
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(90px);
+      z-index: 0;
+    }
+    body::before {
+      top: -12%; left: -6%;
+      width: 42%; height: 42%;
+      background: radial-gradient(circle, rgba(7,193,96,0.10) 0%, transparent 70%);
+    }
+    body::after {
+      bottom: -12%; right: -6%;
+      width: 42%; height: 42%;
+      background: radial-gradient(circle, rgba(22,119,255,0.10) 0%, transparent 70%);
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      padding: 44px 0 28px;
+      text-align: center;
+    }
+    .header h1 {
+      font-family: var(--font-display);
+      font-size: 26px; font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, var(--wechat), var(--alipay));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .header p { color: var(--text-2); font-size: 14px; margin-top: 2px; }
+
+    /* ---- Info banner ---- */
+    .info-banner {
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: var(--text-2);
+      line-height: 1.7;
+      box-shadow: var(--shadow-sm);
+    }
+    .secure-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(16,185,129,0.10);
+      color: var(--success);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px; font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    /* ---- Upload Section ---- */
+    .upload-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .upload-card {
+      position: relative;
+      background: var(--surface);
+      backdrop-filter: blur(16px);
+      border: 2px dashed var(--border-strong);
+      border-radius: var(--radius);
+      padding: 26px 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+    .upload-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .upload-card.avatar-card { grid-column: 1 / -1; padding: 18px 14px; }
+    .upload-card.wechat:hover, .upload-card.wechat.dragover { border-color: var(--wechat); background: var(--wechat-light); }
+    .upload-card.alipay:hover, .upload-card.alipay.dragover { border-color: var(--alipay); background: var(--alipay-light); }
+    .upload-card.avatar:hover, .upload-card.avatar.dragover { border-color: var(--text-3); background: var(--surface-hover); }
+    .upload-card.dragover { transform: translateY(-2px) scale(1.01); }
+
+    .icon-wrap {
+      width: 50px; height: 50px;
+      border-radius: 13px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 10px;
+      transition: transform 0.25s ease;
+    }
+    .upload-card:hover .icon-wrap { transform: scale(1.06); }
+    .upload-card.wechat .icon-wrap { background: var(--wechat-mid); }
+    .upload-card.alipay .icon-wrap { background: var(--alipay-mid); }
+    .upload-card.avatar .icon-wrap { background: rgba(156,163,175,0.13); }
+    .icon-wrap svg { width: 26px; height: 26px; }
+    .icon-wrap img { width: 28px; height: 28px; object-fit: contain; }
+
+    .upload-card .label { font-size: 14px; font-weight: 600; color: var(--text-1); margin-bottom: 3px; }
+    .upload-card .hint { font-size: 12px; color: var(--text-3); }
+    .upload-card input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+    /* Upload preview */
+    .upload-card.has-file { border-style: solid; padding: 12px; }
+    .upload-card.has-file.wechat { border-color: var(--wechat); }
+    .upload-card.has-file.alipay { border-color: var(--alipay); }
+    .upload-card.has-file.avatar { border-color: var(--success); }
+    .preview-wrap { display: none; }
+    .upload-card.has-file .preview-wrap { display: block; }
+    .upload-card.has-file .upload-content { display: none; }
+
+    .preview-img {
+      width: 100%; max-height: 150px;
+      object-fit: contain;
+      border-radius: var(--radius-sm);
+    }
+    .upload-card.avatar .preview-img {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto; display: block;
+    }
+    .preview-badge {
+      position: absolute; top: 8px; right: 8px;
+      width: 22px; height: 22px;
+      background: var(--success); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .preview-badge svg { width: 13px; height: 13px; fill: #fff; }
+    .preview-name {
+      font-size: 11px; color: var(--text-3); margin-top: 6px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .re-upload { display: inline-block; font-size: 12px; color: var(--alipay); margin-top: 3px; font-weight: 500; }
+
+    /* ---- Result Section ---- */
+    .result-section {
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.5s ease, transform 0.5s ease, max-height 0.5s ease;
+    }
+    .result-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+      max-height: 900px;
+      margin-bottom: 36px;
+    }
+
+    .payment-card-wrap {
+      display: flex; justify-content: center;
+      margin-bottom: 18px;
+    }
+
+    /* ---- Payment Card ---- */
+    .payment-card {
+      width: 310px;
+      background:
+        url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.04' fill-rule='evenodd'%3E%3Cpath d='M0 20L20 0h10L0 30zM40 20L20 40H10l30-30z'/%3E%3C/g%3E%3C/svg%3E") repeat,
+        linear-gradient(145deg, #07C160 0%, #06A050 32%, #1677FF 68%, #0958D9 100%);
+      border-radius: 20px;
+      padding: 30px 22px 22px;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    /* Shimmer effect */
+    .payment-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -160%; width: 60%; height: 100%;
+      background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,0.07) 50%, transparent 80%);
+      transform: skewX(-20deg);
+      animation: shimmer 4s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes shimmer {
+      0% { left: -160%; }
+      40%, 100% { left: 160%; }
+    }
+
+    .avatar-ring {
+      width: 68px; height: 68px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.45);
+      margin: 0 auto 12px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.18);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .avatar-ring img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar-ring svg { width: 34px; height: 34px; fill: rgba(255,255,255,0.55); }
+
+    .card-title {
+      font-size: 15px; font-weight: 600;
+      color: #fff;
+      margin-bottom: 16px;
+      letter-spacing: 0.04em;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    }
+
+    .qr-area {
+      background: #fff;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+    .qr-display {
+      position: relative;
+      width: 100%; aspect-ratio: 1/1;
+    }
+    .qr-display .wechat-qr { width: 100%; height: 100%; display: block; }
+    .qr-display .alipay-qr {
+      position: absolute;
+      right: 0; bottom: 0;
+      width: 50%; height: 50%;
+      transform: rotate(180deg);
+    }
+
+    .pay-methods {
+      display: flex; align-items: center; justify-content: center;
+      gap: 16px;
+    }
+    .pay-method {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 12px; color: rgba(255,255,255,0.85); font-weight: 500;
+    }
+    .pay-method img {
+      width: 18px; height: 18px; object-fit: contain;
+    }
+    .divider-dot {
+      width: 3px; height: 3px; border-radius: 50%;
+      background: rgba(255,255,255,0.28);
+    }
+
+    /* Custom text input */
+    .custom-text-section {
+      margin-bottom: 24px;
+    }
+    .custom-text-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--surface);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-family: var(--font-body);
+      color: var(--text-1);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: var(--shadow-sm);
+    }
+    .custom-text-input::placeholder { color: var(--text-3); }
+    .custom-text-input:focus {
+      border-color: var(--alipay);
+      box-shadow: 0 0 0 3px rgba(22,119,255,0.1);
+    }
+    .input-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-2);
+      margin-bottom: 6px;
+    }
+    .card-footer {
+      margin-top: 10px;
+      font-family: var(--font-display);
+      font-size: 10px; color: rgba(255,255,255,0.30);
+      letter-spacing: 0.06em;
+    }
+
+    /* Download button */
+    .download-btn {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px;
+      width: 100%; max-width: 310px;
+      margin: 0 auto;
+      padding: 13px 24px;
+      background: linear-gradient(135deg, var(--wechat), var(--alipay));
+      color: #fff; border: none; border-radius: 14px;
+      font-size: 15px; font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font-body);
+      box-shadow: 0 4px 16px rgba(7,193,96,0.22);
+      transition: all 0.25s ease;
+    }
+    .download-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(7,193,96,0.32); }
+    .download-btn:active { transform: translateY(0); }
+    .download-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .download-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed; top: 20px; left: 50%;
+      transform: translateX(-50%) translateY(-110px);
+      padding: 11px 22px; border-radius: 12px;
+      font-size: 14px; font-weight: 500;
+      font-family: var(--font-body);
+      z-index: 9999;
+      transition: transform 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);
+      white-space: nowrap;
+      max-width: calc(100vw - 40px);
+    }
+    .toast.error { background: var(--danger); color: #fff; box-shadow: 0 8px 28px rgba(239,68,68,0.28); }
+    .toast.success { background: var(--success); color: #fff; box-shadow: 0 8px 28px rgba(16,185,129,0.28); }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    .footer { padding: 20px 0; }
+
+    /* ---- Animations ---- */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .anim-in { animation: fadeInUp 0.5s ease both; }
+    .anim-d1 { animation-delay: .08s; }
+    .anim-d2 { animation-delay: .16s; }
+    .anim-d3 { animation-delay: .24s; }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 480px) {
+      .header { padding: 32px 0 20px; }
+      .header h1 { font-size: 22px; }
+      .upload-section { gap: 10px; }
+      .upload-card { padding: 20px 10px; }
+      .payment-card { width: 272px; padding: 24px 16px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="toast" class="toast"></div>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="header anim-in">
+      <h1>HaruQR</h1>
+      <p>聚合收款码生成器 · 离线安全</p>
+    </header>
+
+    <!-- Info -->
+    <div class="info-banner anim-in anim-d1">
+      <div class="secure-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        离线运行
+      </div>
+      <div>全程本地处理，二维码解析与合并均在浏览器中完成，不上传任何数据。请尽量裁剪非二维码区域后上传，以提升识别准确率。</div>
+    </div>
+
+    <!-- Upload -->
+    <section class="upload-section anim-in anim-d2">
+      <!-- WeChat -->
+      <div class="upload-card wechat" id="wechatCard">
+        <div class="upload-content">
+          <div class="icon-wrap">
+            <img src="imgs/wechat.png" alt="微信">
+          </div>
+          <div class="label">微信收款码</div>
+          <div class="hint">点击或拖拽上传</div>
+        </div>
+        <div class="preview-wrap">
+          <img class="preview-img" id="wechatPreview" alt="">
+          <div class="preview-badge"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+          <div class="preview-name" id="wechatName"></div>
+          <span class="re-upload">重新上传</span>
+        </div>
+        <input type="file" accept="image/*" id="wechatInput">
+      </div>
+
+      <!-- Alipay -->
+      <div class="upload-card alipay" id="alipayCard">
+        <div class="upload-content">
+          <div class="icon-wrap">
+            <img src="imgs/alipay-pay.png" alt="支付宝">
+          </div>
+          <div class="label">支付宝收款码</div>
+          <div class="hint">点击或拖拽上传</div>
+        </div>
+        <div class="preview-wrap">
+          <img class="preview-img" id="alipayPreview" alt="">
+          <div class="preview-badge"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+          <div class="preview-name" id="alipayName"></div>
+          <span class="re-upload">重新上传</span>
+        </div>
+        <input type="file" accept="image/*" id="alipayInput">
+      </div>
+
+      <!-- Avatar -->
+      <div class="upload-card avatar avatar-card" id="avatarCard">
+        <div class="upload-content">
+          <div class="icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="8" r="4" stroke="#9CA3AF" stroke-width="2"/>
+              <path d="M4 21c0-3.87 3.58-7 8-7s8 3.13 8 7" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="label">个人头像（可选）</div>
+          <div class="hint">点击或拖拽上传，用于展示在收款卡片上</div>
+        </div>
+        <div class="preview-wrap">
+          <img class="preview-img" id="avatarPreview" alt="">
+          <div class="preview-name" id="avatarName"></div>
+          <span class="re-upload">重新上传</span>
+        </div>
+        <input type="file" accept="image/*" id="avatarInput">
+      </div>
+    </section>
+
+    <!-- Custom Text -->
+    <div class="custom-text-section anim-in anim-d3">
+      <label class="input-label" for="cardTitleInput">卡片显示文字</label>
+      <input class="custom-text-input" type="text" id="cardTitleInput" placeholder="扫码向我付款" maxlength="20">
+    </div>
+
+    <!-- Result -->
+    <section class="result-section" id="resultSection">
+      <div class="payment-card-wrap">
+        <div class="payment-card" id="paymentCard">
+          <div class="avatar-ring" id="cardAvatar">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-3.87 3.58-7 8-7s8 3.13 8 7"/></svg>
+          </div>
+          <div class="card-title">扫码向我付款</div>
+          <div class="qr-area">
+            <div class="qr-display" id="qrDisplay">
+              <img class="wechat-qr" id="wechatQr" alt="">
+              <img class="alipay-qr" id="alipayQr" alt="">
+            </div>
+          </div>
+          <div class="pay-methods">
+            <span class="pay-method"><img src="imgs/wechat.png" alt="微信">微信</span>
+            <span class="divider-dot"></span>
+            <span class="pay-method"><img src="imgs/alipay-pay.png" alt="支付宝">支付宝</span>
+          </div>
+          <div class="card-footer">Powered by HaruQR</div>
+        </div>
+      </div>
+      <button class="download-btn" id="downloadBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        下载收款码
+      </button>
+    </section>
+
+    <footer class="footer"></footer>
+  </div>
+
+  <script>
+  (() => {
+    // --- State ---
+    let wechatData = null;
+    let alipayData = null;
+    let avatarUrl = null;
+
+    const wechatWhitelist = ['wxp://', 'weixin.qq.com', 'wechatpay.cn'];
+    const alipayWhitelist = ['alipay.com'];
+
+    // --- DOM ---
+    const $ = id => document.getElementById(id);
+    const wechatCard = $('wechatCard'), alipayCard = $('alipayCard'), avatarCard = $('avatarCard');
+    const wechatInput = $('wechatInput'), alipayInput = $('alipayInput'), avatarInput = $('avatarInput');
+    const resultSection = $('resultSection');
+    const downloadBtn = $('downloadBtn');
+    const downloadBtnHTML = downloadBtn.innerHTML;
+
+    // --- Toast ---
+    function showToast(msg, type) {
+      const t = $('toast');
+      t.textContent = msg;
+      t.className = 'toast ' + (type || 'error') + ' show';
+      clearTimeout(t._t);
+      t._t = setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // --- Decode QR from image file ---
+    function decodeQR(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = new Image();
+          img.onload = () => {
+            const c = document.createElement('canvas');
+            c.width = img.width; c.height = img.height;
+            const ctx = c.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            const d = ctx.getImageData(0, 0, c.width, c.height);
+            const code = jsQR(d.data, d.width, d.height, { inversionAttempts: 'dontInvert' });
+            if (code && code.data) {
+              resolve({ data: code.data, dataUrl: e.target.result });
+            } else {
+              reject(new Error('无法识别二维码，请裁剪后重试'));
+            }
+          };
+          img.onerror = () => reject(new Error('图片加载失败'));
+          img.src = e.target.result;
+        };
+        reader.onerror = () => reject(new Error('文件读取失败'));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // --- Generate QR on canvas ---
+    async function generateQR(data, size, clearBR) {
+      const canvas = document.createElement('canvas');
+      await QRCode.toCanvas(canvas, data, {
+        errorCorrectionLevel: 'H',
+        width: size, margin: 0,
+        color: { dark: '#000000', light: '#ffffff' }
+      });
+      if (clearBR) {
+        const ctx = canvas.getContext('2d');
+        const clearW = (size / 2) * 0.5;
+        ctx.clearRect(size / 2, size - clearW, size / 2, clearW);
+      }
+      return canvas.toDataURL('image/png');
+    }
+
+    // --- Try generating merged result ---
+    async function tryGenerate() {
+      if (!wechatData || !alipayData) return;
+      try {
+        const size = 500;
+        const wechatQrUrl = await generateQR(wechatData, size, false);
+        const alipayQrUrl = await generateQR(alipayData, size, true);
+        $('wechatQr').src = wechatQrUrl;
+        $('alipayQr').src = alipayQrUrl;
+        updateCardAvatar();
+        resultSection.classList.add('visible');
+        setTimeout(() => {
+          resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+        showToast('聚合收款码生成成功！', 'success');
+      } catch (err) {
+        showToast('生成失败：' + err.message);
+      }
+    }
+
+    // --- Update card avatar ---
+    function updateCardAvatar() {
+      const el = $('cardAvatar');
+      if (avatarUrl) {
+        el.innerHTML = '<img src="' + avatarUrl + '">';
+      } else {
+        el.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-3.87 3.58-7 8-7s8 3.13 8 7"/></svg>';
+      }
+    }
+
+    // --- Upload card setup ---
+    function setupCard(card, input, handler) {
+      ['dragenter', 'dragover'].forEach(ev =>
+        card.addEventListener(ev, e => { e.preventDefault(); card.classList.add('dragover'); })
+      );
+      ['dragleave', 'drop'].forEach(ev =>
+        card.addEventListener(ev, e => { e.preventDefault(); card.classList.remove('dragover'); })
+      );
+      card.addEventListener('drop', e => {
+        const f = e.dataTransfer.files[0];
+        if (f) handler(f);
+      });
+      input.addEventListener('change', e => {
+        const f = e.target.files[0];
+        if (f) handler(f);
+        e.target.value = '';
+      });
+    }
+
+    // --- WeChat handler ---
+    async function handleWechat(file) {
+      try {
+        const { data, dataUrl } = await decodeQR(file);
+        if (!wechatWhitelist.some(w => data.toLowerCase().includes(w))) {
+          showToast('请上传正确的微信收款码');
+          return;
+        }
+        wechatData = data;
+        $('wechatPreview').src = dataUrl;
+        $('wechatName').textContent = file.name;
+        wechatCard.classList.add('has-file');
+        await tryGenerate();
+      } catch (err) {
+        showToast(err.message);
+      }
+    }
+
+    // --- Alipay handler ---
+    async function handleAlipay(file) {
+      try {
+        const { data, dataUrl } = await decodeQR(file);
+        if (!alipayWhitelist.some(w => data.toLowerCase().includes(w))) {
+          showToast('请上传正确的支付宝收款码');
+          return;
+        }
+        alipayData = data;
+        $('alipayPreview').src = dataUrl;
+        $('alipayName').textContent = file.name;
+        alipayCard.classList.add('has-file');
+        await tryGenerate();
+      } catch (err) {
+        showToast(err.message);
+      }
+    }
+
+    // --- Avatar handler ---
+    function handleAvatar(file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        avatarUrl = e.target.result;
+        $('avatarPreview').src = avatarUrl;
+        $('avatarName').textContent = file.name;
+        avatarCard.classList.add('has-file');
+        updateCardAvatar();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // --- Download ---
+    async function handleDownload() {
+      const card = $('paymentCard');
+      try {
+        downloadBtn.disabled = true;
+        downloadBtn.innerHTML = '生成中...';
+        const canvas = await html2canvas(card, {
+          useCORS: true,
+          scale: 3,
+          backgroundColor: null,
+          logging: false
+        });
+        const link = document.createElement('a');
+        link.download = 'HaruQR-收款码.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      } catch (err) {
+        showToast('下载失败，请重试');
+      } finally {
+        downloadBtn.disabled = false;
+        downloadBtn.innerHTML = downloadBtnHTML;
+      }
+    }
+
+    // --- Custom title text ---
+    const cardTitleInput = $('cardTitleInput');
+    const cardTitleEl = document.querySelector('.card-title');
+    cardTitleInput.addEventListener('input', () => {
+      cardTitleEl.textContent = cardTitleInput.value || '扫码向我付款';
+    });
+
+    // --- Init ---
+    setupCard(wechatCard, wechatInput, handleWechat);
+    setupCard(alipayCard, alipayInput, handleAlipay);
+    setupCard(avatarCard, avatarInput, handleAvatar);
+    downloadBtn.addEventListener('click', handleDownload);
+  })();
+  </script>
+</body>
+</html>
