@@ -131,12 +131,15 @@
 
         /* Save button */
         .share-section {
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
             margin-top: 60px;
         }
 
         .save-page-btn {
-            display: inline-block;
+            display: block;
             padding: 12px 30px;
             background: transparent;
             border: 1px solid var(--glass-border);
@@ -422,7 +425,7 @@
             <!-- Save QR -->
             <div class="share-section">
                 <a class="save-page-btn" id="savePageBtn" data-i18n="tip.savePage">点击保存本网页二维码</a>
-                <a href="combined-pay.html" class="save-page-btn" style="margin-top: 12px;" data-i18n="tip.createOwn">创建自己的聚合微信支付宝收款码 →</a>
+                <a href="combined-pay.html" class="save-page-btn" data-i18n="tip.createOwn">创建自己的聚合微信支付宝收款码 →</a>
             </div>
         </div>
 
