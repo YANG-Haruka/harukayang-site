@@ -380,7 +380,7 @@
     <!-- Header -->
     <header class="header anim-in">
       <h1>HaruQR</h1>
-      <p>聚合收款码生成器 · 离线安全 <span style="font-size:11px;color:var(--text-tertiary);">v1.0</span></p>
+      <p>聚合收款码生成器 · 离线安全 <span style="font-size:11px;color:var(--text-tertiary);">v1.1</span></p>
     </header>
 
     <!-- Info -->
@@ -679,45 +679,52 @@
 
     async function handleDownload() {
       const card = $('paymentCard');
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      downloadBtn.disabled = true;
+      downloadBtn.innerHTML = '生成中...';
+
+      let dataUrl = null;
       try {
-        downloadBtn.disabled = true;
-        downloadBtn.innerHTML = '生成中...';
         const canvas = await html2canvas(card, {
           useCORS: true,
-          scale: 3,
+          scale: isMobile ? 2 : 3,
           backgroundColor: null,
           logging: false
         });
-        const dataUrl = canvas.toDataURL('image/png');
+        dataUrl = canvas.toDataURL('image/png');
+      } catch (err) {
+        showToast('生成失败，请重试');
+        downloadBtn.disabled = false;
+        downloadBtn.innerHTML = downloadBtnHTML;
+        return;
+      }
 
-        // Try auto download
+      // Replace HTML card with single image for long-press save
+      cardOriginalHTML = cardWrap.innerHTML;
+      cardWrap.innerHTML = '<img src="' + dataUrl + '" style="width:310px;max-width:100%;border-radius:20px;display:block;margin:0 auto;">';
+
+      // Hide download button, show re-edit button
+      downloadBtn.style.display = 'none';
+      document.querySelector('.download-hint').style.display = 'none';
+      downloadBtn.disabled = false;
+      downloadBtn.innerHTML = downloadBtnHTML;
+
+      const editBtn = document.createElement('button');
+      editBtn.id = 'editCardBtn';
+      editBtn.className = 'download-btn';
+      editBtn.style.background = 'rgba(255,255,255,0.08)';
+      editBtn.style.boxShadow = 'none';
+      editBtn.innerHTML = '长按上方图片保存完整名片 · 点此重新编辑';
+      editBtn.addEventListener('click', restoreCard);
+      downloadBtn.parentNode.insertBefore(editBtn, downloadBtn);
+
+      // Try auto download (may silently fail in WeChat etc, that's OK)
+      try {
         const link = document.createElement('a');
         link.download = 'HaruQR-收款码.png';
         link.href = dataUrl;
         link.click();
-
-        // Replace HTML card with single image for long-press save
-        cardOriginalHTML = cardWrap.innerHTML;
-        cardWrap.innerHTML = '<img src="' + dataUrl + '" style="width:310px;max-width:100%;border-radius:20px;display:block;margin:0 auto;">';
-
-        // Hide download button, show hint and re-edit button
-        downloadBtn.style.display = 'none';
-        document.querySelector('.download-hint').style.display = 'none';
-
-        const editBtn = document.createElement('button');
-        editBtn.id = 'editCardBtn';
-        editBtn.className = 'download-btn';
-        editBtn.style.background = 'rgba(255,255,255,0.08)';
-        editBtn.style.boxShadow = 'none';
-        editBtn.innerHTML = '长按上方图片保存完整名片 · 点此重新编辑';
-        editBtn.addEventListener('click', restoreCard);
-        downloadBtn.parentNode.insertBefore(editBtn, downloadBtn);
-      } catch (err) {
-        showToast('下载失败，请重试');
-      } finally {
-        downloadBtn.disabled = false;
-        downloadBtn.innerHTML = downloadBtnHTML;
-      }
+      } catch (e) {}
     }
 
     // --- Custom title text ---
