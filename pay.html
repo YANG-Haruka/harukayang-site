@@ -190,46 +190,29 @@
             letter-spacing: 0.5px;
         }
 
-        /* Share QR section */
+        /* Save button */
         .share-section {
             text-align: center;
             margin-top: 60px;
-            max-width: 840px;
-            margin-left: auto;
-            margin-right: auto;
         }
 
-        .share-title {
-            font-size: 15px;
-            color: var(--text-secondary);
-            letter-spacing: 1px;
-            margin-bottom: 20px;
-        }
-
-        .share-card {
+        .save-page-btn {
             display: inline-block;
-            cursor: pointer;
-            border-radius: 16px;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .share-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .share-card img {
-            display: block;
-            width: 280px;
-            height: auto;
-        }
-
-        .share-save-hint {
-            font-size: 12px;
+            padding: 12px 30px;
+            background: transparent;
+            border: 1px solid var(--border-color);
             color: var(--text-secondary);
-            margin-top: 14px;
+            font-size: 13px;
             letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Quicksand', sans-serif;
+            text-decoration: none;
+        }
+
+        .save-page-btn:hover {
+            border-color: var(--accent-blue);
+            color: var(--text-primary);
         }
 
         .modal-hint {
@@ -344,9 +327,6 @@
                 padding: 30px 20px;
             }
 
-            .share-card img {
-                width: 240px;
-            }
         }
     </style>
 </head>
@@ -380,11 +360,7 @@
 
             <!-- Share QR -->
             <div class="share-section">
-                <div class="share-title" data-i18n="tip.cuteMsg">(◕‿◕✿) 感谢你的小心意~</div>
-                <div class="share-card" id="shareCard">
-                    <img id="shareImg" alt="">
-                </div>
-                <div class="share-save-hint" data-i18n="tip.saveHint">长按/点击保存二维码</div>
+                <a class="save-page-btn" id="savePageBtn" data-i18n="tip.savePage">点击保存本网页二维码</a>
             </div>
         </div>
 
@@ -430,8 +406,8 @@
                         wechat: 'WeChat Pay',
                         alipay: 'Alipay',
                         paypay: 'PayPay',
-                        cuteMsg: '(\u25D5\u203F\u25D5\u273F) Thanks for your kindness~',
-                        saveHint: 'Long press / tap to save QR code',
+                        cuteMsg: 'Thanks for keeping me alive\uD83D\uDE06',
+                        savePage: 'Save page QR code',
                         wechatSaveHint: 'Long press to save, then scan from album in WeChat'
                     }
                 }
@@ -445,8 +421,8 @@
                         wechat: '\u5FAE\u4FE1\u652F\u4ED8',
                         alipay: '\u652F\u4ED8\u5B9D',
                         paypay: 'PayPay',
-                        cuteMsg: '(\u25D5\u203F\u25D5\u273F) \u611F\u8C22\u4F60\u7684\u5C0F\u5FC3\u610F~',
-                        saveHint: '\u957F\u6309/\u70B9\u51FB\u4FDD\u5B58\u4E8C\u7EF4\u7801',
+                        cuteMsg: '\u611F\u8C22\u91D1\u4E3B\u7238\u7238\u6295\u5582\uD83D\uDE06',
+                        savePage: '\u70B9\u51FB\u4FDD\u5B58\u672C\u7F51\u9875\u4E8C\u7EF4\u7801',
                         wechatSaveHint: '\u957F\u6309\u4FDD\u5B58\u56FE\u7247\uFF0C\u6253\u5F00\u5FAE\u4FE1\u626B\u4E00\u626B\u4ECE\u76F8\u518C\u8BC6\u522B'
                     }
                 }
@@ -460,8 +436,8 @@
                         wechat: 'WeChat Pay',
                         alipay: 'Alipay',
                         paypay: 'PayPay',
-                        cuteMsg: '(\u25D5\u203F\u25D5\u273F) \u3042\u308A\u304C\u3068\u3046\u3054\u3056\u3044\u307E\u3059~',
-                        saveHint: '\u9577\u62BC\u3057/\u30BF\u30C3\u30D7\u3067QR\u30B3\u30FC\u30C9\u3092\u4FDD\u5B58',
+                        cuteMsg: '\u4ECA\u65E5\u3082\u990A\u3063\u3066\u304F\u308C\u3066\u3042\u308A\u304C\u3068\u3046\uFF08\u7B11\uFF09',
+                        savePage: '\u30AF\u30EA\u30C3\u30AF\u3057\u3066QR\u30B3\u30FC\u30C9\u3092\u4FDD\u5B58',
                         wechatSaveHint: '\u9577\u62BC\u3057\u3067\u4FDD\u5B58\u3001WeChat\u3067\u30A2\u30EB\u30D0\u30E0\u304B\u3089\u30B9\u30AD\u30E3\u30F3'
                     }
                 }
@@ -522,103 +498,121 @@
             ctx.closePath();
         }
 
-        // ========== Share Card ==========
-        async function generateShareCard() {
-            try {
-                var canvas = document.createElement('canvas');
-                var ctx = canvas.getContext('2d');
-                var w = 400, h = 480;
-                canvas.width = w;
-                canvas.height = h;
+        // ========== Generate & Download Share Card ==========
+        async function generateAndDownload() {
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            var w = 400, h = 420;
+            canvas.width = w;
+            canvas.height = h;
 
-                // Dark gradient background
-                var bgGrad = ctx.createLinearGradient(0, 0, w, h);
-                bgGrad.addColorStop(0, '#0e1e38');
-                bgGrad.addColorStop(1, '#162a4a');
-                drawRoundRect(ctx, 0, 0, w, h, 20);
-                ctx.fillStyle = bgGrad;
-                ctx.fill();
+            // Dark gradient background
+            var bgGrad = ctx.createLinearGradient(0, 0, w, h);
+            bgGrad.addColorStop(0, '#0e1e38');
+            bgGrad.addColorStop(1, '#162a4a');
+            drawRoundRect(ctx, 0, 0, w, h, 20);
+            ctx.fillStyle = bgGrad;
+            ctx.fill();
 
-                // Subtle border
-                drawRoundRect(ctx, 0.5, 0.5, w - 1, h - 1, 20);
-                ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-                ctx.lineWidth = 1;
-                ctx.stroke();
+            // Subtle border
+            drawRoundRect(ctx, 0.5, 0.5, w - 1, h - 1, 20);
+            ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
 
-                // Top accent line (green → blue → red)
-                var lineGrad = ctx.createLinearGradient(w * 0.15, 0, w * 0.85, 0);
-                lineGrad.addColorStop(0, '#07C160');
-                lineGrad.addColorStop(0.5, '#1677FF');
-                lineGrad.addColorStop(1, '#FF0033');
-                drawRoundRect(ctx, w * 0.15, 8, w * 0.7, 2, 1);
-                ctx.fillStyle = lineGrad;
-                ctx.fill();
+            // Top accent line (green → blue → red)
+            var lineGrad = ctx.createLinearGradient(w * 0.15, 0, w * 0.85, 0);
+            lineGrad.addColorStop(0, '#07C160');
+            lineGrad.addColorStop(0.5, '#1677FF');
+            lineGrad.addColorStop(1, '#FF0033');
+            drawRoundRect(ctx, w * 0.15, 8, w * 0.7, 2, 1);
+            ctx.fillStyle = lineGrad;
+            ctx.fill();
 
-                // Payment icons
-                var icons = await Promise.all([
-                    loadImage('imgs/wechat.png'),
-                    loadImage('imgs/alipay-pay.png'),
-                    loadImage('imgs/paypay.png')
-                ]);
-                var iconSize = 30, iconGap = 18;
-                var totalIconW = iconSize * 3 + iconGap * 2;
-                var iconX = (w - totalIconW) / 2;
-                var iconY = 26;
-                icons.forEach(function(icon, i) {
-                    if (icon) ctx.drawImage(icon, iconX + i * (iconSize + iconGap), iconY, iconSize, iconSize);
-                });
+            // Payment icons
+            var icons = await Promise.all([
+                loadImage('imgs/wechat.png'),
+                loadImage('imgs/alipay-pay.png'),
+                loadImage('imgs/paypay.png')
+            ]);
+            var iconSize = 30, iconGap = 18;
+            var totalIconW = iconSize * 3 + iconGap * 2;
+            var iconX = (w - totalIconW) / 2;
+            var iconY = 26;
+            icons.forEach(function(icon, i) {
+                if (icon) ctx.drawImage(icon, iconX + i * (iconSize + iconGap), iconY, iconSize, iconSize);
+            });
 
-                // Cute text
-                ctx.fillStyle = 'rgba(255,255,255,0.85)';
-                ctx.font = '14px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText(i18next.t('tip.cuteMsg'), w / 2, iconY + iconSize + 28);
+            // Cute text
+            ctx.fillStyle = 'rgba(255,255,255,0.85)';
+            ctx.font = '14px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(i18next.t('tip.cuteMsg'), w / 2, iconY + iconSize + 28);
 
-                // White QR area
-                var qrAreaW = 280, qrAreaH = 280;
-                var qrAreaX = (w - qrAreaW) / 2;
-                var qrAreaY = iconY + iconSize + 44;
-                drawRoundRect(ctx, qrAreaX, qrAreaY, qrAreaW, qrAreaH, 12);
-                ctx.fillStyle = '#ffffff';
-                ctx.fill();
+            // White QR area
+            var qrAreaW = 280, qrAreaH = 280;
+            var qrAreaX = (w - qrAreaW) / 2;
+            var qrAreaY = iconY + iconSize + 44;
+            drawRoundRect(ctx, qrAreaX, qrAreaY, qrAreaW, qrAreaH, 12);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
 
-                // QR code
-                var qr = qrcode(0, 'M');
-                qr.addData(PAGE_URL);
-                qr.make();
-                var mc = qr.getModuleCount();
-                var pad = 16;
-                var qrDrawSize = qrAreaW - pad * 2;
-                var modSize = qrDrawSize / mc;
-                ctx.fillStyle = '#1a1a2e';
-                for (var r = 0; r < mc; r++) {
-                    for (var c = 0; c < mc; c++) {
-                        if (qr.isDark(r, c)) {
-                            ctx.fillRect(
-                                qrAreaX + pad + c * modSize,
-                                qrAreaY + pad + r * modSize,
-                                modSize + 0.5,
-                                modSize + 0.5
-                            );
-                        }
+            // QR code (H level for center image tolerance)
+            var qr = qrcode(0, 'H');
+            qr.addData(PAGE_URL);
+            qr.make();
+            var mc = qr.getModuleCount();
+            var pad = 16;
+            var qrDrawSize = qrAreaW - pad * 2;
+            var modSize = qrDrawSize / mc;
+            ctx.fillStyle = '#1a1a2e';
+            for (var r = 0; r < mc; r++) {
+                for (var c = 0; c < mc; c++) {
+                    if (qr.isDark(r, c)) {
+                        ctx.fillRect(
+                            qrAreaX + pad + c * modSize,
+                            qrAreaY + pad + r * modSize,
+                            modSize + 0.5,
+                            modSize + 0.5
+                        );
                     }
                 }
+            }
 
-                // URL below QR
-                ctx.fillStyle = 'rgba(255,255,255,0.35)';
-                ctx.font = '11px sans-serif';
-                ctx.fillText('www.harukayang.xyz/pay.html', w / 2, qrAreaY + qrAreaH + 24);
+            // Center avatar on QR
+            var avatar = await loadImage('imgs/haruka.jpg');
+            if (avatar) {
+                var aSize = 56;
+                var aCx = qrAreaX + qrAreaW / 2;
+                var aCy = qrAreaY + qrAreaH / 2;
 
-                // Bottom accent line
-                drawRoundRect(ctx, w * 0.15, h - 10, w * 0.7, 2, 1);
-                ctx.fillStyle = lineGrad;
+                // White circle background
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(aCx, aCy, aSize / 2 + 4, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Render to page
-                document.getElementById('shareImg').src = canvas.toDataURL('image/png');
-            } catch (e) {
-                document.querySelector('.share-section').style.display = 'none';
+                // Circular clipped avatar
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(aCx, aCy, aSize / 2, 0, Math.PI * 2);
+                ctx.clip();
+                ctx.drawImage(avatar, aCx - aSize / 2, aCy - aSize / 2, aSize, aSize);
+                ctx.restore();
             }
+
+            // Bottom accent line
+            drawRoundRect(ctx, w * 0.15, h - 10, w * 0.7, 2, 1);
+            ctx.fillStyle = lineGrad;
+            ctx.fill();
+
+            // Trigger download
+            var a = document.createElement('a');
+            a.href = canvas.toDataURL('image/png');
+            a.download = 'tip-harukayang.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
 
         // ========== Decode QR from image ==========
@@ -649,7 +643,6 @@
                 interpolation: { escapeValue: false }
             });
             updateContent();
-            generateShareCard();
 
             var isAlipay = /AlipayClient/i.test(navigator.userAgent);
             var alipayPayUrl = null;
@@ -688,16 +681,10 @@
                 if (e.target === this) closeModal('modalAlipay');
             });
 
-            // Share card click → download
-            document.getElementById('shareCard').addEventListener('click', function() {
-                var img = document.getElementById('shareImg');
-                if (!img.src) return;
-                var a = document.createElement('a');
-                a.href = img.src;
-                a.download = 'tip-harukayang.png';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
+            // Save page QR button
+            document.getElementById('savePageBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                generateAndDownload();
             });
         }
 
