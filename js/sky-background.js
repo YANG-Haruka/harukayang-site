@@ -570,6 +570,8 @@ window.SkyBackground = (function() {
         return false;
     }
 
+    let resizeTimer = null;
+
     function onResize() {
         width = window.innerWidth;
         height = window.innerHeight;
@@ -583,14 +585,22 @@ window.SkyBackground = (function() {
         renderer.setSize(width, height);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        if (starField && starField.material.uniforms.pixelRatio) {
-            starField.material.uniforms.pixelRatio.value = renderer.getPixelRatio();
-        }
-
         if (skyMesh) {
             skyMesh.geometry.dispose();
             skyMesh.geometry = new THREE.PlaneGeometry(width * 1.5, height * 1.5);
         }
+
+        // Debounce star field rebuild to avoid thrashing during drag-resize
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+            if (starField) {
+                starField.geometry.dispose();
+                starField.material.dispose();
+                scene.remove(starField);
+                starField = null;
+            }
+            createStarField();
+        }, 200);
     }
 
     function animate(timestamp) {
