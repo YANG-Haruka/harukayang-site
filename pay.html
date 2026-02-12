@@ -22,23 +22,21 @@
             min-height: 100vh;
             position: relative;
             z-index: 2;
-            padding: 100px 50px 60px;
+            padding: 100px 60px 60px;
         }
 
+        /* ===== Header ===== */
         .page-header {
             text-align: center;
-            margin-bottom: 60px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            margin-bottom: 56px;
         }
 
         .page-header h1 {
             font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(36px, 7vw, 56px);
+            font-size: clamp(36px, 7vw, 64px);
             font-weight: 300;
             letter-spacing: 0.05em;
-            margin-bottom: 15px;
+            margin-bottom: 14px;
             background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-blue) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -46,18 +44,77 @@
         }
 
         .page-header p {
-            font-size: 15px;
+            font-size: 16px;
             color: var(--text-secondary);
             letter-spacing: 0.05em;
         }
 
-        /* Selection Grid */
+        /* ===== Main two-column layout ===== */
+        .tip-layout {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 80px;
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        /* Left: payment content */
+        .tip-left {
+            flex: 1;
+            max-width: 520px;
+            min-width: 0;
+        }
+
+        /* Right: character */
+        .tip-right {
+            flex-shrink: 0;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .tip-character {
+            position: relative;
+        }
+
+        .tip-character img {
+            height: clamp(380px, 56vh, 620px);
+            width: auto;
+            display: block;
+            filter: drop-shadow(0 12px 40px rgba(0, 0, 0, 0.35));
+            animation: charFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes charFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .tip-character::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            height: 20px;
+            background: radial-gradient(ellipse, rgba(0,0,0,0.25) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: shadowFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes shadowFloat {
+            0%, 100% { transform: translateX(-50%) scale(1); opacity: 1; }
+            50% { transform: translateX(-50%) scale(0.85); opacity: 0.7; }
+        }
+
+        /* ===== Selection Grid ===== */
         .pay-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
-            max-width: 560px;
-            margin: 0 auto;
+            gap: 20px;
+            margin-bottom: 32px;
         }
 
         .pay-card {
@@ -85,23 +142,23 @@
         .pay-card--paypay::before { background: #FF0033; }
 
         .pay-card:hover {
-            transform: translateY(-6px);
+            transform: translateY(-5px);
         }
 
         .pay-card--combined:hover {
             border-color: rgba(79, 195, 247, 0.4);
-            box-shadow: 0 20px 50px rgba(7, 193, 96, 0.08), 0 20px 50px rgba(22, 119, 255, 0.08), 0 0 30px rgba(79, 195, 247, 0.05);
+            box-shadow: 0 16px 40px rgba(7, 193, 96, 0.08), 0 16px 40px rgba(22, 119, 255, 0.08);
         }
 
         .pay-card--paypay:hover {
             border-color: rgba(255, 0, 51, 0.4);
-            box-shadow: 0 20px 50px rgba(255, 0, 51, 0.1), 0 0 30px rgba(255, 0, 51, 0.05);
+            box-shadow: 0 16px 40px rgba(255, 0, 51, 0.1);
         }
 
         .card-icon {
             width: 48px;
             height: 48px;
-            margin: 0 auto 20px;
+            margin: 0 auto 18px;
         }
 
         .card-icon img {
@@ -114,7 +171,7 @@
             width: auto;
             height: auto;
             display: flex;
-            gap: 8px;
+            gap: 10px;
             justify-content: center;
         }
 
@@ -129,38 +186,9 @@
             letter-spacing: 0.5px;
         }
 
-        /* Save button */
-        .share-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            margin-top: 60px;
-        }
-
-        .save-page-btn {
-            display: block;
-            padding: 12px 30px;
-            background: transparent;
-            border: 1px solid var(--glass-border);
-            color: var(--text-secondary);
-            font-size: 13px;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Quicksand', sans-serif;
-            text-decoration: none;
-        }
-
-        .save-page-btn:hover {
-            border-color: var(--accent-blue);
-            color: var(--text-primary);
-        }
-
-        /* Currency Converter */
+        /* ===== Currency Converter ===== */
         .converter-section {
-            max-width: 480px;
-            margin: 40px auto 0;
+            margin-bottom: 28px;
         }
 
         .converter-card {
@@ -184,7 +212,7 @@
             gap: 8px;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--glass-border);
-            padding: 10px 14px;
+            padding: 11px 14px;
             border-radius: 8px;
         }
 
@@ -227,6 +255,7 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            padding: 0;
         }
 
         .converter-swap:hover {
@@ -238,20 +267,39 @@
         .converter-source {
             font-size: 11px;
             color: var(--text-secondary);
-            margin-top: 14px;
+            margin-top: 10px;
             letter-spacing: 0.5px;
             opacity: 0.6;
         }
 
-        .modal-hint {
-            margin-top: 16px;
-            font-size: 13px;
-            color: var(--text-secondary);
-            letter-spacing: 0.5px;
-            text-align: center;
+        /* ===== Share Section ===== */
+        .share-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* QR Modal */
+        .save-page-btn {
+            display: block;
+            padding: 12px 30px;
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            font-size: 13px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Quicksand', sans-serif;
+            text-decoration: none;
+        }
+
+        .save-page-btn:hover {
+            border-color: var(--accent-blue);
+            color: var(--text-primary);
+        }
+
+        /* ===== QR Modal ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -334,6 +382,14 @@
             -webkit-touch-callout: default;
         }
 
+        .modal-hint {
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
         .modal-create-link {
             display: block;
             margin-top: 14px;
@@ -349,18 +405,33 @@
             opacity: 0.8;
         }
 
-        @media (max-width: 768px) {
+        /* ===== Responsive ===== */
+        @media (max-width: 860px) {
             .container {
-                padding: 80px 20px 40px;
+                padding: 80px 24px 40px;
+            }
+
+            .tip-layout {
+                flex-direction: column-reverse;
+                align-items: center;
+                gap: 36px;
+            }
+
+            .tip-left {
+                max-width: 400px;
+                width: 100%;
+            }
+
+            .tip-character img {
+                height: clamp(200px, 35vh, 300px);
             }
 
             .pay-grid {
-                grid-template-columns: 1fr;
-                max-width: 320px;
+                gap: 14px;
             }
 
             .pay-card {
-                padding: 30px 20px;
+                padding: 24px 14px;
             }
 
             .converter-input-group input {
@@ -369,7 +440,27 @@
             }
 
             .converter-card {
-                padding: 18px 14px;
+                padding: 16px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 72px 16px 32px;
+            }
+
+            .page-header {
+                margin-bottom: 32px;
+            }
+
+            .pay-grid {
+                grid-template-columns: 1fr;
+                max-width: 280px;
+                margin: 0 auto 20px;
+            }
+
+            .tip-character img {
+                height: 200px;
             }
         }
     </style>
@@ -388,47 +479,53 @@
             <p class="page-desc" data-i18n="tip.desc">Thank you for your support!</p>
         </div>
 
-        <!-- Normal mode: selection grid -->
-        <div id="normalView">
-            <div class="pay-grid">
-                <div class="pay-card pay-card--combined" id="cardCombined">
-                    <div class="card-icon card-icon--combined">
-                        <img src="imgs/wechat.png" alt="">
-                        <img src="imgs/alipay-pay.png" alt="">
+        <div class="tip-layout">
+            <!-- Left: payment options -->
+            <div class="tip-left">
+                <div class="pay-grid">
+                    <div class="pay-card pay-card--combined" id="cardCombined">
+                        <div class="card-icon card-icon--combined">
+                            <img src="imgs/wechat.png" alt="">
+                            <img src="imgs/alipay-pay.png" alt="">
+                        </div>
+                        <div class="card-title" data-i18n="tip.combined">微信 / 支付宝</div>
                     </div>
-                    <div class="card-title" data-i18n="tip.combined">微信 / 支付宝</div>
+                    <div class="pay-card pay-card--paypay" id="cardPaypay">
+                        <div class="card-icon"><img src="imgs/paypay.png" alt=""></div>
+                        <div class="card-title" data-i18n="tip.paypay">PayPay</div>
+                    </div>
                 </div>
-                <div class="pay-card pay-card--paypay" id="cardPaypay">
-                    <div class="card-icon"><img src="imgs/paypay.png" alt=""></div>
-                    <div class="card-title" data-i18n="tip.paypay">PayPay</div>
+
+                <div class="converter-section">
+                    <div class="converter-card">
+                        <div class="converter-row">
+                            <div class="converter-input-group">
+                                <input type="number" id="converterFrom" value="100">
+                                <span class="converter-currency" id="fromLabel">JPY</span>
+                            </div>
+                            <button class="converter-swap" id="swapBtn" title="Swap">&#8644;</button>
+                            <div class="converter-input-group">
+                                <input type="number" id="converterTo" readonly>
+                                <span class="converter-currency" id="toLabel">CNY</span>
+                            </div>
+                        </div>
+                        <div class="converter-source" data-i18n="tip.rateSource">数据来源：中国人民银行当日汇率</div>
+                    </div>
+                </div>
+
+                <div class="share-section">
+                    <a class="save-page-btn" id="savePageBtn" data-i18n="tip.savePage">点击保存本网页二维码</a>
+                    <a href="combined-pay.html" class="save-page-btn" data-i18n="tip.createOwn">创建自己的聚合微信支付宝收款码 →</a>
                 </div>
             </div>
 
-            <!-- Currency Converter -->
-            <div class="converter-section">
-                <div class="converter-card">
-                    <div class="converter-row">
-                        <div class="converter-input-group">
-                            <input type="number" id="converterFrom" value="100">
-                            <span class="converter-currency" id="fromLabel">JPY</span>
-                        </div>
-                        <button class="converter-swap" id="swapBtn" title="Swap">&#8644;</button>
-                        <div class="converter-input-group">
-                            <input type="number" id="converterTo" readonly>
-                            <span class="converter-currency" id="toLabel">CNY</span>
-                        </div>
-                    </div>
-                    <div class="converter-source" data-i18n="tip.rateSource">数据来源：中国人民银行当日汇率</div>
+            <!-- Right: character -->
+            <div class="tip-right">
+                <div class="tip-character">
+                    <img src="imgs/tip_pic.png" alt="">
                 </div>
-            </div>
-
-            <!-- Save QR -->
-            <div class="share-section">
-                <a class="save-page-btn" id="savePageBtn" data-i18n="tip.savePage">点击保存本网页二维码</a>
-                <a href="combined-pay.html" class="save-page-btn" data-i18n="tip.createOwn">创建自己的聚合微信支付宝收款码 →</a>
             </div>
         </div>
-
     </div>
 
     <!-- Combined QR Modal -->
@@ -511,7 +608,7 @@
                         wechat: 'WeChat Pay',
                         alipay: 'Alipay',
                         paypay: 'PayPay',
-                        cuteMsg: '\u4ECA\u65E5\u3082\u990A\u3063\u3066\u304F\u308C\u3066\u3042\u308A\u304C\u3068\u3046\uFF08\u7B11\uFF09',
+                        cuteMsg: '\u4ECA\u65E5\u3082\u990A\u3063\u3066\u304F\u308C\u3066\u304F\u308C\u3066\u3042\u308A\u304C\u3068\u3046\uFF08\u7B11\uFF09',
                         savePage: 'QR\u30B3\u30FC\u30C9\u3092\u4FDD\u5B58',
                         longPressSave: '\u307E\u305A\u53CE\u6B3E\u30B3\u30FC\u30C9\u306E\u753B\u50CF\u3092\u30A2\u30EB\u30D0\u30E0\u306B\u4FDD\u5B58\u3057\u3001\u6C7A\u6E08\u30A2\u30D7\u30EA\u3067\u30A2\u30EB\u30D0\u30E0\u304B\u3089\u753B\u50CF\u3092\u8AAD\u307F\u53D6\u3063\u3066\u9001\u91D1\u3057\u3066\u304F\u3060\u3055\u3044\u3002',
                         wechatSaveHint: '\u9577\u62BC\u3057\u3067\u4FDD\u5B58\u3001WeChat\u3067\u30A2\u30EB\u30D0\u30E0\u304B\u3089\u30B9\u30AD\u30E3\u30F3',
@@ -585,7 +682,6 @@
             canvas.width = w;
             canvas.height = h;
 
-            // Dark gradient background
             var bgGrad = ctx.createLinearGradient(0, 0, w, h);
             bgGrad.addColorStop(0, '#0e1e38');
             bgGrad.addColorStop(1, '#162a4a');
@@ -593,13 +689,11 @@
             ctx.fillStyle = bgGrad;
             ctx.fill();
 
-            // Subtle border
             drawRoundRect(ctx, 0.5, 0.5, w - 1, h - 1, 20);
             ctx.strokeStyle = 'rgba(255,255,255,0.08)';
             ctx.lineWidth = 1;
             ctx.stroke();
 
-            // Top accent line (green → blue → red)
             var lineGrad = ctx.createLinearGradient(w * 0.15, 0, w * 0.85, 0);
             lineGrad.addColorStop(0, '#07C160');
             lineGrad.addColorStop(0.5, '#1677FF');
@@ -608,7 +702,6 @@
             ctx.fillStyle = lineGrad;
             ctx.fill();
 
-            // Payment icons
             var icons = await Promise.all([
                 loadImage('imgs/wechat.png'),
                 loadImage('imgs/alipay-pay.png'),
@@ -622,13 +715,11 @@
                 if (icon) ctx.drawImage(icon, iconX + i * (iconSize + iconGap), iconY, iconSize, iconSize);
             });
 
-            // Cute text
             ctx.fillStyle = 'rgba(255,255,255,0.85)';
             ctx.font = '14px sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText(i18next.t('tip.cuteMsg'), w / 2, iconY + iconSize + 28);
 
-            // White QR area
             var qrAreaW = 280, qrAreaH = 280;
             var qrAreaX = (w - qrAreaW) / 2;
             var qrAreaY = iconY + iconSize + 44;
@@ -636,7 +727,6 @@
             ctx.fillStyle = '#ffffff';
             ctx.fill();
 
-            // QR code (H level for center image tolerance)
             var pad = 16;
             var qrDrawSize = qrAreaW - pad * 2;
             var qrCanvas = document.createElement('canvas');
@@ -647,20 +737,15 @@
             });
             ctx.drawImage(qrCanvas, qrAreaX + pad, qrAreaY + pad, qrDrawSize, qrDrawSize);
 
-            // Center avatar — square with rounded corners (WeChat style)
             var avatar = await loadImage('imgs/haruka.jpg');
             if (avatar) {
                 var aSize = 56;
                 var aRadius = 6;
                 var aX = qrAreaX + (qrAreaW - aSize) / 2;
                 var aY = qrAreaY + (qrAreaH - aSize) / 2;
-
-                // White square background
                 ctx.fillStyle = '#ffffff';
                 drawRoundRect(ctx, aX - 4, aY - 4, aSize + 8, aSize + 8, aRadius + 2);
                 ctx.fill();
-
-                // Rounded square clipped avatar
                 ctx.save();
                 drawRoundRect(ctx, aX, aY, aSize, aSize, aRadius);
                 ctx.clip();
@@ -668,18 +753,16 @@
                 ctx.restore();
             }
 
-            // Bottom accent line
             drawRoundRect(ctx, w * 0.15, h - 10, w * 0.7, 2, 1);
             ctx.fillStyle = lineGrad;
             ctx.fill();
 
-            // Show in modal
             document.getElementById('qrCardImg').src = canvas.toDataURL('image/png');
             openModal('modalQrCard');
         }
 
         // ========== Currency Converter ==========
-        var exchangeRate = null; // 1 JPY = ? CNY
+        var exchangeRate = null;
         var isJpyToCny = true;
 
         async function fetchRate() {
@@ -732,13 +815,11 @@
                 if (e.target === this) closeModal('modalCombined');
             });
 
-            // Save page QR button → show modal
             document.getElementById('savePageBtn').addEventListener('click', function(e) {
                 e.preventDefault();
                 showQrCard();
             });
 
-            // QR card modal close
             document.getElementById('closeQrCard').addEventListener('click', function(e) {
                 e.stopPropagation();
                 closeModal('modalQrCard');
@@ -747,7 +828,6 @@
                 if (e.target === this) closeModal('modalQrCard');
             });
 
-            // Currency converter
             fetchRate();
             document.getElementById('converterFrom').addEventListener('input', convertAmount);
             document.getElementById('swapBtn').addEventListener('click', swapCurrency);
