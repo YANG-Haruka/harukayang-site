@@ -4,8 +4,8 @@
  */
 
 const CHAT_CONFIG = {
-    apiUrl: 'https://harukayang-chat-api.vercel.app/api/chat',
-    contactUrl: 'https://harukayang-chat-api.vercel.app/api/contact'
+    apiUrl: 'https://api.harukayang.com/api/chat',
+    contactUrl: 'https://api.harukayang.com/api/contact'
 };
 
 (function () {
