@@ -16,7 +16,8 @@ const CHAT_CONFIG = {
     var chatActions = document.getElementById('chatActions');
     var chatInputArea = chatInput.closest('.chat-input-area');
     var isSending = false;
-    var contactMode = false;
+    var contactMode = false; // false | 'step1' | 'step2'
+    var contactInfo = '';
     var history = [];
 
     // ========== i18n helper ==========
@@ -116,21 +117,30 @@ const CHAT_CONFIG = {
     // ========== Contact mode ==========
 
     function enterContactMode() {
-        contactMode = true;
+        contactMode = 'step1';
+        contactInfo = '';
         contactBtn.classList.add('active');
         contactBtn.textContent = t('chat.backToChat', '返回聊天');
         chatInputArea.classList.add('contact-mode');
-        chatInput.placeholder = t('chat.contactPlaceholder', '留下你的联系方式和想说的话...');
+        chatInput.placeholder = t('chat.contactStep1Placeholder', '你的微信号、邮箱或其他联系方式...');
 
         var welcome = chatMessages.querySelector('.chat-welcome');
         if (welcome) welcome.remove();
 
-        createSystemMsg(t('chat.contactHint', '接下来的消息会直接转达给悠本人，请留下你的联系方式和想说的话～'));
+        createSystemMsg(t('chat.contactStep1', '请先留下你的联系方式（微信 / 邮箱等）'));
+        chatInput.focus();
+    }
+
+    function enterContactStep2() {
+        contactMode = 'step2';
+        chatInput.placeholder = t('chat.contactStep2Placeholder', '你想说的话...');
+        createSystemMsg(t('chat.contactStep2', '收到！现在请输入你想说的话～'));
         chatInput.focus();
     }
 
     function exitContactMode() {
         contactMode = false;
+        contactInfo = '';
         contactBtn.classList.remove('active');
         contactBtn.textContent = t('chat.contactBtn', '联系本人');
         chatInputArea.classList.remove('contact-mode');
@@ -138,11 +148,11 @@ const CHAT_CONFIG = {
         if (chatActions) chatActions.classList.remove('visible');
     }
 
-    async function sendContact(message) {
+    async function sendContact(contact, message) {
         var resp = await fetch(CHAT_CONFIG.contactUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: message })
+            body: JSON.stringify({ contact: contact, message: message })
         });
         if (!resp.ok) throw new Error('Contact API error: ' + resp.status);
         return resp.json();
@@ -237,10 +247,14 @@ const CHAT_CONFIG = {
         isSending = true;
         chatSend.disabled = true;
 
-        if (contactMode) {
-            // Contact mode: send to email
+        if (contactMode === 'step1') {
+            // Step 1: collect contact info, then move to step 2
+            contactInfo = msg;
+            enterContactStep2();
+        } else if (contactMode === 'step2') {
+            // Step 2: send contact info + message to email
             try {
-                await sendContact(msg);
+                await sendContact(contactInfo, msg);
                 createSystemMsg(t('chat.contactSent', '已收到！悠会尽快回复你的～'));
             } catch (err) {
                 console.error('Contact error:', err);

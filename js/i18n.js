@@ -37,7 +37,7 @@ const TRANSLATIONS = {
                 linguaharu: { desc: "Open-source AI Document Translator" }
             },
             contact: { title: "Contact", subtitle: "Let's Create Something Beautiful" },
-            chat: { online: "Online", welcome: "Hey~ Feel free to chat with me!", placeholder: "Say something...", contactBtn: "Contact Me", contactHint: "Your next message will be forwarded directly to Haruka. Please leave your contact info and message~", contactSent: "Received! Haruka will get back to you soon~", backToChat: "Back to Chat", contactPlaceholder: "Leave your contact info and message..." }
+            chat: { online: "Online", welcome: "Hey~ Feel free to chat with me!", placeholder: "Say something...", contactBtn: "Contact Me", contactStep1: "Please leave your contact info first (WeChat / Email / etc.)", contactStep1Placeholder: "Your WeChat, Email, or other contact...", contactStep2: "Got it! Now tell me what you'd like to say~", contactStep2Placeholder: "Your message...", contactSent: "Received! Haruka will get back to you soon~", backToChat: "Back to Chat" }
         }
     },
     'zh-CN': {
@@ -62,7 +62,7 @@ const TRANSLATIONS = {
                 linguaharu: { desc: "开源AI文档翻译工具" }
             },
             contact: { title: "联系我", subtitle: "一起创造美好的事物" },
-            chat: { online: "在线", welcome: "嘿～有什么想聊的随便问我", placeholder: "说点什么...", contactBtn: "联系本人", contactHint: "接下来的消息会直接转达给悠本人，请留下你的联系方式和想说的话～", contactSent: "已收到！悠会尽快回复你的～", backToChat: "返回聊天", contactPlaceholder: "留下你的联系方式和想说的话..." }
+            chat: { online: "在线", welcome: "嘿～有什么想聊的随便问我", placeholder: "说点什么...", contactBtn: "联系本人", contactStep1: "请先留下你的联系方式（微信 / 邮箱等）", contactStep1Placeholder: "你的微信号、邮箱或其他联系方式...", contactStep2: "收到！现在请输入你想说的话～", contactStep2Placeholder: "你想说的话...", contactSent: "已收到！悠会尽快回复你的～", backToChat: "返回聊天" }
         }
     },
     'ja-JP': {
@@ -87,7 +87,7 @@ const TRANSLATIONS = {
                 linguaharu: { desc: "オープンソースAI文書翻訳ツール" }
             },
             contact: { title: "お問い合わせ", subtitle: "一緒に素敵なものを創りましょう" },
-            chat: { online: "オンライン", welcome: "やあ～何でも気軽に聞いてね！", placeholder: "メッセージを入力...", contactBtn: "本人に連絡", contactHint: "次のメッセージは悠本人に直接届きます。連絡先とメッセージを残してね～", contactSent: "受け取りました！悠からすぐ返信します～", backToChat: "チャットに戻る", contactPlaceholder: "連絡先とメッセージを入力..." }
+            chat: { online: "オンライン", welcome: "やあ～何でも気軽に聞いてね！", placeholder: "メッセージを入力...", contactBtn: "本人に連絡", contactStep1: "まず連絡先を教えてね（LINE / メールなど）", contactStep1Placeholder: "LINE、メールなどの連絡先...", contactStep2: "了解！伝えたいことを入力してね～", contactStep2Placeholder: "メッセージを入力...", contactSent: "受け取りました！悠からすぐ返信します～", backToChat: "チャットに戻る" }
         }
     }
 };
