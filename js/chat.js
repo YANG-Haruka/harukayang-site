@@ -20,6 +20,13 @@ const CHAT_CONFIG = {
     var contactInfo = '';
     var history = [];
 
+    // Generate or restore session ID for chat logging
+    var sessionId = sessionStorage.getItem('chatSessionId');
+    if (!sessionId) {
+        sessionId = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+        sessionStorage.setItem('chatSessionId', sessionId);
+    }
+
     // ========== i18n helper ==========
 
     function t(key, fallback) {
@@ -164,7 +171,7 @@ const CHAT_CONFIG = {
         var resp = await fetch(CHAT_CONFIG.apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: message, history: history })
+            body: JSON.stringify({ message: message, history: history, sessionId: sessionId })
         });
 
         if (!resp.ok) throw new Error('API error: ' + resp.status);
