@@ -36,7 +36,8 @@ const TRANSLATIONS = {
                 haruwine: { desc: "AI Cocktail Sommelier" },
                 linguaharu: { desc: "Open-source AI Document Translator" }
             },
-            contact: { title: "Contact", subtitle: "Let's Create Something Beautiful" }
+            contact: { title: "Contact", subtitle: "Let's Create Something Beautiful" },
+            chat: { online: "Online", welcome: "Hey~ Feel free to chat with me!", placeholder: "Say something..." }
         }
     },
     'zh-CN': {
@@ -60,7 +61,8 @@ const TRANSLATIONS = {
                 haruwine: { desc: "AI 鸡尾酒推荐助手" },
                 linguaharu: { desc: "开源AI文档翻译工具" }
             },
-            contact: { title: "联系我", subtitle: "一起创造美好的事物" }
+            contact: { title: "联系我", subtitle: "一起创造美好的事物" },
+            chat: { online: "在线", welcome: "嘿～有什么想聊的随便问我", placeholder: "说点什么..." }
         }
     },
     'ja-JP': {
@@ -84,7 +86,8 @@ const TRANSLATIONS = {
                 haruwine: { desc: "AI カクテルソムリエ" },
                 linguaharu: { desc: "オープンソースAI文書翻訳ツール" }
             },
-            contact: { title: "お問い合わせ", subtitle: "一緒に素敵なものを創りましょう" }
+            contact: { title: "お問い合わせ", subtitle: "一緒に素敵なものを創りましょう" },
+            chat: { online: "オンライン", welcome: "やあ～何でも気軽に聞いてね！", placeholder: "メッセージを入力..." }
         }
     }
 };
@@ -139,6 +142,14 @@ function updateContent() {
         const translation = i18next.t(key);
         if (translation && translation !== key) {
             element.textContent = translation;
+        }
+    });
+    // Handle placeholder translations
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+        const key = element.getAttribute('data-i18n-placeholder');
+        const translation = i18next.t(key);
+        if (translation && translation !== key) {
+            element.placeholder = translation;
         }
     });
 }
