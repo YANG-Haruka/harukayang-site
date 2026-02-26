@@ -1125,6 +1125,67 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Chat actions bar */
+        .chat-actions {
+            padding: 6px 14px;
+            border-top: 1px solid var(--glass-border);
+            display: none;
+            gap: 6px;
+        }
+
+        .chat-actions.visible {
+            display: flex;
+        }
+
+        .chat-action-btn {
+            padding: 5px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-family: 'Quicksand', sans-serif;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chat-action-btn:hover {
+            border-color: var(--meteor-blue);
+            color: var(--text-primary);
+            background: rgba(79, 195, 247, 0.08);
+        }
+
+        .chat-action-btn.active {
+            border-color: #d4a574;
+            color: #d4a574;
+            background: rgba(212, 165, 116, 0.1);
+        }
+
+        /* Contact mode styling */
+        .chat-input-area.contact-mode .chat-input {
+            border-color: rgba(212, 165, 116, 0.4);
+        }
+
+        .chat-input-area.contact-mode .chat-input:focus {
+            border-color: rgba(212, 165, 116, 0.6);
+        }
+
+        /* System message */
+        .chat-msg--system {
+            justify-content: center;
+        }
+
+        .chat-msg--system .chat-msg-bubble {
+            max-width: 90%;
+            background: rgba(212, 165, 116, 0.1);
+            border: 1px solid rgba(212, 165, 116, 0.2);
+            color: #d4a574;
+            text-align: center;
+            font-size: 12px;
+            border-radius: 10px;
+        }
+
         .chat-input-area {
             padding: 12px 14px;
             border-top: 1px solid var(--glass-border);
@@ -1623,6 +1684,9 @@
                     </div>
                     <div class="chat-welcome-text" data-i18n="chat.welcome">Hey! Feel free to leave a message here~</div>
                 </div>
+            </div>
+            <div class="chat-actions" id="chatActions">
+                <button class="chat-action-btn" id="contactBtn" data-i18n="chat.contactBtn">联系本人</button>
             </div>
             <div class="chat-input-area">
                 <textarea class="chat-input" id="chatInput" data-i18n-placeholder="chat.placeholder" placeholder="说点什么..." rows="1"></textarea>

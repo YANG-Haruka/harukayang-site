@@ -37,7 +37,7 @@ const TRANSLATIONS = {
                 linguaharu: { desc: "Open-source AI Document Translator" }
             },
             contact: { title: "Contact", subtitle: "Let's Create Something Beautiful" },
-            chat: { online: "Online", welcome: "Hey~ Feel free to chat with me!", placeholder: "Say something..." }
+            chat: { online: "Online", welcome: "Hey~ Feel free to chat with me!", placeholder: "Say something...", contactBtn: "Contact Me", contactHint: "Your next message will be forwarded directly to Haruka. Please leave your contact info and message~", contactSent: "Received! Haruka will get back to you soon~", backToChat: "Back to Chat", contactPlaceholder: "Leave your contact info and message..." }
         }
     },
     'zh-CN': {
@@ -62,7 +62,7 @@ const TRANSLATIONS = {
                 linguaharu: { desc: "开源AI文档翻译工具" }
             },
             contact: { title: "联系我", subtitle: "一起创造美好的事物" },
-            chat: { online: "在线", welcome: "嘿～有什么想聊的随便问我", placeholder: "说点什么..." }
+            chat: { online: "在线", welcome: "嘿～有什么想聊的随便问我", placeholder: "说点什么...", contactBtn: "联系本人", contactHint: "接下来的消息会直接转达给悠本人，请留下你的联系方式和想说的话～", contactSent: "已收到！悠会尽快回复你的～", backToChat: "返回聊天", contactPlaceholder: "留下你的联系方式和想说的话..." }
         }
     },
     'ja-JP': {
@@ -87,7 +87,7 @@ const TRANSLATIONS = {
                 linguaharu: { desc: "オープンソースAI文書翻訳ツール" }
             },
             contact: { title: "お問い合わせ", subtitle: "一緒に素敵なものを創りましょう" },
-            chat: { online: "オンライン", welcome: "やあ～何でも気軽に聞いてね！", placeholder: "メッセージを入力..." }
+            chat: { online: "オンライン", welcome: "やあ～何でも気軽に聞いてね！", placeholder: "メッセージを入力...", contactBtn: "本人に連絡", contactHint: "次のメッセージは悠本人に直接届きます。連絡先とメッセージを残してね～", contactSent: "受け取りました！悠からすぐ返信します～", backToChat: "チャットに戻る", contactPlaceholder: "連絡先とメッセージを入力..." }
         }
     }
 };

@@ -1,20 +1,33 @@
 /**
  * Chat Integration for Haruka Yang Portfolio
- * Calls Vercel API backend → DeepSeek
+ * Calls Vercel API backend → DeepSeek + Contact mode
  */
 
 const CHAT_CONFIG = {
-    // ★ 部署 Vercel 后替换为你的实际地址
-    apiUrl: 'https://harukayang-chat-api.vercel.app/api/chat'
-    // Vercel 部署地址，无需修改
+    apiUrl: 'https://harukayang-chat-api.vercel.app/api/chat',
+    contactUrl: 'https://harukayang-chat-api.vercel.app/api/contact'
 };
 
 (function () {
     var chatMessages = document.getElementById('chatMessages');
     var chatInput = document.getElementById('chatInput');
     var chatSend = document.getElementById('chatSend');
+    var contactBtn = document.getElementById('contactBtn');
+    var chatActions = document.getElementById('chatActions');
+    var chatInputArea = chatInput.closest('.chat-input-area');
     var isSending = false;
-    var history = []; // conversation history for context
+    var contactMode = false;
+    var history = [];
+
+    // ========== i18n helper ==========
+
+    function t(key, fallback) {
+        if (typeof i18next !== 'undefined' && i18next.isInitialized) {
+            var val = i18next.t(key);
+            if (val && val !== key) return val;
+        }
+        return fallback;
+    }
 
     // ========== Render helpers ==========
 
@@ -37,6 +50,17 @@ const CHAT_CONFIG = {
         chatMessages.appendChild(row);
         chatMessages.scrollTop = chatMessages.scrollHeight;
         return bubble;
+    }
+
+    function createSystemMsg(text) {
+        var row = document.createElement('div');
+        row.className = 'chat-msg chat-msg--system';
+        var bubble = document.createElement('div');
+        bubble.className = 'chat-msg-bubble';
+        bubble.textContent = text;
+        row.appendChild(bubble);
+        chatMessages.appendChild(row);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
     function createBotMsgGroup() {
@@ -89,7 +113,42 @@ const CHAT_CONFIG = {
         if (el) el.remove();
     }
 
-    // ========== API call (streaming) ==========
+    // ========== Contact mode ==========
+
+    function enterContactMode() {
+        contactMode = true;
+        contactBtn.classList.add('active');
+        contactBtn.textContent = t('chat.backToChat', '返回聊天');
+        chatInputArea.classList.add('contact-mode');
+        chatInput.placeholder = t('chat.contactPlaceholder', '留下你的联系方式和想说的话...');
+
+        var welcome = chatMessages.querySelector('.chat-welcome');
+        if (welcome) welcome.remove();
+
+        createSystemMsg(t('chat.contactHint', '接下来的消息会直接转达给悠本人，请留下你的联系方式和想说的话～'));
+        chatInput.focus();
+    }
+
+    function exitContactMode() {
+        contactMode = false;
+        contactBtn.classList.remove('active');
+        contactBtn.textContent = t('chat.contactBtn', '联系本人');
+        chatInputArea.classList.remove('contact-mode');
+        chatInput.placeholder = t('chat.placeholder', '说点什么...');
+        if (chatActions) chatActions.classList.remove('visible');
+    }
+
+    async function sendContact(message) {
+        var resp = await fetch(CHAT_CONFIG.contactUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: message })
+        });
+        if (!resp.ok) throw new Error('Contact API error: ' + resp.status);
+        return resp.json();
+    }
+
+    // ========== AI chat API ==========
 
     async function sendMessage(message) {
         var resp = await fetch(CHAT_CONFIG.apiUrl, {
@@ -102,13 +161,12 @@ const CHAT_CONFIG = {
         return resp.body;
     }
 
-    async function parseStream(readableStream, bubbleWrap) {
+    // Collect full streamed response text
+    async function collectStream(readableStream) {
         var reader = readableStream.getReader();
         var decoder = new TextDecoder();
         var buffer = '';
         var fullText = '';
-        var currentLineText = '';
-        var currentBubble = addBubbleToGroup(bubbleWrap, '');
 
         while (true) {
             var result = await reader.read();
@@ -121,41 +179,45 @@ const CHAT_CONFIG = {
             for (var i = 0; i < lines.length; i++) {
                 var line = lines[i].trim();
                 if (!line || !line.startsWith('data:')) continue;
-
                 var dataStr = line.slice(5).trim();
                 if (dataStr === '[DONE]') continue;
-
                 try {
                     var data = JSON.parse(dataStr);
                     var delta = data.choices && data.choices[0] && data.choices[0].delta;
-                    if (!delta || !delta.content) continue;
-
-                    var chunk = delta.content;
-                    fullText += chunk;
-
-                    // Split on newlines for multi-bubble effect
-                    var parts = chunk.split('\n');
-                    for (var p = 0; p < parts.length; p++) {
-                        if (p > 0 && currentLineText.trim()) {
-                            currentLineText = '';
-                            currentBubble = addBubbleToGroup(bubbleWrap, '');
-                        }
-                        currentLineText += parts[p];
-                        currentBubble.textContent = currentLineText;
-                    }
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                } catch (e) {
-                    // skip
-                }
+                    if (delta && delta.content) fullText += delta.content;
+                } catch (e) {}
             }
         }
+        return fullText;
+    }
 
-        // Clean up empty bubbles
-        var allBubbles = bubbleWrap.querySelectorAll('.chat-msg-bubble');
-        for (var b = 0; b < allBubbles.length; b++) {
-            if (!allBubbles[b].textContent.trim()) allBubbles[b].remove();
+    function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+    // Simulate typing: show text character by character
+    async function typeText(bubble, text) {
+        var len = text.length;
+        // Typing speed: 30-60ms per char, faster for longer texts
+        var baseDelay = len > 20 ? 25 : 40;
+        for (var i = 0; i < len; i++) {
+            bubble.textContent = text.slice(0, i + 1);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            await sleep(baseDelay + Math.random() * 20);
         }
+    }
 
+    // Display reply: split by newline, type each bubble sequentially with delay
+    async function displayReply(fullText, bubbleWrap) {
+        var msgLines = fullText.split('\n').filter(function (l) { return l.trim(); });
+        for (var i = 0; i < msgLines.length; i++) {
+            if (i > 0) {
+                // Pause between messages (600-1200ms, like typing gap)
+                showTyping();
+                await sleep(600 + Math.random() * 600);
+                removeTyping();
+            }
+            var bubble = addBubbleToGroup(bubbleWrap, '');
+            await typeText(bubble, msgLines[i]);
+        }
         return fullText;
     }
 
@@ -169,28 +231,50 @@ const CHAT_CONFIG = {
         if (welcome) welcome.remove();
 
         createMsgEl('user', msg);
-        history.push({ role: 'user', content: msg });
-
         chatInput.value = '';
         chatInput.style.height = 'auto';
 
         isSending = true;
         chatSend.disabled = true;
-        showTyping();
 
-        try {
-            var stream = await sendMessage(msg);
-            removeTyping();
-            var bubbleWrap = createBotMsgGroup();
-            var reply = await parseStream(stream, bubbleWrap);
-            history.push({ role: 'assistant', content: reply });
+        if (contactMode) {
+            // Contact mode: send to email
+            try {
+                await sendContact(msg);
+                createSystemMsg(t('chat.contactSent', '已收到！悠会尽快回复你的～'));
+            } catch (err) {
+                console.error('Contact error:', err);
+                createSystemMsg('发送失败，请稍后再试');
+            }
+            exitContactMode();
+        } else {
+            // AI chat mode
+            history.push({ role: 'user', content: msg });
+            showTyping();
 
-            // Keep history manageable
-            if (history.length > 20) history = history.slice(-20);
-        } catch (err) {
-            removeTyping();
-            console.error('Chat error:', err);
-            createMsgEl('bot', '抱歉，暂时无法回复，请稍后再试～');
+            try {
+                var stream = await sendMessage(msg);
+                var fullReply = await collectStream(stream);
+                removeTyping();
+
+                // Detect [CONTACT] marker and strip it
+                var showContact = fullReply.indexOf('[CONTACT]') !== -1;
+                var cleanReply = fullReply.replace(/\[CONTACT\]/g, '').trim();
+
+                var bubbleWrap = createBotMsgGroup();
+                await displayReply(cleanReply, bubbleWrap);
+                history.push({ role: 'assistant', content: cleanReply });
+                if (history.length > 20) history = history.slice(-20);
+
+                // Show contact button if AI detected contact intent
+                if (showContact && chatActions) {
+                    chatActions.classList.add('visible');
+                }
+            } catch (err) {
+                removeTyping();
+                console.error('Chat error:', err);
+                createMsgEl('bot', '抱歉，暂时无法回复，请稍后再试～');
+            }
         }
 
         isSending = false;
@@ -212,5 +296,13 @@ const CHAT_CONFIG = {
     chatInput.addEventListener('input', function () {
         this.style.height = 'auto';
         this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+    });
+
+    contactBtn.addEventListener('click', function () {
+        if (contactMode) {
+            exitContactMode();
+        } else {
+            enterContactMode();
+        }
     });
 })();
