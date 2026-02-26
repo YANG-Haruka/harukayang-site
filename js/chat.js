@@ -205,6 +205,12 @@ const CHAT_CONFIG = {
 
     // Simulate typing: show text character by character
     async function typeText(bubble, text) {
+        // Pre-measure: set full text to get final dimensions, then lock width
+        bubble.textContent = text;
+        var finalWidth = bubble.offsetWidth;
+        bubble.style.minWidth = finalWidth + 'px';
+        bubble.textContent = '';
+
         var len = text.length;
         // Typing speed: 30-60ms per char, faster for longer texts
         var baseDelay = len > 20 ? 25 : 40;
@@ -213,6 +219,8 @@ const CHAT_CONFIG = {
             chatMessages.scrollTop = chatMessages.scrollHeight;
             await sleep(baseDelay + Math.random() * 20);
         }
+        // Typing done, release fixed width
+        bubble.style.minWidth = '';
     }
 
     // Display reply: split by newline, type each bubble sequentially with delay
