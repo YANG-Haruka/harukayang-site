@@ -257,9 +257,10 @@ const CHAT_CONFIG = {
                 var fullReply = await collectStream(stream);
                 removeTyping();
 
-                // Detect [CONTACT] marker and strip it
-                var showContact = fullReply.indexOf('[CONTACT]') !== -1;
-                var cleanReply = fullReply.replace(/\[CONTACT\]/g, '').trim();
+                // Detect contact marker and strip it (AI may output variants)
+                var contactPattern = /\[CONTACT\]|\[联系本人\]|【CONTACT】|【联系本人】/gi;
+                var showContact = contactPattern.test(fullReply);
+                var cleanReply = fullReply.replace(contactPattern, '').trim();
 
                 var bubbleWrap = createBotMsgGroup();
                 await displayReply(cleanReply, bubbleWrap);
