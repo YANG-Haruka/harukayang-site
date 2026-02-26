@@ -22,7 +22,7 @@ const TRANSLATIONS = {
             about: {
                 title: "About Me",
                 subtitle: "A Developer with Passion for Innovation",
-                greeting: "Hello, I'm Haruka Yang",
+                greeting: "Hello, I'm YANG JIZHOU. You can also call me Haruka.",
                 p1: "I am a full-stack developer with a deep passion for crafting elegant and efficient digital experiences. I love transforming creative visions into reality through code.",
                 p2: "My journey began with a curiosity for technology, evolving into a relentless pursuit of innovation and excellence. I explore the intersection where technology meets artistry.",
                 p3: "When I'm not coding, you'll find me exploring emerging technologies, reading, or contemplating my next creative project over a cup of coffee."
@@ -46,7 +46,7 @@ const TRANSLATIONS = {
             about: {
                 title: "关于我",
                 subtitle: "热爱创新的开发者",
-                greeting: "你好，我是 Haruka Yang",
+                greeting: "你好，我是杨际舟，也可以叫我悠",
                 p1: "我是一名全栈开发者，热衷于打造优雅高效的数字体验。我喜欢用代码将创意转化为现实。",
                 p2: "我的旅程始于对技术的好奇，逐渐演变为对创新与卓越的不懈追求。我探索技术与艺术的交汇点。",
                 p3: "在不写代码的时候，你会发现我在探索新兴技术、阅读，或者一边喝咖啡一边思考下一个创意项目。"
@@ -70,7 +70,7 @@ const TRANSLATIONS = {
             about: {
                 title: "私について",
                 subtitle: "イノベーションに情熱を注ぐ開発者",
-                greeting: "こんにちは、Haruka Yang です",
+                greeting: "こんにちは、YANG JIZHOU です。悠（Haruka）とも呼んでください。",
                 p1: "私はフルスタック開発者として、エレガントで効率的なデジタル体験の創造に情熱を注いでいます。コードを通じてクリエイティブなビジョンを現実に変えることが大好きです。",
                 p2: "テクノロジーへの好奇心から始まった私の旅は、イノベーションと卓越性への絶え間ない追求へと発展しました。テクノロジーとアートが交差する場所を探求しています。",
                 p3: "コーディングをしていない時は、新しいテクノロジーを探求したり、読書をしたり、コーヒーを飲みながら次のクリエイティブプロジェクトを考えたりしています。"

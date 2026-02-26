@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haruka-Yang - Personal Portfolio</title>
+    <title>YANG JIZHOU - Personal Portfolio</title>
     <link rel="preconnect" href="https://fonts.loli.net">
     <link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
-    <link href="https://fonts.loli.net/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.loli.net/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Ma+Shan+Zheng&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/shared.css">
     <!-- Three.js for GPU-accelerated rendering -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
@@ -97,34 +97,87 @@
         }
 
         .hero-content h1 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(48px, 10vw, 96px);
-            font-weight: 300;
-            letter-spacing: 0.15em;
-            margin-bottom: 25px;
-            padding-bottom: 5px;
-            line-height: 1.3;
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: clamp(100px, 20vw, 200px);
+            font-weight: 400;
+            letter-spacing: 0;
+            margin-bottom: 20px;
+            padding-bottom: 0;
+            line-height: 1.1;
+            position: relative;
+            display: inline-block;
+            transform: scaleX(1.3);
+            color: transparent;
             background: linear-gradient(
-                135deg,
-                var(--text-primary) 0%,
-                rgba(255, 255, 255, 0.8) 50%,
-                var(--meteor-blue) 100%
+                180deg,
+                rgba(255, 255, 255, 0.95) 0%,
+                rgba(79, 195, 247, 0.9) 40%,
+                rgba(79, 195, 247, 0.6) 70%,
+                rgba(61, 42, 92, 0.8) 100%
             );
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: fadeInUp 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            filter: drop-shadow(0 0 30px rgba(79, 195, 247, 0.3))
+                    drop-shadow(0 0 60px rgba(79, 195, 247, 0.15));
+            animation: heroCharReveal 2s cubic-bezier(0.4, 0, 0.2, 1) forwards,
+                       heroCharGlow 4s ease-in-out 2s infinite;
             opacity: 0;
         }
 
+        @keyframes heroCharReveal {
+            0% {
+                opacity: 0;
+                transform: scaleX(1.3) translateY(20px) scale(0.92);
+                filter: drop-shadow(0 0 0 transparent);
+            }
+            60% {
+                opacity: 1;
+                transform: scaleX(1.3) translateY(-5px) scale(1.02);
+            }
+            100% {
+                opacity: 1;
+                transform: scaleX(1.3) translateY(0) scale(1);
+                filter: drop-shadow(0 0 30px rgba(79, 195, 247, 0.3))
+                        drop-shadow(0 0 60px rgba(79, 195, 247, 0.15));
+            }
+        }
+
+        @keyframes heroCharGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 30px rgba(79, 195, 247, 0.3))
+                        drop-shadow(0 0 60px rgba(79, 195, 247, 0.15));
+            }
+            50% {
+                filter: drop-shadow(0 0 40px rgba(79, 195, 247, 0.5))
+                        drop-shadow(0 0 80px rgba(79, 195, 247, 0.25));
+            }
+        }
+
         .hero-content p {
-            font-size: clamp(16px, 2.5vw, 22px);
+            font-size: clamp(13px, 2vw, 18px);
             font-weight: 300;
-            letter-spacing: 0.3em;
+            letter-spacing: 0.35em;
             color: var(--text-secondary);
-            margin-bottom: 50px;
-            animation: fadeInUp 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+            margin-bottom: 45px;
+            text-transform: uppercase;
+            animation: fadeInUp 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.6s forwards;
             opacity: 0;
+        }
+
+        .hero-divider {
+            width: 40px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--meteor-blue), transparent);
+            margin: 0 auto 20px;
+            animation: fadeInUp 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.4s forwards,
+                       dividerPulse 3s ease-in-out 1.6s infinite;
+            opacity: 0;
+        }
+
+        @keyframes dividerPulse {
+            0%, 100% { width: 40px; opacity: 1; }
+            50% { width: 60px; opacity: 0.7; }
         }
 
         .cta-button {
@@ -141,7 +194,7 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
-            animation: fadeInUp 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.4s forwards;
+            animation: fadeInUp 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.8s forwards;
             opacity: 0;
         }
 
@@ -1316,7 +1369,8 @@
 
         <section class="hero" id="home">
             <div class="hero-content">
-                <h1>Haruka Yang</h1>
+                <h1>悠</h1>
+                <div class="hero-divider"></div>
                 <p data-i18n="hero.subtitle">Welcome to My Universe</p>
                 <a href="#about" class="cta-button" data-i18n="hero.cta">Explore</a>
             </div>
@@ -1333,13 +1387,13 @@
             </div>
             <div class="about-content">
                 <div class="about-text">
-                    <h3 data-i18n="about.greeting">Hello, I'm Haruka Yang</h3>
+                    <h3 data-i18n="about.greeting">Hello, I'm YANG JIZHOU. You can also call me Haruka.</h3>
                     <p data-i18n="about.p1">I am a full-stack developer with a deep passion for crafting elegant and efficient digital experiences. I love transforming creative visions into reality through code.</p>
                     <p data-i18n="about.p2">My journey began with a curiosity for technology, evolving into a relentless pursuit of innovation and excellence. I explore the intersection where technology meets artistry.</p>
                     <p data-i18n="about.p3">When I'm not coding, you'll find me exploring emerging technologies, reading, or contemplating my next creative project over a cup of coffee.</p>
                 </div>
                 <div class="about-image">
-                    <img src="imgs/my_pic.jpg" alt="Haruka Yang">
+                    <img src="imgs/my_pic.jpg" alt="YANG JIZHOU">
                 </div>
             </div>
         </section>
