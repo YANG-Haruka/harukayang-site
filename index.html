@@ -1030,6 +1030,101 @@
             letter-spacing: 0.3px;
         }
 
+        /* Chat messages */
+        .chat-msg {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+            animation: chatMsgIn 0.3s ease;
+        }
+
+        .chat-msg--user {
+            flex-direction: row-reverse;
+        }
+
+        .chat-msg-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 1px solid var(--glass-border);
+        }
+
+        .chat-msg-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .chat-msg-bubble {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 14px;
+            font-size: 13px;
+            line-height: 1.6;
+            letter-spacing: 0.2px;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        .chat-msg--group {
+            align-items: flex-start;
+        }
+
+        .chat-msg-bubbles {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-width: 75%;
+        }
+
+        .chat-msg--group .chat-msg-bubble {
+            animation: chatMsgIn 0.25s ease;
+        }
+
+        .chat-msg--user .chat-msg-bubble {
+            background: rgba(79, 195, 247, 0.15);
+            border: 1px solid rgba(79, 195, 247, 0.2);
+            color: var(--text-primary);
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-msg--bot .chat-msg-bubble {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            border-bottom-left-radius: 4px;
+        }
+
+        /* Typing indicator */
+        .typing-dots {
+            display: inline-flex;
+            gap: 4px;
+            padding: 2px 0;
+        }
+
+        .typing-dots span {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+            animation: typingBounce 1.2s ease-in-out infinite;
+        }
+
+        .typing-dots span:nth-child(2) { animation-delay: 0.15s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-4px); opacity: 1; }
+        }
+
+        @keyframes chatMsgIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .chat-input-area {
             padding: 12px 14px;
             border-top: 1px solid var(--glass-border);
@@ -1636,12 +1731,11 @@
             observer.observe(el);
         });
 
-        // ========== Chat ==========
+        // ========== Chat Panel Toggle ==========
         var chatOpen = false;
         var chatExpanded = false;
         var chatFab = document.getElementById('chatFab');
         var chatPanel = document.getElementById('chatPanel');
-        var chatInput = document.getElementById('chatInput');
 
         chatFab.addEventListener('click', function() {
             chatOpen = !chatOpen;
@@ -1661,27 +1755,10 @@
             chatPanel.classList.toggle('expanded', chatExpanded);
         });
 
-        chatInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 100) + 'px';
-        });
-
-        document.getElementById('chatSend').addEventListener('click', function() {
-            var msg = chatInput.value.trim();
-            if (!msg) return;
-            // TODO: Implement chat send logic
-            chatInput.value = '';
-            chatInput.style.height = 'auto';
-        });
-
-        chatInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                document.getElementById('chatSend').click();
-            }
-        });
-
     </script>
+
+    <!-- Chat (Coze API) -->
+    <script src="js/chat.js"></script>
 
     <!-- i18n Configuration -->
     <script src="js/i18n.js"></script>
