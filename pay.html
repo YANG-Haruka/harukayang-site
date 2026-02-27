@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tip Me - Haruka-Yang</title>
+    <meta name="description" content="点击给悠悠转账qwq - Support Haruka Yang via WeChat, Alipay or PayPay">
+    <meta property="og:title" content="Tip Me - Haruka Yang">
+    <meta property="og:description" content="点击给悠悠转账qwq">
+    <meta property="og:image" content="https://www.harukayang.com/imgs/haruka.jpg">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="imgs/ico.webp" type="image/webp">
     <link rel="preconnect" href="https://fonts.loli.net">
     <link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
     <link href="https://fonts.loli.net/css2?family=Cormorant+Garamond:wght@300;400;500&family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
@@ -43,10 +49,55 @@
             background-clip: text;
         }
 
+        .page-header .header-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--glass-border);
+            box-shadow: 0 0 24px rgba(79, 195, 247, 0.15);
+            margin-bottom: 18px;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .page-header .header-avatar:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 32px rgba(79, 195, 247, 0.3);
+        }
+
         .page-header p {
             font-size: 16px;
             color: var(--text-secondary);
             letter-spacing: 0.05em;
+        }
+
+        /* Entrance animation */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .fade-in-up:nth-child(2) { animation-delay: 0.1s; }
+        .fade-in-up:nth-child(3) { animation-delay: 0.2s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tip-left {
+            opacity: 0;
+            transform: translateY(24px);
+            animation: fadeInUp 0.6s ease 0.3s forwards;
+        }
+
+        .tip-right {
+            opacity: 0;
+            transform: translateY(24px);
+            animation: fadeInUp 0.6s ease 0.15s forwards;
         }
 
         /* ===== Main two-column layout ===== */
@@ -475,8 +526,9 @@
         <a href="index.html" class="back-button" data-i18n="tip.back">&larr; Back</a>
 
         <div class="page-header">
-            <h1 data-i18n="tip.title">Tip Me</h1>
-            <p class="page-desc" data-i18n="tip.desc">Thank you for your support!</p>
+            <img class="header-avatar fade-in-up" src="imgs/haruka.webp" alt="Haruka Yang">
+            <h1 class="fade-in-up" data-i18n="tip.title">Tip Me</h1>
+            <p class="page-desc fade-in-up" data-i18n="tip.desc">点击给悠悠转账qwq</p>
         </div>
 
         <div class="tip-layout">
@@ -485,13 +537,13 @@
                 <div class="pay-grid">
                     <div class="pay-card pay-card--combined" id="cardCombined">
                         <div class="card-icon card-icon--combined">
-                            <img src="imgs/wechat.png" alt="">
-                            <img src="imgs/alipay-pay.png" alt="">
+                            <img src="imgs/wechat.png" alt="WeChat Pay">
+                            <img src="imgs/alipay-pay.png" alt="Alipay">
                         </div>
                         <div class="card-title" data-i18n="tip.combined">微信 / 支付宝</div>
                     </div>
                     <div class="pay-card pay-card--paypay" id="cardPaypay">
-                        <div class="card-icon"><img src="imgs/paypay.png" alt=""></div>
+                        <div class="card-icon"><img src="imgs/paypay.png" alt="PayPay"></div>
                         <div class="card-title" data-i18n="tip.paypay">PayPay</div>
                     </div>
                 </div>
@@ -522,7 +574,7 @@
             <!-- Right: character -->
             <div class="tip-right">
                 <div class="tip-character">
-                    <img src="imgs/tip_pic.png" alt="">
+                    <img src="imgs/tip_pic.webp" alt="Haruka character">
                 </div>
             </div>
         </div>
@@ -533,7 +585,7 @@
         <div class="modal-box">
             <div class="modal-img-wrap">
                 <span class="modal-close" id="closeCombined">&times;</span>
-                <img src="imgs/HaruQR.jpg" alt="聚合收款码" style="width: 100%; height: auto; display: block; border-radius: 12px;">
+                <img src="imgs/HaruQR.webp" alt="聚合收款码" style="width: 100%; height: auto; display: block; border-radius: 12px;">
             </div>
             <p class="modal-hint">请先将收款码图片保存至本地相册，再通过支付应用从相册中识别图片完成转账。</p>
             <a href="combined-pay.html" class="modal-create-link" data-i18n="tip.createOwn">创建自己的聚合微信支付宝收款码 →</a>
@@ -566,7 +618,7 @@
                     tip: {
                         back: '\u2190 Back',
                         title: 'Tip Me',
-                        desc: 'Thanks for keeping me alive\uD83D\uDE06',
+                        desc: 'Click to tip Haruka qwq',
                         wechat: 'WeChat Pay',
                         alipay: 'Alipay',
                         paypay: 'PayPay',
@@ -585,7 +637,7 @@
                     tip: {
                         back: '\u2190 \u8FD4\u56DE',
                         title: '\u6253\u8D4F\u6211',
-                        desc: '\u611F\u8C22\u91D1\u4E3B\u7238\u7238\u6295\u5582\uD83D\uDE06',
+                        desc: '点击给悠悠转账qwq',
                         wechat: '\u5FAE\u4FE1\u652F\u4ED8',
                         alipay: '\u652F\u4ED8\u5B9D',
                         paypay: 'PayPay',
@@ -604,7 +656,7 @@
                     tip: {
                         back: '\u2190 \u623B\u308B',
                         title: '\u6295\u3052\u92AD',
-                        desc: '\u4ECA\u65E5\u3082\u990A\u3063\u3066\u304F\u308C\u3066\u3042\u308A\u304C\u3068\u3046\uFF08\u7B11\uFF09',
+                        desc: '悠悠に送金するにはクリック qwq',
                         wechat: 'WeChat Pay',
                         alipay: 'Alipay',
                         paypay: 'PayPay',
@@ -737,7 +789,7 @@
             });
             ctx.drawImage(qrCanvas, qrAreaX + pad, qrAreaY + pad, qrDrawSize, qrDrawSize);
 
-            var avatar = await loadImage('imgs/haruka.jpg');
+            var avatar = await loadImage('imgs/haruka.webp');
             if (avatar) {
                 var aSize = 56;
                 var aRadius = 6;
@@ -792,12 +844,14 @@
 
         // ========== Init ==========
         async function init() {
+            var lang = detectLanguage();
             await i18next.init({
-                lng: detectLanguage(),
+                lng: lang,
                 fallbackLng: DEFAULT_LANG,
                 resources: TRANSLATIONS,
                 interpolation: { escapeValue: false }
             });
+            document.documentElement.lang = lang === 'zh-CN' ? 'zh-CN' : lang === 'ja-JP' ? 'ja' : 'en';
             updateContent();
 
             document.getElementById('cardCombined').addEventListener('click', function() {
@@ -826,6 +880,15 @@
             });
             document.getElementById('modalQrCard').addEventListener('click', function(e) {
                 if (e.target === this) closeModal('modalQrCard');
+            });
+
+            // ESC key to close modals
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.modal-overlay.active').forEach(function(m) {
+                        m.classList.remove('active');
+                    });
+                }
             });
 
             fetchRate();
